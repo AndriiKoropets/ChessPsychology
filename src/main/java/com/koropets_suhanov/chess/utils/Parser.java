@@ -1,7 +1,6 @@
-package utils;
+package com.koropets_suhanov.chess.utils;
 
-import model.*;
-import controller.Main;
+import com.koropets_suhanov.chess.model.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,7 +67,7 @@ public class Parser {
         if (turn.contains("B")){
             if (turn.contains("x")){
                 Board.getInstance().setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, true));
-                Main.printFigures();
+//                Main.printFigures();
             }else {
                 Board.getInstance().setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, false));
             }

@@ -1,4 +1,4 @@
-package controller;
+package com.koropets_suhanov.chess.controller;
 
 /**
  * @author AndriiKoropets

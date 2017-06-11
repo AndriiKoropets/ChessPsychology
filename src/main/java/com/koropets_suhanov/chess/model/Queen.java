@@ -1,43 +1,53 @@
-package model;
+package com.koropets_suhanov.chess.model;
 
 import static java.lang.Math.abs;
 
 /**
  * @author AndriiKoropets
  */
-public class Bishop extends Figure {
+public class Queen extends Figure {
 
-    private final static int BISHOP_WEIGHT = 3;
-//    private final static Set<Integer> set = new LinkedHashSet<Integer>(8);
+    private final static int QUEEN_WEIGHT = 3;
 
-//    static {
-//        set.add(1);
-//        set.add(2);
-//        set.add(3);
-//        set.add(4);
-//        set.add(5);
-//        set.add(6);
-//        set.add(7);
-//    }
-
-    public Bishop(Field field, Color color) {
+    public Queen(Field field, Color color) {
         super(field, color);
         attackedFields();
     }
 
     @Override
-    protected void attackedFields() {
-        for (int i = 0; i < Board.SIZE; i++){
-            for (int j = 0; j < Board.SIZE; j++){
-                if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j) && abs(this.getField().getY() - j) != 0){
-                    this.getAttackedFields().add(new Field(i, j));
-                }
+    public void possibleTurns() {
+        for (int i = this.getField().getX() + 1; i < Board.SIZE; i++){
+            Field field = new Field(i, this.getField().getY());
+            if (checkingFieldForTaken(field)){
+                break;
+            }else {
+                this.getFieldsUnderMyInfluence().add(field);
             }
         }
-    }
-
-    @Override
-    public void possibleTurns() {
+        for (int i = this.getField().getX() - 1; i >= 0; i--){
+            Field field = new Field(i, this.getField().getY());
+            if (checkingFieldForTaken(field)){
+                break;
+            }else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+        for (int j = this.getField().getY() + 1; j < Board.SIZE; j++){
+            Field field = new Field(this.getField().getX(), j);
+            if (checkingFieldForTaken(field)){
+                break;
+            }else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+        for (int j = this.getField().getY() - 1; j >= 0; j--){
+            Field field = new Field(this.getField().getX(), j);
+            if (checkingFieldForTaken(field)){
+                break;
+            }else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
         for (int i = this.getField().getX() + 1; i < Board.SIZE; i++){
             boolean flag = false;
             for (int j = this.getField().getY() + 1; j < Board.SIZE; j++){
@@ -104,6 +114,21 @@ public class Bishop extends Figure {
             }
             if (flag){
                 break;
+            }
+        }
+    }
+
+
+    @Override
+    protected void attackedFields() {
+        for (int i = 0; i < Board.SIZE; i++){
+            for (int j = 0; j < Board.SIZE; j++){
+                if ((i == this.getField().getX() || j == this.getField().getY()) || (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) ){
+                    if (this.getField().getX() == i && this.getField().getY() == j){
+                        continue;
+                    }
+                    this.getAttackedFields().add(new Field(i, j));
+                }
             }
         }
     }

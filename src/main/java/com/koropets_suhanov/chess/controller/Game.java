@@ -1,6 +1,6 @@
-package controller;
+package com.koropets_suhanov.chess.controller;
 
-import model.*;
+import com.koropets_suhanov.chess.model.*;
 
 import java.util.*;
 

@@ -1,6 +1,11 @@
-package model;
+package com.koropets_suhanov.chess.model;
 
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 /**
  * @author AndriiKoropets
@@ -12,7 +17,8 @@ public class Field {
     private static final Map<Integer, Character> horizontal = new LinkedHashMap<Integer, Character>();
     private static final Map<Integer, Integer> vertical = new LinkedHashMap<Integer, Integer>();
     private static final Map<Character, Integer> invertedHorizontal = new LinkedHashMap<Character, Integer>();
-    private static final Map<Integer, Integer> invertedVertical = new LinkedHashMap<Integer, Integer>();;
+    private static final Map<Integer, Integer> invertedVertical = new LinkedHashMap<Integer, Integer>();
+    private static final Logger LOG = LoggerFactory.getLogger(Field.class);
 
     static {
         invertedVertical.put(8, 0);
@@ -59,10 +65,19 @@ public class Field {
     }
 
     public Field(int x, int y){
-        if (x>=0 && x<Board.SIZE && y>=0 && y<Board.SIZE){
+        if (isValidField(x, y)){
             this.x = x;
             this.y = y;
+            LOG.debug("Created field with such points: x = {}, y = {}", x, y);
+        }else {
+            RuntimeException runtimeException = new RuntimeException("Invalid points for field");
+            LOG.error("Field was not created due to invalid points, x = {}, y = {}", x, y,runtimeException);
+            throw runtimeException;
         }
+    }
+
+    public static boolean isValidField(int x, int y){
+        return x >= 0 && x < Board.SIZE && y >= 0 && y < Board.SIZE;
     }
 
     public int getX() {

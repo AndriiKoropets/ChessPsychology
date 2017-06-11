@@ -1,5 +1,7 @@
-package model;
+package com.koropets_suhanov.chess.model;
 
+
+import static com.koropets_suhanov.chess.model.Field.isValidField;
 
 /**
  * @author AndriiKoropets
@@ -55,12 +57,30 @@ public class Pawn extends Figure {
 
     @Override
     public void attackedFields() {
+        int left;
+        int right;
         if (this.getColor() == Color.WHITE){
-            getAttackedFields().add(new Field(this.getField().getX() - 1, this.getField().getY() - 1));
-            getAttackedFields().add(new Field(this.getField().getX() - 1, this.getField().getY() + 1));
+            left = this.getField().getX() - 1;
+            right = this.getField().getY() - 1;
+            if (isValidField(left, right)){
+                getAttackedFields().add(new Field(left, right));
+            }
+            left = this.getField().getX() - 1;
+            right = this.getField().getY() + 1;
+            if (isValidField(left,right)){
+                getAttackedFields().add(new Field(left, right));
+            }
         }else {
-            getAttackedFields().add(new Field(this.getField().getX() + 1, this.getField().getY() - 1));
-            getAttackedFields().add(new Field(this.getField().getX() + 1, this.getField().getY() + 1));
+            left = this.getField().getX() + 1;
+            right = this.getField().getY() - 1;
+            if (isValidField(left, right)){
+                getAttackedFields().add(new Field(left, right));
+            }
+            left = this.getField().getX() + 1;
+            right = this.getField().getY() + 1;
+            if (isValidField(left, right)){
+                getAttackedFields().add(new Field(left, right));
+            }
         }
         enPassant();
         fillAttackedAndProtectedFigures();

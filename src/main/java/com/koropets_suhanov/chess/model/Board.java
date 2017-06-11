@@ -1,4 +1,4 @@
-package model;
+package com.koropets_suhanov.chess.model;
 
 import java.util.*;
 

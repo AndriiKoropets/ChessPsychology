@@ -1,8 +1,6 @@
-package controller;
+package com.koropets_suhanov.chess.controller;
 
-import java.util.Map;
-
-import model.*;
+import com.koropets_suhanov.chess.model.*;
 
 /**
  * @author AndriiKoropets

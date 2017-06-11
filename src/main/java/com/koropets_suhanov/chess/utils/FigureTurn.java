@@ -1,4 +1,4 @@
-package utils;
+package com.koropets_suhanov.chess.utils;
 
 import java.util.List;
 

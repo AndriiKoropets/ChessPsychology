@@ -1,6 +1,4 @@
-package model;
-
-import java.util.Iterator;
+package com.koropets_suhanov.chess.model;
 
 import static java.lang.Math.abs;
 

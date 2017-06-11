@@ -1,14 +1,14 @@
-package controller;
+package com.koropets_suhanov.chess.controller;
 
-import utils.Parser;
-import model.*;
+import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.utils.Parser;
+import com.koropets_suhanov.chess.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  */
 public class Main {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private final static String REG_EX_TURN = "^\\d+\\.\\s*(\\S+)\\s*(\\S+)*$";
     private final static String REG_EX_SURNAMES = "";
     private final static String PATH_TO_FILE = "src/main/resources/childsMat";
@@ -28,17 +29,23 @@ public class Main {
     public static void main(String[] args) throws InterruptedException{
         Board board = Board.getInstance();
 //       printAllPossibleTurns();
-//        printFigures();
+        printFigures();
 //        printFile();
         System.out.println(Board.getTakenFields());
         System.out.println("White figures");
-//        for (Observer figure : board.getWhiteFigures()){
-//            System.out.println(figure.toString() + ((Figure)figure).getAttackedFields());
-//        }
-//        System.out.println("Black figures");
-//        for (Observer figure : board.getBlackFigures()){
-//            System.out.println(figure.toString() + ((Figure) figure).getAttackedFields());
-//        }
+        for (Observer figure : board.getWhiteFigures()){
+            Set<Field> set = ((Figure)figure).getPossibleFieldsToMove();
+            if (figure.getClass() == Knight.class){
+                for (Field field : ((Figure) figure).getAttackedFields()){
+                    System.out.println(field + "   " + field.isTaken());
+                }
+            }
+            System.out.println(figure.toString() + ((Figure)figure).getAttackedFields() + ", possible turns : " + set + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
+        }
+        System.out.println("Black figures");
+        for (Observer figure : board.getBlackFigures()){
+            System.out.println(figure.toString() + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
+        }
 //        Figure knight = new Knight(new Field(7, 1), Color.WHITE);
 //        board.removeFigure(knight);
     }
@@ -123,7 +130,7 @@ public class Main {
         System.out.println(game.getPossibleTurnsAndKillings());
     }
 
-    public static void printFigures(){
+    private static void printFigures(){
         System.out.println();
         int counter = 1;
         for (int i = 0; i < Board.SIZE; i++){
@@ -149,7 +156,7 @@ public class Main {
         }
     }
 
-    public static String print(Figure figure){
+    private static String print(Figure figure){
         if (figure.getClass() == King.class){
             if (figure.getColor() == Color.WHITE){
                 return "K";
