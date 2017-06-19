@@ -44,10 +44,10 @@ public abstract class Figure implements Observer {
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
         if (this.getClass() == King.class){
-            ((King) this).setOpportunityToCastling(false);
+            ((King) this).looseOpportunityToCastling();
         }else {
             if (this.getClass() == Rock.class){
-                ((Rock) this).setOpportunityToCastling(false);
+                ((Rock) this).looseOpportunityToCastling();
             }
         }
         attackedFields();

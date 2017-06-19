@@ -8,12 +8,12 @@ import java.util.*;
 public class Board implements Subject{
 
     public final static byte SIZE = 8;
-    private Set<Observer> figures = new LinkedHashSet<Observer>();
-    private Set<Observer> whiteFigures = new LinkedHashSet<Observer>();
-    private Set<Observer> blackFigures = new LinkedHashSet<Observer>();
-    private Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<Field>();
-    private Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<Field>();
-    private List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
+    private static Set<Observer> figures = new LinkedHashSet<Observer>();
+    private static Set<Observer> whiteFigures = new LinkedHashSet<Observer>();
+    private static Set<Observer> blackFigures = new LinkedHashSet<Observer>();
+    private static Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<Field>();
+    private static Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<Field>();
+    private static List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
     private static final Set<Field> takenFields = new LinkedHashSet<Field>();
     private static final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
     private Field field;
@@ -94,7 +94,7 @@ public class Board implements Subject{
         setTakenFields();
 //        blackPawnA.possibleTurns();
         for (Observer figure : figures){
-            if (((Figure) figure).getColor() == Color.WHITE && (figure.getClass() == Pawn.class || figure.getClass() == Rock.class))
+//            if (((Figure) figure).getColor() == Color.WHITE && (figure.getClass() == Pawn.class || figure.getClass() == Rock.class))
                 ((Figure) figure).possibleTurns();
         }
         for (Observer whiteFigure : whiteFigures){
@@ -156,27 +156,27 @@ public class Board implements Subject{
         return field.getX() >= 0 && field.getX() < SIZE && field.getY() >= 0 && field.getY() < SIZE;
     }
 
-    public Set<Observer> getWhiteFigures() {
+    public static Set<Observer> getWhiteFigures() {
         return whiteFigures;
     }
 
-    public List<Turn> getPossibleTurnsAndKillings() {
+    public static List<Turn> getPossibleTurnsAndKillings() {
         return possibleTurnsAndKillings;
     }
 
-    public Set<Observer> getBlackFigures() {
+    public static Set<Observer> getBlackFigures() {
         return blackFigures;
     }
 
-    public Set<Observer> getFigures() {
+    public static Set<Observer> getFigures() {
         return figures;
     }
 
-    public Set<Field> getFieldsUnderWhiteInfluence() {
+    public static Set<Field> getFieldsUnderWhiteInfluence() {
         return fieldsUnderWhiteInfluence;
     }
 
-    public Set<Field> getFieldsUnderBlackInfluence() {
+    public static Set<Field> getFieldsUnderBlackInfluence() {
         return fieldsUnderBlackInfluence;
     }
 

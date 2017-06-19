@@ -18,13 +18,12 @@ public class King extends Figure {
     @Override
     public void possibleTurns(){
         Set<Field> enemyInfluence;
-        Board board = Board.getInstance();
         for (Field field : this.getAttackedFields()){
             Figure figure = Board.getFieldToFigure().get(field);
             if (this.getColor() == Color.BLACK){
-                enemyInfluence = board.getFieldsUnderWhiteInfluence();
+                enemyInfluence = Board.getFieldsUnderWhiteInfluence();
             }else {
-                enemyInfluence = board.getFieldsUnderBlackInfluence();
+                enemyInfluence = Board.getFieldsUnderBlackInfluence();
             }
             if (!enemyInfluence.contains(field)){
                 if (figure != null){
@@ -46,17 +45,16 @@ public class King extends Figure {
         return opportunityToCastling;
     }
 
-    public void setOpportunityToCastling(boolean opportunityToCastling) {
-        this.opportunityToCastling = opportunityToCastling;
+    public void looseOpportunityToCastling() {
+        this.opportunityToCastling = false;
     }
 
     public boolean isUnderAttack(){
         Set<Field> enemyInfluence;
-        Board board = Board.getInstance();
         if (this.getColor() == Color.WHITE){
-            enemyInfluence = board.getFieldsUnderBlackInfluence();
+            enemyInfluence = Board.getFieldsUnderBlackInfluence();
         }else {
-            enemyInfluence = board.getFieldsUnderWhiteInfluence();
+            enemyInfluence = Board.getFieldsUnderWhiteInfluence();
         }
         return enemyInfluence.contains(this.getField());
     }

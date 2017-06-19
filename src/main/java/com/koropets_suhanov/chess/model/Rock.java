@@ -17,8 +17,8 @@ public class Rock extends Figure {
         return opportunityToCastling;
     }
 
-    public void setOpportunityToCastling(boolean opportunityToCastling) {
-        this.opportunityToCastling = opportunityToCastling;
+    public void looseOpportunityToCastling() {
+        this.opportunityToCastling = false;
     }
 
     @Override

@@ -112,9 +112,9 @@ public class Field {
     public boolean isUnderInfluence(Color color){
         Set  figures;
         if (color == Color.BLACK){
-            figures = Board.getInstance().getBlackFigures();
+            figures = Board.getBlackFigures();
         }else {
-            figures = Board.getInstance().getWhiteFigures();
+            figures = Board.getWhiteFigures();
         }
         for (Object figure : figures){
             for (Object field : ((Figure)figure).getAttackedFields()){
@@ -132,7 +132,7 @@ public class Field {
 //        if (color == Color.BLACK){
 //            figures = Board.getBlackFigures();
 //        }else {
-//            figures = Board.getInstance().getWhiteFigures();
+//            figures = Board.getWhiteFigures();
 //        }
 //        for (Object figure : figures){
 //            for (Object field : ((Figure)figure).getAttackedFields()){
@@ -146,7 +146,7 @@ public class Field {
 
     //TODO refactor this method. Should be placed in Board class.
 //    public Figure getFigureByField(){
-//        for(Observer figure : Board.getInstance().getFigures()){
+//        for(Observer figure : Board.getFigures()){
 //            if(((Figure)figure).getField().getX() == this.getX() && ((Figure) figure).getField().getY() == this.getY()){
 //                return (Figure) figure;
 //            }

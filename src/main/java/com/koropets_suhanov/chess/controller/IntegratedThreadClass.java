@@ -10,7 +10,7 @@ public class IntegratedThreadClass implements Runnable {
 
     public void run() {
 //        for (int i = leftLimit; i <= rightLimit; i++){
-//            Parameters.countFirstParameterForSpecialTurns();
+//            Parameters.estimateFirstParameter();
 //        }
     }
 }

@@ -40,11 +40,11 @@ public class Main {
                     System.out.println(field + "   " + field.isTaken());
                 }
             }
-            System.out.println(figure.toString() + ((Figure)figure).getAttackedFields() + ", possible turns : " + set + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
+            System.out.println(figure.toString() + ", attacked fields = " + ((Figure)figure).getAttackedFields() + ", possible turns : " + set + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
         }
         System.out.println("Black figures");
         for (Observer figure : board.getBlackFigures()){
-            System.out.println(figure.toString() + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
+            System.out.println(figure.toString() + ", attacked fields = " + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
         }
 //        Figure knight = new Knight(new Field(7, 1), Color.WHITE);
 //        board.removeFigure(knight);
