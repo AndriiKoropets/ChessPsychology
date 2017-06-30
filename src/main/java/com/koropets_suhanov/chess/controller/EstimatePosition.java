@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.controller;
 
 import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Observer;
 
 import java.util.HashMap;
@@ -15,8 +16,10 @@ import scala.Tuple2;
 public class EstimatePosition {
 
     Map<String, Tuple2<Observer, Parameter>> turnToReflection = new HashMap<>();
+    private static Color whoseTurn;
 
-    public Parameter estimateParameters(Turn turn){
+    public Parameter estimateParameters(Turn turn, Color side){
+        whoseTurn = side;
         Parameter parameter = new Parameter(Color.BLACK);
         parameter.setFirstAttackEnemy(estimateFirstParameter(turn));
         parameter.setSecondBeUnderAttack(estimateSecondParameter(turn));
@@ -30,6 +33,7 @@ public class EstimatePosition {
     }
 
     private int estimateEightParameter(Turn turn) {
+        int parameter = 0;
         return 0;
     }
 
@@ -59,8 +63,29 @@ public class EstimatePosition {
 
     public static int estimateFirstParameter(Turn turn){
 //        Turn turn = Board.getInstance().getPossibleTurnsAndKillings().get(turnsNumber);
-        int numberOfFiguresIAttack = turn.getFigure().getWhoCouldBeKilled().size();
+        int parameter = 0;
+        estimateTurnFirstParam(turn);
+        estimatePositionFirstParam();
+//        int numberOfFiguresIAttack = turn.getFigures().getWhoCouldBeKilled().size();
         return 0;
+    }
+
+    private static int estimatePositionFirstParam() {
+        int parameter = 0;
+        //TODO case queen attacks through bishop
+        return 0;
+    }
+
+    private static int estimateTurnFirstParam(Turn turn) {
+        int parameter = 0;
+        for (Figure figure : turn.getFigures()){
+            for (Figure pray : figure.getWhoCouldBeKilled()){
+                if (pray.getEnemiesAttackMe().size() >= pray.getAliensProtectMe().size() || pray.getValue() >= figure.getValue()){
+                    parameter++;
+                }
+            }
+        }
+        return parameter;
     }
 
 }

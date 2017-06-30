@@ -24,6 +24,11 @@ public class Knight extends Figure {
     }
 
     @Override
+    public double getValue() {
+        return KNIGHT_WEIGHT;
+    }
+
+    @Override
     protected void attackedFields() {
         for (int i = 0; i < Board.SIZE; i++){
             for (int j = 0; j < Board.SIZE; j++){

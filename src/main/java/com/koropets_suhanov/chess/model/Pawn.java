@@ -56,6 +56,11 @@ public class Pawn extends Figure {
     }
 
     @Override
+    public double getValue() {
+        return PAWN_WEIGHT;
+    }
+
+    @Override
     public void attackedFields() {
         int left;
         int right;

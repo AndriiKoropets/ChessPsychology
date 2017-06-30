@@ -1,11 +1,13 @@
 package com.koropets_suhanov.chess.model;
 
+import java.util.Set;
+
 /**
  * @author AndriiKoropets
  */
 public class Turn {
 
-    private Figure figure;
+    private Set<Figure> figures;
     private Field destinationField;
     private boolean killing;
     private String turn;
@@ -13,8 +15,8 @@ public class Turn {
     private int numberOfTurn;
 
 
-    public Turn(Figure figure, Field destinationField, boolean killing, String turn, int numberOfTurn) {
-        this.figure = figure;
+    public Turn(Set<Figure> figures, Field destinationField, boolean killing, String turn, int numberOfTurn) {
+        this.figures = figures;
         this.destinationField = destinationField;
         this.killing = killing;
         this.turn = turn;
@@ -29,8 +31,8 @@ public class Turn {
         return killing;
     }
 
-    public Figure getFigure() {
-        return figure;
+    public Set<Figure> getFigures() {
+        return figures;
     }
 
     public Field getDestinationField() {

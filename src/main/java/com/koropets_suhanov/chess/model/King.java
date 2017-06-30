@@ -9,6 +9,7 @@ import static java.lang.Math.abs;
 public class King extends Figure {
 
     private boolean opportunityToCastling = true;
+    private static final int KING_WEIGHT = Integer.MAX_VALUE;
 
     public King(Field field, Color color) {
         super(field, color);
@@ -39,6 +40,11 @@ public class King extends Figure {
                 }
             }
         }
+    }
+
+    @Override
+    public double getValue() {
+        return KING_WEIGHT;
     }
 
     public boolean isOpportunityToCastling() {

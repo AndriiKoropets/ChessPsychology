@@ -118,6 +118,11 @@ public class Queen extends Figure {
         }
     }
 
+    @Override
+    public double getValue() {
+        return QUEEN_WEIGHT;
+    }
+
 
     @Override
     protected void attackedFields() {

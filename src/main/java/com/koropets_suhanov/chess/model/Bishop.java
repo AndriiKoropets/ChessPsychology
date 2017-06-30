@@ -107,4 +107,9 @@ public class Bishop extends Figure {
             }
         }
     }
+
+    @Override
+    public double getValue() {
+        return BISHOP_WEIGHT;
+    }
 }

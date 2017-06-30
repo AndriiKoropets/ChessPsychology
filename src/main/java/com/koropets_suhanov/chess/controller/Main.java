@@ -20,7 +20,8 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private final static String REG_EX_TURN = "^\\d+\\.\\s*(\\S+)\\s*(\\S+)*$";
     private final static String REG_EX_SURNAMES = "";
-    private final static String PATH_TO_FILE = "src/main/resources/childsMat";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
+    private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     private static List<String> whiteTurns = new ArrayList<String>();
     private static List<String> blackTurns = new ArrayList<String>();
     static boolean run = true;
@@ -46,8 +47,8 @@ public class Main {
         for (Observer figure : board.getBlackFigures()){
             System.out.println(figure.toString() + ", attacked fields = " + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
         }
-//        Figure knight = new Knight(new Field(7, 1), Color.WHITE);
-//        board.removeFigure(knight);
+
+        printFile();
     }
 
     public static void printFile(){

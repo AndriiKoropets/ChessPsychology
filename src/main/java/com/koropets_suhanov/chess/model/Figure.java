@@ -18,6 +18,7 @@ public abstract class Figure implements Observer {
     private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
     protected abstract void attackedFields();
     public abstract void possibleTurns();
+    public abstract double getValue();
 
     public Figure(){}
 
