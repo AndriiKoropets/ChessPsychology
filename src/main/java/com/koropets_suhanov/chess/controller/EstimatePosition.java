@@ -1,13 +1,11 @@
 package com.koropets_suhanov.chess.controller;
 
-import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.model.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import com.koropets_suhanov.chess.model.Turn;
 import scala.Tuple2;
 
 /**
@@ -53,34 +51,64 @@ public class EstimatePosition {
         return 0;
     }
 
-    private int estimateSecondParameter(Turn turn) {
-        return 0;
-    }
-
     private int estimateThirdParameter(Turn turn) {
         return 0;
     }
 
-    public static int estimateFirstParameter(Turn turn){
-//        Turn turn = Board.getInstance().getPossibleTurnsAndKillings().get(turnsNumber);
+    private int estimateSecondParameter(Turn turn) {
         int parameter = 0;
-        estimateTurnFirstParam(turn);
-        estimatePositionFirstParam();
-//        int numberOfFiguresIAttack = turn.getFigures().getWhoCouldBeKilled().size();
-        return 0;
+        Figure figure = null;
+        Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        for (Figure temp : turn.getFigures()){
+            if (turn.getFigures().size() == 1){
+                figure = temp;
+                break;
+            }else if (temp.getClass() == Rock.class){
+                figure = temp;
+            }
+        }
+        if (figure != null){
+            for (Observer enemyObserver : enemies){
+                Figure enemy = ((Figure) enemyObserver);
+                for (Figure prey : enemy.getWhoCouldBeKilled()){
+                    if (prey.equals(figure)){
+                        parameter++;
+                    }
+                }
+            }
+        }else {
+            throw new RuntimeException("Could not choose figure from actual turn");
+        }
+        return parameter;
+    }
+
+    public static int estimateFirstParameter(Turn turn){
+        return estimateTurnFirstParam(turn) + estimatePositionFirstParam();
     }
 
     private static int estimatePositionFirstParam() {
         int parameter = 0;
-        //TODO case queen attacks through bishop
-        return 0;
+        Set<Observer> figures = (whoseTurn == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        for (Observer observer : figures){
+            Figure currentFigure = ((Figure) observer);
+            for (Figure alien : ((Figure) observer).getAliensProtectMe()){
+                for (Figure prey : currentFigure.getWhoCouldBeKilled()){
+                    Field preyField = prey.getField();
+                    if (alien.getFieldsUnderMyInfluence().contains(preyField) && !alien.getPossibleFieldsToMove().contains(preyField) && !alien.getPreyField().contains(preyField)){
+                        parameter++;
+                        prey.getEnemiesAttackMe().add(alien);
+                    }
+                }
+            }
+        }
+        return parameter;
     }
 
     private static int estimateTurnFirstParam(Turn turn) {
         int parameter = 0;
         for (Figure figure : turn.getFigures()){
-            for (Figure pray : figure.getWhoCouldBeKilled()){
-                if (pray.getEnemiesAttackMe().size() >= pray.getAliensProtectMe().size() || pray.getValue() >= figure.getValue()){
+            for (Figure prey : figure.getWhoCouldBeKilled()){
+                if (prey.getEnemiesAttackMe().size() >= prey.getAliensProtectMe().size() || prey.getValue() >= figure.getValue()){
                     parameter++;
                 }
             }

@@ -1,5 +1,6 @@
 package com.koropets_suhanov.chess.model;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ public abstract class Figure implements Observer {
     private Set<Field> attackedFields = new LinkedHashSet<Field>();
     private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
     private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
+    private Set<Field> preyField = new HashSet<>();
     protected abstract void attackedFields();
     public abstract void possibleTurns();
     public abstract double getValue();
@@ -102,6 +104,10 @@ public abstract class Figure implements Observer {
         return possibleFieldsToMove;
     }
 
+    public Set<Field> getPreyField() {
+        return preyField;
+    }
+
     public void addAlien(Figure figure){
         aliensProtectMe.add(figure);
     }
@@ -132,6 +138,7 @@ public abstract class Figure implements Observer {
             }else {
                 tempFigure.addEnemy(this);
                 this.getWhoCouldBeKilled().add(tempFigure);
+                this.getPreyField().add(tempFigure.getField());
                 return true;
             }
         }

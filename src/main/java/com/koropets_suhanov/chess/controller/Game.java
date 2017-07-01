@@ -208,4 +208,12 @@ public class Game {
         }
         return null;
     }
+
+    private void makeTurn(){
+        //TODO make a turn actually
+    }
+
+    private void undo(){
+        //TODO undo a turn that made
+    }
 }
