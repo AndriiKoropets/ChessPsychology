@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 /**
  * @author AndriiKoropets
  */
-public class Main {
+public class Process {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Process.class);
     private final static String REG_EX_TURN = "^\\d+\\.\\s*(\\S+)\\s*(\\S+)*$";
     private final static String REG_EX_SURNAMES = "";
     private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
@@ -48,7 +48,7 @@ public class Main {
             System.out.println(figure.toString() + ", attacked fields = " + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
         }
 
-        printFile();
+//        printFile();
     }
 
     public static void printFile(){
@@ -63,58 +63,22 @@ public class Main {
                 if (matcher.matches()){
                     printAllPossibleTurns();
                     whiteTurns.add(matcher.group(1));
-                    Parser.parseTurn(matcher.group(1), true);
+                    Parser.getActualTurn(matcher.group(1), true);
                     System.out.println(sCurrentLine + " ==== after turn ==== " +  matcher.group(1));
                     printAllPossibleTurns();
                     printFigures();
-
-//                    System.out.println("White figures");
-//                    Iterator figureIterator = Board.getFigures().iterator();
-//                    while (figureIterator.hasNext()){
-//                        Figure currentFigure = (Figure) figureIterator.next();
-//                        if (currentFigure.getColor() == Color.WHITE){
-//                            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
-//                        }
-//                    }
-//                    System.out.println("Black figures");
-//                    Iterator iterator1 = Board.getFigures().iterator();
-//                    while (iterator1.hasNext()){
-//                        Figure currentFigure = (Figure) iterator1.next();
-//                        if (currentFigure.getColor() == Color.BLACK){
-//                            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence()+ currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
-//                        }
-//                    }
-
+                    currentStateOfTheBoard();
 
                     blackTurns.add(matcher.group(2));
-                    System.out.println("22222   " + matcher.group(2));
+//                    System.out.println("22222   " + matcher.group(2));
                     if (matcher.group(2) != null){
-                        Parser.parseTurn(matcher.group(2), false);
+                        Parser.getActualTurn(matcher.group(2), false);
                     }
                     printAllPossibleTurns();
-
-
                     System.out.println(sCurrentLine + " ==== after turn ====" + matcher.group(2));
                     printFigures();
-                    System.out.println("White figures");
-                    Iterator iterator = Board.getInstance().getFigures().iterator();
-                    while (iterator.hasNext()){
-                        Figure currentFigure = (Figure) iterator.next();
-                        if (currentFigure.getColor() == Color.WHITE){
-                            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
-                        }
-                    }
-                    System.out.println("Black figures");
-                    Iterator iterator2 = Board.getInstance().getFigures().iterator();
-                    while (iterator2.hasNext()){
-                        Figure currentFigure = (Figure) iterator2.next();
-                        if (currentFigure.getColor() == Color.BLACK){
-                            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
-                        }
-                    }
-
+                    currentStateOfTheBoard();
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,6 +93,19 @@ public class Main {
         game.setPossibleTurnsAndKillings(Color.BLACK);
         System.out.println(game.getPossibleTurnsAndKillings().size());
         System.out.println(game.getPossibleTurnsAndKillings());
+    }
+
+    private static void currentStateOfTheBoard(){
+        System.out.println("White figures");
+        for (Observer observer : Board.getWhiteFigures()){
+            Figure currentFigure = (Figure) observer;
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
+        }
+        System.out.println("Black figures");
+        for (Observer observer : Board.getBlackFigures()){
+            Figure currentFigure = (Figure) observer;
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
+        }
     }
 
     private static void printFigures(){

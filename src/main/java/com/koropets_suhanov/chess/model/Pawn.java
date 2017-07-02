@@ -9,6 +9,7 @@ import static com.koropets_suhanov.chess.model.Field.isValidField;
 public class Pawn extends Figure {
 
     private final static int PAWN_WEIGHT = 1;
+    private final static int POINT = 1;
     private int numberOfDoneTurns;
 
     public Pawn(Field field, Color color) {
@@ -58,6 +59,11 @@ public class Pawn extends Figure {
     @Override
     public double getValue() {
         return PAWN_WEIGHT;
+    }
+
+    @Override
+    public int getPoint() {
+        return POINT;
     }
 
     @Override

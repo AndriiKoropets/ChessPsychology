@@ -8,6 +8,7 @@ import static java.lang.Math.abs;
 public class Knight extends Figure {
 
     private final static int KNIGHT_WEIGHT = 3;
+    private final static int POINT = 2;
 
     public Knight(Field field, Color color) {
         super(field, color);
@@ -26,6 +27,11 @@ public class Knight extends Figure {
     @Override
     public double getValue() {
         return KNIGHT_WEIGHT;
+    }
+
+    @Override
+    public int getPoint() {
+        return POINT;
     }
 
     @Override

@@ -1,102 +1,135 @@
 package com.koropets_suhanov.chess.utils;
 
 import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Observer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author AndriiKoropets
  */
 public class Parser {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
     private static List<Observer> candidates = new ArrayList<Observer>();
     private static String mainTurn;
     private static Field field;
+    private static int number;
     private static Board board = Board.getInstance();
+    private static final String shortCastling = "0-0";
+    private static final String longCastling = "0-0-0";
+    private static final Field whiteKingShortCastling = new Field(7, 6);
+    private static final Field whiteKingLongCastling = new Field(7, 2);
+    private static final Field blackKingShortCastling = new Field(0, 6);
+    private static final Field blackKingLongCastling = new Field(0, 2);
+    private static final Field whiteRockShortCastling = new Field(7, 5);
+    private static final Field whiteRockLongCastling = new Field(7, 3);
+    private static final Field blackRockShortCastling = new Field(0, 5);
+    private static final Field blackRockLongCastling = new Field(0, 3);
 
 
-    public static void parseTurn(String turn, boolean isWhite){
+    public static Turn getActualTurn(final String turn, final boolean isWhite, int numberOfTurn){
         candidates.clear();
         mainTurn = turn;
+        number = numberOfTurn;
         field = parseTargetField(turn);
-        if (isWhite){
-            findingAndUpdating(turn, true);
-        }else {
-            findingAndUpdating(turn, false);
-        }
+        return setTurn(turn, isWhite);
     }
 
-    private static void findingAndUpdating(String turn, boolean isWhite){
-        if (turn.equalsIgnoreCase("O-O")){
+    public static Turn getPossibleTurn(){
+        //TODO implement logic for possible turns which was not made in party
+        return null;
+    }
+
+    private static Turn setTurn(final String writtenStyle, final boolean isWhite){
+        if (shortCastling.equals(writtenStyle)){
+            Map<Figure, Field> figureToField = new HashMap<>();
             if (isWhite){
-                board.setNewCoordinates(new Field(7, 6), Board.getFieldToFigure().get(new Field(7, 4)));
-                board.setNewCoordinates(new Field(7, 5), Board.getFieldToFigure().get(new Field(7, 7)));
+                Figure whiteKing = Board.getFieldToFigure().get(new Field(7, 4));
+                Figure whiteRock_H = Board.getFieldToFigure().get(new Field(7, 7));
+                figureToField.put(whiteKing, whiteKingShortCastling);
+                figureToField.put(whiteRock_H, whiteRockShortCastling);
             }else {
-                board.setNewCoordinates(new Field(0, 6), Board.getFieldToFigure().get(new Field(0, 4)));
-                board.setNewCoordinates(new Field(0, 5), Board.getFieldToFigure().get(new Field(0, 7)));
+                Figure blackKing = Board.getFieldToFigure().get(new Field(0, 4));
+                Figure blackRock_H = Board.getFieldToFigure().get(new Field(0, 7));
+                figureToField.put(blackKing, blackKingShortCastling);
+                figureToField.put(blackRock_H, blackRockShortCastling);
             }
-            return;
+            return new Turn.Builder().figureToDestinationField(figureToField)
+                    .writtenStyle(writtenStyle)
+                    .killing(false)
+                    .numberOfTurn(number)
+                    .build();
         }
-        if (turn.equalsIgnoreCase("O-O-O")){
+        if (longCastling.equals(writtenStyle)){
+            Map<Figure, Field> figureToField = new HashMap<>();
             if (isWhite){
-                board.setNewCoordinates(new Field(7, 2), Board.getFieldToFigure().get(new Field(7, 4)));
-                board.setNewCoordinates(new Field(7, 3), Board.getFieldToFigure().get(new Field(7, 0)));
+                Figure whiteKing = Board.getFieldToFigure().get(new Field(7, 4));
+                Figure whiteRock_A = Board.getFieldToFigure().get(new Field(7, 0));
+                figureToField.put(whiteKing, whiteKingLongCastling);
+                figureToField.put(whiteRock_A, whiteRockLongCastling);
             }else {
-                board.setNewCoordinates(new Field(0, 2), Board.getFieldToFigure().get(new Field(0, 4)));
-                board.setNewCoordinates(new Field(0, 3), Board.getFieldToFigure().get(new Field(0, 0)));
+                Figure blackKing = Board.getFieldToFigure().get(new Field(0, 4));
+                Figure blackRock_A = Board.getFieldToFigure().get(new Field(0, 0));
+                figureToField.put(blackKing, blackKingLongCastling);
+                figureToField.put(blackRock_A, blackRockLongCastling);
             }
-            return;
+            return new Turn.Builder().figureToDestinationField(figureToField)
+                    .writtenStyle(writtenStyle)
+                    .killing(false)
+                    .numberOfTurn(number)
+                    .build();
         }
-        if (turn.contains("R")){
-            if (turn.contains("x")){
+        if (writtenStyle.contains("R")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(Rock.class, isWhite, true));
             }else {
                 board.setNewCoordinates(field, fetchFigure(Rock.class, isWhite, false));
             }
             return;
         }
-        if (turn.contains("N")){
-            if (turn.contains("x")){
+        if (writtenStyle.contains("N")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(Knight.class, isWhite, true));
             }else {
                 board.setNewCoordinates(field, fetchFigure(Knight.class, isWhite, false));
             }
             return;
         }
-        if (turn.contains("B")){
-            if (turn.contains("x")){
+        if (writtenStyle.contains("B")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, true));
-//                Main.printFigures();
+//                Process.printFigures();
             }else {
                 board.setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, false));
             }
             return;
         }
-        if (turn.contains("Q")){
-            if (turn.contains("x")){
+        if (writtenStyle.contains("Q")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(Queen.class, isWhite, true));
             }else {
                 board.setNewCoordinates(field, fetchFigure(Queen.class, isWhite, false));
             }
             return;
         }
-        if (turn.contains("K")){
-            if (turn.contains("x")){
+        if (writtenStyle.contains("K")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(King.class, isWhite, true));
             }else {
                 board.setNewCoordinates(field, fetchFigure(King.class, isWhite, false));
             }
             return;
         }else {
-            if (turn.contains("x")){
+            if (writtenStyle.contains("x")){
                 board.setNewCoordinates(field, fetchFigure(Pawn.class, isWhite, true));
             }else {
                 board.setNewCoordinates(field, fetchFigure(Pawn.class, isWhite, false));
             }
         }
+        throw new RuntimeException("Could not read written turn");
     }
 
     private static Figure fetchFigure(Class clazz, boolean isWhite, boolean isKilling){
@@ -121,10 +154,8 @@ public class Parser {
                         }
                     }
                 }else {
-                    Iterator<Field> possibleTurns = ((Figure)figure).getPossibleFieldsToMove().iterator();
-                    while (possibleTurns.hasNext()){
-                        Field currentField = possibleTurns.next();
-                        if (currentField.equals(field)){
+                    for (Field field : ((Figure)figure).getPossibleFieldsToMove()){
+                        if (field.equals(field)){
                             candidates.add(figure);
                         }
                     }
@@ -209,6 +240,7 @@ public class Parser {
             }
             return new Field(x,y);
         }else {
+
             return null;
         }
 

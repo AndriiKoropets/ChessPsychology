@@ -21,6 +21,7 @@ public abstract class Figure implements Observer {
     protected abstract void attackedFields();
     public abstract void possibleTurns();
     public abstract double getValue();
+    public abstract int getPoint();
 
     public Figure(){}
 

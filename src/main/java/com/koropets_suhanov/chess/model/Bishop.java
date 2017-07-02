@@ -8,6 +8,7 @@ import static java.lang.Math.abs;
 public class Bishop extends Figure {
 
     private final static int BISHOP_WEIGHT = 3;
+    private final static int POINT = 2;
 //    private final static Set<Integer> set = new LinkedHashSet<Integer>(8);
 
 //    static {
@@ -111,5 +112,10 @@ public class Bishop extends Figure {
     @Override
     public double getValue() {
         return BISHOP_WEIGHT;
+    }
+
+    @Override
+    public int getPoint() {
+        return POINT;
     }
 }

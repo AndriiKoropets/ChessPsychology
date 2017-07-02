@@ -8,6 +8,7 @@ import static java.lang.Math.abs;
 public class Queen extends Figure {
 
     private final static int QUEEN_WEIGHT = 3;
+    private final static int POINT = 4;
 
     public Queen(Field field, Color color) {
         super(field, color);
@@ -123,6 +124,10 @@ public class Queen extends Figure {
         return QUEEN_WEIGHT;
     }
 
+    @Override
+    public int getPoint() {
+        return POINT;
+    }
 
     @Override
     protected void attackedFields() {

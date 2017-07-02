@@ -10,6 +10,7 @@ public class King extends Figure {
 
     private boolean opportunityToCastling = true;
     private static final int KING_WEIGHT = Integer.MAX_VALUE;
+    private static final int POINT = 5;
 
     public King(Field field, Color color) {
         super(field, color);
@@ -45,6 +46,11 @@ public class King extends Figure {
     @Override
     public double getValue() {
         return KING_WEIGHT;
+    }
+
+    @Override
+    public int getPoint() {
+        return POINT;
     }
 
     public boolean isOpportunityToCastling() {

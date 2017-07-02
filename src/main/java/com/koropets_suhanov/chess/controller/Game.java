@@ -49,9 +49,9 @@ public class Game {
         }else {
             Set figures;
             if (color == Color.BLACK){
-                figures = Board.getInstance().getBlackFigures();
+                figures = Board.getBlackFigures();
             }else {
-                figures = Board.getInstance().getWhiteFigures();
+                figures = Board.getWhiteFigures();
             }
             StringBuilder turn;
             for (Object figure : figures){
@@ -209,11 +209,11 @@ public class Game {
         return null;
     }
 
-    private void makeTurn(){
+    private void makeTurn(Turn turn){
         //TODO make a turn actually
     }
 
-    private void undo(){
+    private void undo(Turn turn){
         //TODO undo a turn that made
     }
 }
