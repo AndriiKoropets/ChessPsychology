@@ -9,10 +9,10 @@ import java.util.*;
  */
 public class Game {
 
-    private Set<StringBuilder> possibleTurnsAndKillings = new LinkedHashSet<StringBuilder>();
+    private Set<String> possibleTurnsAndKillings = new LinkedHashSet<String>();
 
 
-    public Set<StringBuilder> getPossibleTurnsAndKillings() {
+    public Set<String> getPossibleTurnsAndKillings() {
         return possibleTurnsAndKillings;
     }
 
@@ -40,11 +40,11 @@ public class Game {
             StringBuilder turn = new StringBuilder(king.toString());
             for (Object field : king.getPossibleFieldsToMove()){
                 turn.append("-").append(field.toString());
-                possibleTurnsAndKillings.add(turn);
+                possibleTurnsAndKillings.add(turn.toString());
             }
             for (Object figure : king.getWhoCouldBeKilled()){
                 turn.append("x").append(((Figure)figure).getField());
-                possibleTurnsAndKillings.add(turn);
+                possibleTurnsAndKillings.add(turn.toString());
             }
         }else {
             Set figures;
@@ -59,35 +59,35 @@ public class Game {
                 for (Object field : ((Figure)figure).getPossibleFieldsToMove()){
                     turn = new StringBuilder(figure.toString());
                     turn.append("-").append(field.toString());
-                    possibleTurnsAndKillings.add(turn);
+                    possibleTurnsAndKillings.add(turn.toString());
                 }
                 for (Object attackedFigure : ((Figure) figure).getWhoCouldBeKilled()){
                     turn = new StringBuilder(figure.toString());
                     turn.append("x").append(((Figure)attackedFigure).getField().toString());
-                    possibleTurnsAndKillings.add(turn);
+                    possibleTurnsAndKillings.add(turn.toString());
                 }
             }
             List<String> castles = castling(color);
             for (String castle : castles){
                 StringBuilder castleTurn = new StringBuilder(castle);
-                possibleTurnsAndKillings.add(castleTurn);
+                possibleTurnsAndKillings.add(castleTurn.toString());
             }
             List<StringBuilder> turnsOnTheEndLine = pawnReachesEndLine(color);
             for (StringBuilder stringBuilder : turnsOnTheEndLine){
-                possibleTurnsAndKillings.add(stringBuilder);
+                possibleTurnsAndKillings.add(stringBuilder.toString());
             }
         }
     }
 
-    public List<StringBuilder> pawnReachesEndLine(Color color){
+    private List<StringBuilder> pawnReachesEndLine(Color color){
         Set figures;
         boolean isBlack;
         List<StringBuilder> turns = new ArrayList<StringBuilder>();
         if (color == Color.BLACK){
-            figures = Board.getInstance().getBlackFigures();
+            figures = Board.getBlackFigures();
             isBlack = true;
         }else {
-            figures = Board.getInstance().getWhiteFigures();
+            figures = Board.getWhiteFigures();
             isBlack = false;
         }
         for (Object figure : figures){
@@ -147,7 +147,7 @@ public class Game {
         }
     }
 
-    public static List<String> castling(Color color){
+    private static List<String> castling(Color color){
         Board board = Board.getInstance();
         List<String> list = new ArrayList<String>();
         List<Figure> rocks = Board.getInstance().getFiguresByClass(Rock.class);

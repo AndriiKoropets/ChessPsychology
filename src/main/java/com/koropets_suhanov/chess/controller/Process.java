@@ -1,7 +1,7 @@
 package com.koropets_suhanov.chess.controller;
 
 import com.koropets_suhanov.chess.model.Observer;
-import com.koropets_suhanov.chess.utils.Parser;
+import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import com.koropets_suhanov.chess.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +18,14 @@ import java.util.regex.Pattern;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-    private final static String REG_EX_TURN = "^\\d+\\.\\s*(\\S+)\\s*(\\S+)*$";
+    private final static String REG_EX_TURN = "^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$";
     private final static String REG_EX_SURNAMES = "";
     private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     private static List<String> whiteTurns = new ArrayList<String>();
     private static List<String> blackTurns = new ArrayList<String>();
     static boolean run = true;
+    private static int numberOfTurn;
 
 
     public static void main(String[] args) throws InterruptedException{
@@ -62,17 +63,17 @@ public class Process {
                 Matcher matcher = pattern.matcher(sCurrentLine);
                 if (matcher.matches()){
                     printAllPossibleTurns();
-                    whiteTurns.add(matcher.group(1));
-                    Parser.getActualTurn(matcher.group(1), true);
+                    numberOfTurn = Integer.valueOf(matcher.group(1));
+                    whiteTurns.add(matcher.group(2));
+                    ProcessingUtils.getActualTurn(matcher.group(2), true, numberOfTurn);
                     System.out.println(sCurrentLine + " ==== after turn ==== " +  matcher.group(1));
                     printAllPossibleTurns();
                     printFigures();
                     currentStateOfTheBoard();
 
-                    blackTurns.add(matcher.group(2));
-//                    System.out.println("22222   " + matcher.group(2));
+                    blackTurns.add(matcher.group(3));
                     if (matcher.group(2) != null){
-                        Parser.getActualTurn(matcher.group(2), false);
+                        ProcessingUtils.getActualTurn(matcher.group(3), false, numberOfTurn);
                     }
                     printAllPossibleTurns();
                     System.out.println(sCurrentLine + " ==== after turn ====" + matcher.group(2));
@@ -83,6 +84,10 @@ public class Process {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void estimateEachTurn(){
+
     }
 
     public static void printAllPossibleTurns(){

@@ -10,13 +10,16 @@ import java.util.*;
 /**
  * @author AndriiKoropets
  */
-public class Parser {
+public class ProcessingUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessingUtils.class);
     private static List<Observer> candidates = new ArrayList<Observer>();
     private static String mainTurn;
     private static Field field;
     private static int number;
+    private static Map<Figure, Field> figureToField = new HashMap<>();
+    private static Figure figure;
+    private static boolean isKilling;
     private static Board board = Board.getInstance();
     private static final String shortCastling = "0-0";
     private static final String longCastling = "0-0-0";
@@ -43,7 +46,23 @@ public class Parser {
         return null;
     }
 
+    private static void initialize(){
+        figureToField.clear();
+        figure = null;
+        isKilling = false;
+    }
+
+    private static void update(boolean killing){
+        if (figure != null){
+            figureToField.put(figure, field);
+            isKilling = killing;
+        }else {
+            throw new RuntimeException("Could not read written turn");
+        }
+    }
+
     private static Turn setTurn(final String writtenStyle, final boolean isWhite){
+        initialize();
         if (shortCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
             if (isWhite){
@@ -57,11 +76,7 @@ public class Parser {
                 figureToField.put(blackKing, blackKingShortCastling);
                 figureToField.put(blackRock_H, blackRockShortCastling);
             }
-            return new Turn.Builder().figureToDestinationField(figureToField)
-                    .writtenStyle(writtenStyle)
-                    .killing(false)
-                    .numberOfTurn(number)
-                    .build();
+            return createTurn(figureToField, writtenStyle, false);
         }
         if (longCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
@@ -76,60 +91,68 @@ public class Parser {
                 figureToField.put(blackKing, blackKingLongCastling);
                 figureToField.put(blackRock_A, blackRockLongCastling);
             }
-            return new Turn.Builder().figureToDestinationField(figureToField)
-                    .writtenStyle(writtenStyle)
-                    .killing(false)
-                    .numberOfTurn(number)
-                    .build();
+            return createTurn(figureToField, writtenStyle, false);
         }
         if (writtenStyle.contains("R")){
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(Rock.class, isWhite, true));
+                figure = fetchFigure(Rock.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(Rock.class, isWhite, false));
+                figure = fetchFigure(Rock.class, isWhite, false);
+                update(false);
             }
-            return;
+            return createTurn(figureToField, writtenStyle, isKilling);
         }
         if (writtenStyle.contains("N")){
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(Knight.class, isWhite, true));
+                figure = fetchFigure(Knight.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(Knight.class, isWhite, false));
+                figure = fetchFigure(Knight.class, isWhite, false);
+                update(false);
             }
-            return;
+            return createTurn(figureToField, writtenStyle, isKilling);
         }
         if (writtenStyle.contains("B")){
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, true));
-//                Process.printFigures();
+                figure = fetchFigure(Bishop.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(Bishop.class, isWhite, false));
+                figure = fetchFigure(Bishop.class, isWhite, false);
+                update(false);
             }
-            return;
+            return createTurn(figureToField, writtenStyle, isKilling);
         }
         if (writtenStyle.contains("Q")){
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(Queen.class, isWhite, true));
+                figure = fetchFigure(Queen.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(Queen.class, isWhite, false));
+                figure = fetchFigure(Queen.class, isWhite, false);
+                update(false);
             }
-            return;
+            return createTurn(figureToField, writtenStyle, isKilling);
         }
         if (writtenStyle.contains("K")){
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(King.class, isWhite, true));
+                figure = fetchFigure(King.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(King.class, isWhite, false));
+                figure = fetchFigure(King.class, isWhite, false);
+                update(false);
             }
-            return;
+            return createTurn(figureToField, writtenStyle, isKilling);
         }else {
             if (writtenStyle.contains("x")){
-                board.setNewCoordinates(field, fetchFigure(Pawn.class, isWhite, true));
+                figure = fetchFigure(Pawn.class, isWhite, true);
+                update(true);
             }else {
-                board.setNewCoordinates(field, fetchFigure(Pawn.class, isWhite, false));
+                figure = fetchFigure(Pawn.class, isWhite, false);
+                update(false);
             }
+            return createTurn(figureToField, writtenStyle, isKilling);
         }
-        throw new RuntimeException("Could not read written turn");
+
     }
 
     private static Figure fetchFigure(Class clazz, boolean isWhite, boolean isKilling){
@@ -243,6 +266,13 @@ public class Parser {
 
             return null;
         }
+    }
 
+    private static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isKilling){
+        return new Turn.Builder().figureToDestinationField(figureToField)
+                .writtenStyle(writtenStyle)
+                .killing(isKilling)
+                .numberOfTurn(number)
+                .build();
     }
 }
