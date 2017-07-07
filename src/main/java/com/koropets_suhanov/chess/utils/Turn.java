@@ -1,4 +1,7 @@
-package com.koropets_suhanov.chess.model;
+package com.koropets_suhanov.chess.utils;
+
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Figure;
 
 import java.util.Map;
 

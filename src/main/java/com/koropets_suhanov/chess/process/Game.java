@@ -1,22 +1,33 @@
-package com.koropets_suhanov.chess.controller;
+package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Pawn;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.King;
+import com.koropets_suhanov.chess.utils.Turn;
 
-import java.util.*;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 /**
  * @author AndriiKoropets
  */
 public class Game {
 
-    private Set<String> possibleTurnsAndKillings = new LinkedHashSet<String>();
+    private Set<Turn> possibleTurnsAndKillings = new LinkedHashSet<Turn>();
 
 
-    public Set<String> getPossibleTurnsAndKillings() {
+    public Set<Turn> getPossibleTurnsAndKillings(Color color) {
+        setPossibleTurnsAndKillings(color);
         return possibleTurnsAndKillings;
     }
 
-    public void setPossibleTurnsAndKillings(Color color){
+    private void setPossibleTurnsAndKillings(Color color){
         possibleTurnsAndKillings.clear();
         King king = null;
         List kings = Board.getInstance().getFiguresByClass(King.class);

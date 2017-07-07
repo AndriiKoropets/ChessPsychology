@@ -1,5 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
+import com.koropets_suhanov.chess.utils.Turn;
+
 import java.util.*;
 
 /**

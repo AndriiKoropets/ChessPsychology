@@ -1,11 +1,17 @@
-package com.koropets_suhanov.chess.controller;
+package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Rock;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.koropets_suhanov.chess.utils.Turn;
 import scala.Tuple2;
 
 /**
@@ -16,7 +22,7 @@ public class EstimatePosition {
     Map<String, Tuple2<Observer, Parameter>> turnToReflection = new HashMap<>();
     private static Color whoseTurn;
 
-    public Parameter estimateParameters(Turn turn, Color side){
+    public static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side, Parameter currentEstimation){
         whoseTurn = side;
         Parameter parameter = new Parameter(Color.BLACK);
         parameter.setFirstAttackEnemy(estimateFirstParameter(turn));
@@ -82,7 +88,7 @@ public class EstimatePosition {
         return parameter;
     }
 
-    public static int estimateFirstParameter(Turn turn){
+    private static int estimateFirstParameter(Turn turn){
         return estimateTurnFirstParam(turn) + estimatePositionFirstParam();
     }
 

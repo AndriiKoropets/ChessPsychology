@@ -4,6 +4,7 @@ import com.koropets_suhanov.chess.model.*;
 import com.koropets_suhanov.chess.model.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Tuple2;
 
 import java.util.*;
 
@@ -31,6 +32,8 @@ public class ProcessingUtils {
     private static final Field whiteRockLongCastling = new Field(7, 3);
     private static final Field blackRockShortCastling = new Field(0, 5);
     private static final Field blackRockLongCastling = new Field(0, 3);
+    private static final FrequentFigure whiteFrequent = new FrequentFigure();
+    private static final FrequentFigure blackFrequent = new FrequentFigure();
 
 
     public static Turn getActualTurn(final String turn, final boolean isWhite, int numberOfTurn){
@@ -44,6 +47,21 @@ public class ProcessingUtils {
     public static Turn getPossibleTurn(){
         //TODO implement logic for possible turns which was not made in party
         return null;
+    }
+
+    public static Tuple2<FrequentFigure, FrequentFigure> countFrequent(boolean isWhite, String writtenTurn){
+        FrequentFigure frequent = isWhite ? whiteFrequent : blackFrequent;
+        char figure = writtenTurn.charAt(0);
+        switch (figure){
+            case 'R' :  frequent.updateRock();
+            case 'N' : frequent.updateKnight();
+            case 'B' : frequent.updateBishop();
+            case 'Q' : frequent.updateQueen();
+            case 'K' : frequent.updateKing();
+            case '0' : frequent.updateKing();
+            default: frequent.updatePawn();
+        }
+        return new Tuple2<>(whiteFrequent, blackFrequent);
     }
 
     private static void initialize(){
@@ -156,7 +174,6 @@ public class ProcessingUtils {
     }
 
     private static Figure fetchFigure(Class clazz, boolean isWhite, boolean isKilling){
-        Field fieldUnderAttack = null;
         Figure figureIsUnderAttack = null;
         List<Observer> whoAttacks = new ArrayList<Observer>();
         Set<Observer> figures;
@@ -253,7 +270,7 @@ public class ProcessingUtils {
     private static Field parseTargetField(String turn){
         int x;
         int y;
-        if (!turn.equalsIgnoreCase("O-O") && !turn.equalsIgnoreCase("O-O-O")){
+        if (!turn.equalsIgnoreCase(shortCastling) && !turn.equalsIgnoreCase(longCastling)){
             if (turn.contains("+")){
                 x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length()-2)));
                 y = Field.getInvertedHorizontal().get(turn.charAt(turn.length()-3));
@@ -274,5 +291,13 @@ public class ProcessingUtils {
                 .killing(isKilling)
                 .numberOfTurn(number)
                 .build();
+    }
+
+    public static FrequentFigure getWhiteFrequent() {
+        return whiteFrequent;
+    }
+
+    public static FrequentFigure getBlackFrequent() {
+        return blackFrequent;
     }
 }

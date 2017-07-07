@@ -1,14 +1,27 @@
-package com.koropets_suhanov.chess.controller;
+package com.koropets_suhanov.chess.process;
 
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Pawn;
+import com.koropets_suhanov.chess.model.Bishop;
+import com.koropets_suhanov.chess.model.Knight;
+import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.Queen;
+import com.koropets_suhanov.chess.model.King;
+import com.koropets_suhanov.chess.utils.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,42 +31,22 @@ import java.util.regex.Pattern;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-    private final static String REG_EX_TURN = "^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$";
-    private final static String REG_EX_SURNAMES = "";
     private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
-    private static List<String> whiteTurns = new ArrayList<String>();
-    private static List<String> blackTurns = new ArrayList<String>();
     static boolean run = true;
-    private static int numberOfTurn;
+    private static final Board board = Board.getInstance();
+    private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
+    private static Game game = new Game();
+    private static Parameter whiteEstimation;
+    private static Parameter blackEstimation;
 
-
-    public static void main(String[] args) throws InterruptedException{
-        Board board = Board.getInstance();
-//       printAllPossibleTurns();
-        printFigures();
-//        printFile();
-        System.out.println(Board.getTakenFields());
-        System.out.println("White figures");
-        for (Observer figure : board.getWhiteFigures()){
-            Set<Field> set = ((Figure)figure).getPossibleFieldsToMove();
-            if (figure.getClass() == Knight.class){
-                for (Field field : ((Figure) figure).getAttackedFields()){
-                    System.out.println(field + "   " + field.isTaken());
-                }
-            }
-            System.out.println(figure.toString() + ", attacked fields = " + ((Figure)figure).getAttackedFields() + ", possible turns : " + set + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
-        }
-        System.out.println("Black figures");
-        for (Observer figure : board.getBlackFigures()){
-            System.out.println(figure.toString() + ", attacked fields = " + ((Figure) figure).getAttackedFields() + ", possible turns : " + ((Figure)figure).getPossibleFieldsToMove()  + "   aliens  = " + ((Figure)figure).getAliensProtectMe() + "   enemies = " + ((Figure)figure).getEnemiesAttackMe());
-        }
-
-//        printFile();
+    public static void main(String[] args){
+        process();
     }
 
-    public static void printFile(){
-        Pattern pattern = Pattern.compile(REG_EX_TURN);
+    private static void process(){
+        LOG.info("Process is starting");
+        printFigures();
         try{
             File text = new File(PATH_TO_FILE);
             Scanner scnr = new Scanner(text);
@@ -62,42 +55,24 @@ public class Process {
                 sCurrentLine = scnr.nextLine();
                 Matcher matcher = pattern.matcher(sCurrentLine);
                 if (matcher.matches()){
-                    printAllPossibleTurns();
-                    numberOfTurn = Integer.valueOf(matcher.group(1));
-                    whiteTurns.add(matcher.group(2));
-                    ProcessingUtils.getActualTurn(matcher.group(2), true, numberOfTurn);
-                    System.out.println(sCurrentLine + " ==== after turn ==== " +  matcher.group(1));
-                    printAllPossibleTurns();
-                    printFigures();
-                    currentStateOfTheBoard();
-
-                    blackTurns.add(matcher.group(3));
-                    if (matcher.group(2) != null){
-                        ProcessingUtils.getActualTurn(matcher.group(3), false, numberOfTurn);
+                    int numberOfTurn = Integer.valueOf(matcher.group(1));
+                    String writtenWhiteTurn = matcher.group(2);
+                    String writtenBlackTurn = matcher.group(3);
+                    Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
+                    whiteEstimation = EstimatePosition.estimate(whiteTurn, game.getPossibleTurnsAndKillings(Color.WHITE), Color.WHITE, whiteEstimation);
+                    if (writtenBlackTurn != null){
+                        Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
+                        blackEstimation = EstimatePosition.estimate(blackTurn, game.getPossibleTurnsAndKillings(Color.BLACK), Color.BLACK, blackEstimation);
                     }
-                    printAllPossibleTurns();
-                    System.out.println(sCurrentLine + " ==== after turn ====" + matcher.group(2));
                     printFigures();
-                    currentStateOfTheBoard();
+//                    currentStateOfTheBoard();
                 }
             }
+            System.out.println("White estimation = " + whiteEstimation);
+            System.out.println("Black estimation = " + blackEstimation);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.info("Error during processing file ", e);
         }
-    }
-
-    private static void estimateEachTurn(){
-
-    }
-
-    public static void printAllPossibleTurns(){
-        Game game = new Game();
-        game.setPossibleTurnsAndKillings(Color.WHITE);
-        System.out.println(game.getPossibleTurnsAndKillings().size());
-        System.out.println(game.getPossibleTurnsAndKillings());
-        game.setPossibleTurnsAndKillings(Color.BLACK);
-        System.out.println(game.getPossibleTurnsAndKillings().size());
-        System.out.println(game.getPossibleTurnsAndKillings());
     }
 
     private static void currentStateOfTheBoard(){

@@ -1,7 +1,4 @@
-package com.koropets_suhanov.chess.controller;
-
-import com.koropets_suhanov.chess.model.*;
-import scala.Tuple8;
+package com.koropets_suhanov.chess.process;
 
 /**
  * @author AndriiKoropets
@@ -16,12 +13,6 @@ public class Parameter {
     private int sixthDontTakeAChanceToBeUnderAttack;
     private int seventhDontTakeAChanceToWithdrawAttackOnEnemy;
     private int eighthDontTakeAChanceToWithdrawAttackOnMe;
-    private Color color;
-    private final   int NUMBER_OF_THREADS = 10;
-
-    public Parameter(Color color) {
-        this.color = color;
-    }
 
     public   int getFirstAttackEnemy() {
         return firstAttackEnemy;
