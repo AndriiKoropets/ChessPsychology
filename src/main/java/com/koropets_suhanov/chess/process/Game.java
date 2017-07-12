@@ -1,18 +1,10 @@
 package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.model.Board;
-import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Pawn;
-import com.koropets_suhanov.chess.model.Field;
-import com.koropets_suhanov.chess.model.Rock;
-import com.koropets_suhanov.chess.model.King;
+import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.utils.Turn;
 
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 /**
  * @author AndriiKoropets
@@ -20,9 +12,10 @@ import java.util.LinkedHashSet;
 public class Game {
 
     private Set<Turn> possibleTurnsAndKillings = new LinkedHashSet<Turn>();
+    private int numberOfTurn;
 
-
-    public Set<Turn> getPossibleTurnsAndKillings(Color color) {
+    public Set<Turn> getPossibleTurnsAndKillings(Color color, int numberOfTurn) {
+        this.numberOfTurn = numberOfTurn;
         setPossibleTurnsAndKillings(color);
         return possibleTurnsAndKillings;
     }
@@ -30,59 +23,72 @@ public class Game {
     private void setPossibleTurnsAndKillings(Color color){
         possibleTurnsAndKillings.clear();
         King king = null;
-        List kings = Board.getInstance().getFiguresByClass(King.class);
-        for (int i = 0; i < kings.size(); i++){
-            if (((King)kings.get(0)).getColor() == color){
-                king = (King)kings.get(0);
-            }else {
-                king = (King)kings.get(1);
+        Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
+        for (Observer figure : figures){
+            if (figure.getClass() == King.class){
+                king = (King) figure;
+                break;
             }
         }
         if (king.isUnderAttack()){
             if (king.getPossibleFieldsToMove().isEmpty()){
+                Map<Figure, Field> kingMap = new HashMap<>();
                 for (Figure enemy : king.getWhoCouldBeKilled()){
-                    if (enemy.getAliensProtectMe().size() >= 1){
-                        //TODO other alien figures could protect me
-                        System.out.println("Mat");
-                        return;
+                    if (enemy.getAliensProtectMe().size() == 0){
+                        kingMap.put(king, enemy.getField());
+                        possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(kingMap)
+                                                                        .killing(true)
+                                                                        .numberOfTurn(numberOfTurn)
+                                                                        .writtenStyle("")
+                                                                        .build());
                     }
                 }
+                //TODO add case when other figures could kill enemy which attacks king or cover king
             }
-            StringBuilder turn = new StringBuilder(king.toString());
-            for (Object field : king.getPossibleFieldsToMove()){
-                turn.append("-").append(field.toString());
-                possibleTurnsAndKillings.add(turn.toString());
+            for (Field field : king.getPossibleFieldsToMove()){
+                Map<Figure, Field> figureToFieldMap = new HashMap<>();
+                figureToFieldMap.put(king, field);
+                possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+                                                                .killing(false)
+                                                                .writtenStyle("")
+                                                                .numberOfTurn(numberOfTurn)
+                                                                .build());
             }
-            for (Object figure : king.getWhoCouldBeKilled()){
-                turn.append("x").append(((Figure)figure).getField());
-                possibleTurnsAndKillings.add(turn.toString());
+            for (Figure enemy : king.getWhoCouldBeKilled()){
+                Map<Figure, Field> figureToFieldMap = new HashMap<>();
+                figureToFieldMap.put(king, enemy.getField());
+                possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+                        .killing(true)
+                        .writtenStyle("")
+                        .numberOfTurn(numberOfTurn)
+                        .build());
             }
         }else {
-            Set figures;
-            if (color == Color.BLACK){
-                figures = Board.getBlackFigures();
-            }else {
-                figures = Board.getWhiteFigures();
-            }
-            StringBuilder turn;
-            for (Object figure : figures){
-//                Set<Turn> turns = new LinkedHashSet<Turn>();
-                for (Object field : ((Figure)figure).getPossibleFieldsToMove()){
-                    turn = new StringBuilder(figure.toString());
-                    turn.append("-").append(field.toString());
-                    possibleTurnsAndKillings.add(turn.toString());
+            for (Observer figure : figures){
+                for (Field field : ((Figure)figure).getPossibleFieldsToMove()){
+                    Map<Figure, Field> figureFieldMap = new HashMap<>();
+                    figureFieldMap.put((Figure)figure, field);
+                    possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
+                                                                    .killing(false)
+                                                                    .numberOfTurn(numberOfTurn)
+                                                                    .writtenStyle("")
+                                                                    .build());
                 }
-                for (Object attackedFigure : ((Figure) figure).getWhoCouldBeKilled()){
-                    turn = new StringBuilder(figure.toString());
-                    turn.append("x").append(((Figure)attackedFigure).getField().toString());
-                    possibleTurnsAndKillings.add(turn.toString());
+                for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeKilled()){
+                    Map<Figure, Field> figureFieldMap = new HashMap<>();
+                    figureFieldMap.put((Figure)figure, attackedFigure.getField());
+                    possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
+                            .killing(true)
+                            .numberOfTurn(numberOfTurn)
+                            .writtenStyle("")
+                            .build());
                 }
             }
-            List<String> castles = castling(color);
-            for (String castle : castles){
-                StringBuilder castleTurn = new StringBuilder(castle);
-                possibleTurnsAndKillings.add(castleTurn.toString());
-            }
+            possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(castling(color))
+                                                            .killing(false)
+                                                            .writtenStyle("")
+                                                            .numberOfTurn(numberOfTurn)
+                                                            .build());
             List<StringBuilder> turnsOnTheEndLine = pawnReachesEndLine(color);
             for (StringBuilder stringBuilder : turnsOnTheEndLine){
                 possibleTurnsAndKillings.add(stringBuilder.toString());
@@ -158,7 +164,7 @@ public class Game {
         }
     }
 
-    private static List<String> castling(Color color){
+    private static Map<Figure, Field> castling(Color color){
         Board board = Board.getInstance();
         List<String> list = new ArrayList<String>();
         List<Figure> rocks = Board.getInstance().getFiguresByClass(Rock.class);
