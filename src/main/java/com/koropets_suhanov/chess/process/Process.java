@@ -18,12 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Set;
 
 /**
  * @author AndriiKoropets
@@ -37,8 +35,8 @@ public class Process {
     private static final Board board = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
     private static Game game = new Game();
-    private static Parameter whiteEstimation;
-    private static Parameter blackEstimation;
+    private static Parameter whiteEstimationWholeParty;
+    private static Parameter blackEstimationWholeParty;
 
     public static void main(String[] args){
         process();
@@ -51,6 +49,8 @@ public class Process {
             File text = new File(PATH_TO_FILE);
             Scanner scnr = new Scanner(text);
             String sCurrentLine;
+            Set<Turn> whitePossibleTurns;
+            Set<Turn> blackPossibleTurns;
             while (scnr.hasNextLine()) {
                 sCurrentLine = scnr.nextLine();
                 Matcher matcher = pattern.matcher(sCurrentLine);
@@ -59,17 +59,21 @@ public class Process {
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
-                    whiteEstimation = EstimatePosition.estimate(whiteTurn, game.getPossibleTurnsAndKillings(Color.WHITE), Color.WHITE, whiteEstimation);
+                    whitePossibleTurns = game.getPossibleTurnsAndKillings(Color.WHITE);
+                    EstimatePosition.makeTurn(whiteTurn);
+                    whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
-                        blackEstimation = EstimatePosition.estimate(blackTurn, game.getPossibleTurnsAndKillings(Color.BLACK), Color.BLACK, blackEstimation);
+                        blackPossibleTurns = game.getPossibleTurnsAndKillings(Color.BLACK);
+                        EstimatePosition.makeTurn(blackTurn);
+                        blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
                     printFigures();
 //                    currentStateOfTheBoard();
                 }
             }
-            System.out.println("White estimation = " + whiteEstimation);
-            System.out.println("Black estimation = " + blackEstimation);
+            System.out.println("White estimation = " + whiteEstimationWholeParty);
+            System.out.println("Black estimation = " + blackEstimationWholeParty);
         } catch (IOException e) {
             LOG.info("Error during processing file ", e);
         }
@@ -158,5 +162,18 @@ public class Process {
             }
         }
         return null;
+    }
+
+    private void updateEstimationParameter(Parameter parameter, Color color){
+        Parameter globalEstimation = (color == Color.BLACK) ? blackEstimationWholeParty : whiteEstimationWholeParty;
+        globalEstimation = new Parameter.Builder().first(globalEstimation.getFirstAttackEnemy() + parameter.getFirstAttackEnemy())
+                .second(globalEstimation.getSecondBeUnderAttack() + parameter.getSecondBeUnderAttack())
+                .third(globalEstimation.getThirdWithdrawAttackOnEnemy() + parameter.getThirdWithdrawAttackOnEnemy())
+                .fourth(globalEstimation.getFourthWithdrawAttackOnMe() + parameter.getFourthWithdrawAttackOnMe())
+                .fifth(globalEstimation.getFifthDontTakeAChanceToAttack() + parameter.getFifthDontTakeAChanceToAttack())
+                .sixth(globalEstimation.getSixthDontTakeAChanceToBeUnderAttack() + parameter.getSixthDontTakeAChanceToBeUnderAttack())
+                .seventh(globalEstimation.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy())
+                .eighth(globalEstimation.getEighthDontTakeAChanceToWithdrawAttackOnMe() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe())
+                .build();
     }
 }

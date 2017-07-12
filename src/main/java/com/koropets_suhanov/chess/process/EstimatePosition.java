@@ -22,50 +22,48 @@ public class EstimatePosition {
     Map<String, Tuple2<Observer, Parameter>> turnToReflection = new HashMap<>();
     private static Color whoseTurn;
 
-    public static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side, Parameter currentEstimation){
-        whoseTurn = side;
-        Parameter parameter = new Parameter(Color.BLACK);
-        parameter.setFirstAttackEnemy(estimateFirstParameter(turn));
-        parameter.setSecondBeUnderAttack(estimateSecondParameter(turn));
-        parameter.setThirdWithdrawAttackOnEnemy(estimateThirdParameter(turn));
-        parameter.setFourthWithdrawAttackOnMe(estimateFourthParameter(turn));
-        parameter.setFifthDontTakeAChanceToAttack(estimateFifthParameter(turn));
-        parameter.setSixthDontTakeAChanceToBeUnderAttack(estimateSixthParameter(turn));
-        parameter.setSeventhDontTakeAChanceToWithdrawAttackOnEnemy(estimateSeventhParameter(turn));
-        parameter.setEighthDontTakeAChanceToWithdrawAttackOnMe(estimateEightParameter(turn));
-        return parameter;
+    static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
+        return new Parameter.Builder().first(estimateFirstParameter(turn, possibleTurns))
+                .second(estimateEightParameter(turn, possibleTurns))
+                .third(estimateThirdParameter(turn, possibleTurns))
+                .fourth(estimateFourthParameter(turn, possibleTurns))
+                .fifth(estimateFifthParameter(turn, possibleTurns))
+                .sixth(estimateSixthParameter(turn, possibleTurns))
+                .seventh(estimateSeventhParameter(turn, possibleTurns))
+                .eighth(estimateEightParameter(turn, possibleTurns))
+                .build();
     }
 
-    private int estimateEightParameter(Turn turn) {
+    private static int estimateEightParameter(final Turn turn, final Set<Turn> possibleTurns) {
         int parameter = 0;
         return 0;
     }
 
-    private int estimateSeventhParameter(Turn turn) {
+    private static int estimateSeventhParameter(final Turn turn, final Set<Turn> possibleTurns) {
         return 0;
     }
 
-    private int estimateSixthParameter(Turn turn) {
+    private static int estimateSixthParameter(final Turn turn, final Set<Turn> possibleTurns) {
         return 0;
     }
 
-    private int estimateFifthParameter(Turn turn) {
+    private static int estimateFifthParameter(final Turn turn, final Set<Turn> possibleTurns) {
         return 0;
     }
 
-    private int estimateFourthParameter(Turn turn) {
+    private static int estimateFourthParameter(final Turn turn, final Set<Turn> possibleTurns) {
         return 0;
     }
 
-    private int estimateThirdParameter(Turn turn) {
+    private static int estimateThirdParameter(final Turn turn, final Set<Turn> possibleTurns) {
         return 0;
     }
 
-    private int estimateSecondParameter(Turn turn) {
+    private static int estimateSecondParameter(final Turn turn, final Set<Turn> possibleTurns) {
         int parameter = 0;
         Figure figure = null;
         Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
-        for (Figure temp : turn.getFigures()){
+        for (Figure temp : turn.getFigures().keySet()){
             if (turn.getFigures().size() == 1){
                 figure = temp;
                 break;
@@ -88,7 +86,7 @@ public class EstimatePosition {
         return parameter;
     }
 
-    private static int estimateFirstParameter(Turn turn){
+    private static int estimateFirstParameter(final Turn turn, final Set<Turn> possibleTurns){
         return estimateTurnFirstParam(turn) + estimatePositionFirstParam();
     }
 
@@ -110,9 +108,9 @@ public class EstimatePosition {
         return parameter;
     }
 
-    private static int estimateTurnFirstParam(Turn turn) {
+    private static int estimateTurnFirstParam(final Turn turn) {
         int parameter = 0;
-        for (Figure figure : turn.getFigures()){
+        for (Figure figure : turn.getFigures().keySet()){
             for (Figure prey : figure.getWhoCouldBeKilled()){
                 if (prey.getEnemiesAttackMe().size() >= prey.getAliensProtectMe().size() || prey.getValue() >= figure.getValue()){
                     parameter++;
@@ -121,5 +119,15 @@ public class EstimatePosition {
         }
         return parameter;
     }
+
+
+    static void makeTurn(Turn turn){
+
+    }
+
+    static void undoTurn(Turn turn){
+
+    }
+
 
 }
