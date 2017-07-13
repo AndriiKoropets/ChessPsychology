@@ -1,10 +1,22 @@
 package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Pawn;
+import com.koropets_suhanov.chess.model.King;
+import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.utils.Turn;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author AndriiKoropets
@@ -96,45 +108,39 @@ public class Game {
         }
     }
 
-    private List<StringBuilder> pawnReachesEndLine(Color color){
-        Set figures;
-        boolean isBlack;
-        List<StringBuilder> turns = new ArrayList<StringBuilder>();
-        if (color == Color.BLACK){
-            figures = Board.getBlackFigures();
-            isBlack = true;
-        }else {
-            figures = Board.getWhiteFigures();
-            isBlack = false;
-        }
-        for (Object figure : figures){
-            if (figure.getClass() == Pawn.class && ((Figure)figure).getColor() == color){
+    private Map<Figure, Field> pawnReachesEndLine(Color color){
+        Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
+        Map<Figure, Field> pawnAndField = new HashMap<>();
+        for (Observer figure : figures){
+            if (figure.getClass() == Pawn.class){
                 Pawn pawn = (Pawn) figure;
-                if (isBlack){
+                if (color == Color.BLACK){
                     if (pawn.getField().getX() == 6){
-                        for (Object field : pawn.getPossibleFieldsToMove()){
-                            turnsIfReachedEndLine(pawn, (Field) field, false, turns);
+                        for (Field field : pawn.getPossibleFieldsToMove()){
+                            pawnAndField.put(pawn, field);
+                            turnsIfReachedEndLine(false, pawnAndField);
                         }
-                        for (Object field : pawn.getAttackedFields()){
-                            turnsIfReachedEndLine(pawn, (Field) field, true, turns);
+                        for (Field field : pawn.getAttackedFields()){
+                            pawnAndField.put()
+                            turnsIfReachedEndLine(pawn, (Field) field, true, pawnAndField);
                         }
                     }
                 }else {
                     if (pawn.getField().getX() == 1){
                         for (Object field : pawn.getPossibleFieldsToMove()){
-                            turnsIfReachedEndLine(pawn, (Field) field, false,turns);
+                            turnsIfReachedEndLine(pawn, (Field) field, false,pawnAndField);
                         }
                         for (Object field : pawn.getAttackedFields()){
-                            turnsIfReachedEndLine(pawn, (Field) field, true, turns);
+                            turnsIfReachedEndLine(pawn, (Field) field, true, pawnAndField);
                         }
                     }
                 }
             }
         }
-        return turns;
+        return pawnAndField;
     }
 
-    private void turnsIfReachedEndLine(Pawn pawn, Field aimedField, boolean isKilling, List<StringBuilder> storage){
+    private Set<Turn> turnsIfReachedEndLine(boolean isKilling, Map<Figure, Field> storage){
         if (isKilling){
             StringBuilder turn1 = new StringBuilder(pawn.getField().toString());
             turn1.append("-").append(aimedField.toString()).append("(").append("Q").append(")");

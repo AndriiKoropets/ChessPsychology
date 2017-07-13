@@ -40,6 +40,24 @@ public class Turn {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Turn turn = (Turn) o;
+
+        if (numberOfTurn != turn.numberOfTurn) return false;
+        return figureToDestinationField.equals(turn.figureToDestinationField);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = figureToDestinationField.hashCode();
+        result = 31 * result + numberOfTurn;
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Turn{" +
                 "figureToDestinationField=" + figureToDestinationField +
