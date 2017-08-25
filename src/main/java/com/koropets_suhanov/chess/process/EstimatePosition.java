@@ -22,6 +22,7 @@ public class EstimatePosition {
     Map<String, Tuple2<Observer, Parameter>> turnToReflection = new HashMap<>();
     private static Color whoseTurn;
 
+    //Test git on windows outset
     static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
         return new Parameter.Builder().first(estimateFirstParameter(turn, possibleTurns))
                 .second(estimateEightParameter(turn, possibleTurns))
