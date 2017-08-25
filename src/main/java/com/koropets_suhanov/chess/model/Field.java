@@ -1,11 +1,11 @@
 package com.koropets_suhanov.chess.model;
 
-import java.util.*;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 /**
  * @author AndriiKoropets

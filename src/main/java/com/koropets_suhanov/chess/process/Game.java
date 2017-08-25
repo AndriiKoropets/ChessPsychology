@@ -7,7 +7,6 @@ import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Rock;
-import com.koropets_suhanov.chess.model.
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.utils.Turn;
 
@@ -121,7 +120,7 @@ public class Game {
                             turnsIfReachedEndLine(false, pawnAndField);
                         }
                         for (Field field : pawn.getAttackedFields()){
-                            pawnAndField.put()
+                            pawnAndField.put();
                             turnsIfReachedEndLine(pawn, (Field) field, true, pawnAndField);
                         }
                     }

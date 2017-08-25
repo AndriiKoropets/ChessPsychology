@@ -2,7 +2,12 @@ package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.utils.Turn;
 
-import java.util.*;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author AndriiKoropets

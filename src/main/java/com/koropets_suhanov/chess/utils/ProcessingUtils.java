@@ -1,12 +1,24 @@
 package com.koropets_suhanov.chess.utils;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Pawn;
+import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.Knight;
+import com.koropets_suhanov.chess.model.Bishop;
+import com.koropets_suhanov.chess.model.Queen;
+import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author AndriiKoropets
