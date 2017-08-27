@@ -100,20 +100,9 @@ public class Board implements Subject{
         //TODO Because it throws StackOverFlowError
         setTakenFields();
 //        blackPawnA.possibleTurns();
-        for (Observer figure : figures){
-//            if (((Figure) figure).getColor() == Color.WHITE && (figure.getClass() == Pawn.class || figure.getClass() == Rock.class))
-                ((Figure) figure).possibleTurns();
-        }
-        for (Observer whiteFigure : whiteFigures){
-            for (Field field : ((Figure) whiteFigure).getFieldsUnderMyInfluence()){
-                fieldsUnderWhiteInfluence.add(field);
-            }
-        }
-        for (Observer blackFigure : blackFigures){
-            for (Field field : ((Figure) blackFigure).getFieldsUnderMyInfluence()){
-                fieldsUnderBlackInfluence.add(field);
-            }
-        }
+        figures.forEach(v -> ((Figure)v).possibleTurns());
+        whiteFigures.forEach(white -> fieldsUnderWhiteInfluence.addAll(((Figure)white).getFieldsUnderMyInfluence()));
+        blackFigures.forEach(black -> fieldsUnderBlackInfluence.addAll(((Figure) black).getFieldsUnderMyInfluence()));
     }
 
     public static Board getInstance(){
@@ -125,11 +114,7 @@ public class Board implements Subject{
 
     public List<Figure> getFiguresByClass(Class clazz){
         List<Figure> returnedFigures = new ArrayList<Figure>();
-        for (Object figure : figures){
-            if (figure.getClass() == clazz){
-                returnedFigures.add((Figure) figure);
-            }
-        }
+        figures.stream().filter(f -> f.getClass() == clazz).forEach(f -> returnedFigures.add((Figure) f));
         return returnedFigures;
     }
 
@@ -143,20 +128,12 @@ public class Board implements Subject{
 
     private void updateFieldsUnderWhiteInfluence(){
         fieldsUnderWhiteInfluence.clear();
-        for (Observer whiteFigure : whiteFigures){
-            for (Field field : ((Figure) whiteFigure).getFieldsUnderMyInfluence()){
-                fieldsUnderWhiteInfluence.add(field);
-            }
-        }
+        whiteFigures.forEach(w -> fieldsUnderWhiteInfluence.addAll(((Figure)w).getFieldsUnderMyInfluence()));
     }
 
     private void updateFieldsUnderBlackInfluence(){
         fieldsUnderBlackInfluence.clear();
-        for (Observer blackFigure : blackFigures){
-            for (Field field : ((Figure) blackFigure).getFieldsUnderMyInfluence()){
-                fieldsUnderBlackInfluence.add(field);
-            }
-        }
+        blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(((Figure)b).getFieldsUnderMyInfluence()));
     }
 
     public static boolean isFieldValid(Field field){
@@ -197,9 +174,7 @@ public class Board implements Subject{
 
     public void notify(Observer figure) {
         figure.update(field);
-        for (Observer currentFigure : figures){
-            ((Figure)currentFigure).update();
-        }
+        figures.forEach(cf -> ((Figure) cf).update());
         updateFieldsUnderWhiteInfluence();
         updateFieldsUnderBlackInfluence();
         updateTakenFields(figure);
@@ -246,8 +221,6 @@ public class Board implements Subject{
     }
 
     private void setTakenFields(){
-        for (Observer figure : figures) {
-            takenFields.add(((Figure) figure).getField());
-        }
+        figures.forEach(f -> takenFields.add(((Figure)f).getField()));
     }
 }
