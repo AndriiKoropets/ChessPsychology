@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.process;
 
 import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Color;
@@ -44,10 +45,11 @@ public class Process {
 
     private static void process(){
         LOG.info("Process is starting");
-        printFigures();
+        printAllBoard();
+        File file = null;
         try{
-            File text = new File(PATH_TO_FILE);
-            Scanner scnr = new Scanner(text);
+            file = new File(PATH_TO_FILE);
+            Scanner scnr = new Scanner(file);
             String sCurrentLine;
             Set<Turn> whitePossibleTurns;
             Set<Turn> blackPossibleTurns;
@@ -68,18 +70,19 @@ public class Process {
                         EstimatePosition.makeTurn(blackTurn);
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
-                    printFigures();
-//                    currentStateOfTheBoard();
+                    printAllBoard();
+//                    currentStateOfAllFigures();
                 }
             }
             System.out.println("White estimation = " + whiteEstimationWholeParty);
             System.out.println("Black estimation = " + blackEstimationWholeParty);
         } catch (IOException e) {
-            LOG.info("Error during processing file ", e);
+            LOG.info("File {} was not found", file);
+            throw new RuntimeException();
         }
     }
 
-    private static void currentStateOfTheBoard(){
+    private static void currentStateOfAllFigures(){
         System.out.println("White figures");
         for (Observer observer : Board.getWhiteFigures()){
             Figure currentFigure = (Figure) observer;
@@ -92,7 +95,7 @@ public class Process {
         }
     }
 
-    private static void printFigures(){
+    private static void printAllBoard(){
         System.out.println();
         int counter = 1;
         for (int i = 0; i < Board.SIZE; i++){
@@ -100,7 +103,7 @@ public class Process {
             for (int j = 0; j < Board.SIZE; j++){
                 Field currentPoint = new Field(i, j);
                 if (currentPoint.isTaken()){
-                    System.out.print(" " + print(Board.getFieldToFigure().get(currentPoint)) + " ");
+                    System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
                 }else {
                     System.out.print("   ");
                 }
@@ -118,7 +121,7 @@ public class Process {
         }
     }
 
-    private static String print(Figure figure){
+    private static String printFigure(Figure figure){
         if (figure.getClass() == King.class){
             if (figure.getColor() == Color.WHITE){
                 return "K";

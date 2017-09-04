@@ -1,4 +1,4 @@
-package com.koropets_suhanov.chess.process;
+package com.koropets_suhanov.chess.process.pojo;
 
 /**
  * @author AndriiKoropets

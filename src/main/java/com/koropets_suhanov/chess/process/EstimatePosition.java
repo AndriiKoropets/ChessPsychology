@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.utils.Turn;
 import scala.Tuple2;
 
