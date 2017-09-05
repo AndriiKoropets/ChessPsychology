@@ -13,7 +13,7 @@ import com.koropets_suhanov.chess.model.Knight;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.King;
-import com.koropets_suhanov.chess.utils.Turn;
+import com.koropets_suhanov.chess.process.pojo.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +61,12 @@ public class Process {
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
-                    whitePossibleTurns = game.getPossibleTurnsAndKillings(Color.WHITE);
+                    whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE);
                     EstimatePosition.makeTurn(whiteTurn);
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
-                        blackPossibleTurns = game.getPossibleTurnsAndKillings(Color.BLACK);
+                        blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK);
                         EstimatePosition.makeTurn(blackTurn);
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
@@ -86,12 +86,12 @@ public class Process {
         System.out.println("White figures");
         for (Observer observer : Board.getWhiteFigures()){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
         }
         System.out.println("Black figures");
         for (Observer observer : Board.getBlackFigures()){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeKilled() + currentFigure.getAliensProtectMe());
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
         }
     }
 

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.koropets_suhanov.chess.process.pojo.Parameter;
-import com.koropets_suhanov.chess.utils.Turn;
+import com.koropets_suhanov.chess.process.pojo.Turn;
 import scala.Tuple2;
 
 /**
@@ -76,7 +76,7 @@ public class EstimatePosition {
         if (figure != null){
             for (Observer enemyObserver : enemies){
                 Figure enemy = ((Figure) enemyObserver);
-                for (Figure prey : enemy.getWhoCouldBeKilled()){
+                for (Figure prey : enemy.getWhoCouldBeEaten()){
                     if (prey.equals(figure)){
                         parameter++;
                     }
@@ -98,7 +98,7 @@ public class EstimatePosition {
         for (Observer observer : figures){
             Figure currentFigure = ((Figure) observer);
             for (Figure alien : ((Figure) observer).getAliensProtectMe()){
-                for (Figure prey : currentFigure.getWhoCouldBeKilled()){
+                for (Figure prey : currentFigure.getWhoCouldBeEaten()){
                     Field preyField = prey.getField();
                     if (alien.getFieldsUnderMyInfluence().contains(preyField) && !alien.getPossibleFieldsToMove().contains(preyField) && !alien.getPreyField().contains(preyField)){
                         parameter++;
@@ -113,7 +113,7 @@ public class EstimatePosition {
     private static int estimateTurnFirstParam(final Turn turn) {
         int parameter = 0;
         for (Figure figure : turn.getFigures().keySet()){
-            for (Figure prey : figure.getWhoCouldBeKilled()){
+            for (Figure prey : figure.getWhoCouldBeEaten()){
                 if (prey.getEnemiesAttackMe().size() >= prey.getAliensProtectMe().size() || prey.getValue() >= figure.getValue()){
                     parameter++;
                 }

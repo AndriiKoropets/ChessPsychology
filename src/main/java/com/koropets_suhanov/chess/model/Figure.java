@@ -13,7 +13,7 @@ public abstract class Figure implements Observer {
     private Color color;
     private Set<Figure> enemiesAttackMe = new LinkedHashSet<Figure>();
     private Set<Figure> aliensProtectMe = new LinkedHashSet<Figure>();
-    private Set<Figure> whoCouldBeKilled = new LinkedHashSet<Figure>();
+    private Set<Figure> whoCouldBeEaten = new LinkedHashSet<Figure>();
     private Set<Field> attackedFields = new LinkedHashSet<Field>();
     private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
     private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
@@ -43,7 +43,7 @@ public abstract class Figure implements Observer {
         this.field = field;
         this.enemiesAttackMe.clear();
         this.aliensProtectMe.clear();
-        this.whoCouldBeKilled.clear();
+        this.whoCouldBeEaten.clear();
         this.attackedFields.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
@@ -61,7 +61,7 @@ public abstract class Figure implements Observer {
     public void update(){
         this.enemiesAttackMe.clear();
         this.aliensProtectMe.clear();
-        this.whoCouldBeKilled.clear();
+        this.whoCouldBeEaten.clear();
         this.attackedFields.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
@@ -77,8 +77,8 @@ public abstract class Figure implements Observer {
         return color;
     }
 
-    public Set<Figure> getWhoCouldBeKilled() {
-        return whoCouldBeKilled;
+    public Set<Figure> getWhoCouldBeEaten() {
+        return whoCouldBeEaten;
     }
 
     public Set<Field> getAttackedFields() {
@@ -120,7 +120,7 @@ public abstract class Figure implements Observer {
 //                    field.getFigureByField().addAlien(this);
 //                }else {
 //                    field.getFigureByField().addEnemy(this);
-//                    this.getWhoCouldBeKilled().add(field.getFigureByField());
+//                    this.getWhoCouldBeEaten().add(field.getFigureByField());
 //                }
 //            }else {
 //                possibleFieldsToMove.add(field);
@@ -138,7 +138,7 @@ public abstract class Figure implements Observer {
                 return true;
             }else {
                 tempFigure.addEnemy(this);
-                this.getWhoCouldBeKilled().add(tempFigure);
+                this.getWhoCouldBeEaten().add(tempFigure);
                 this.getPreyField().add(tempFigure.getField());
                 return true;
             }

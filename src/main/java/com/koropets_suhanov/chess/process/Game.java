@@ -8,7 +8,7 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Observer;
-import com.koropets_suhanov.chess.utils.Turn;
+import com.koropets_suhanov.chess.process.pojo.Turn;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,17 +22,17 @@ import java.util.ArrayList;
  */
 public class Game {
 
-    private Set<Turn> possibleTurnsAndKillings = new LinkedHashSet<Turn>();
+    private Set<Turn> possibleTurnsAndEatings = new LinkedHashSet<Turn>();
     private int numberOfTurn;
 
-    public Set<Turn> getPossibleTurnsAndKillings(Color color, int numberOfTurn) {
+    public Set<Turn> getPossibleTurnsAndEatings(Color color, int numberOfTurn) {
         this.numberOfTurn = numberOfTurn;
-        setPossibleTurnsAndKillings(color);
-        return possibleTurnsAndKillings;
+        setPossibleTurnsAndEatings(color);
+        return possibleTurnsAndEatings;
     }
 
-    private void setPossibleTurnsAndKillings(Color color){
-        possibleTurnsAndKillings.clear();
+    private void setPossibleTurnsAndEatings(Color color){
+        possibleTurnsAndEatings.clear();
         King king = null;
         Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
         for (Observer figure : figures){
@@ -44,32 +44,32 @@ public class Game {
         if (king.isUnderAttack()){
             if (king.getPossibleFieldsToMove().isEmpty()){
                 Map<Figure, Field> kingMap = new HashMap<>();
-                for (Figure enemy : king.getWhoCouldBeKilled()){
+                for (Figure enemy : king.getWhoCouldBeEaten()){
                     if (enemy.getAliensProtectMe().size() == 0){
                         kingMap.put(king, enemy.getField());
-                        possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(kingMap)
-                                                                        .killing(true)
+                        possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(kingMap)
+                                                                        .eating(true)
                                                                         .numberOfTurn(numberOfTurn)
                                                                         .writtenStyle("")
                                                                         .build());
                     }
                 }
-                //TODO add case when other figures could kill enemy which attacks king or cover king
+                //TODO add case when other figures could eat enemy which attacks king or cover king
             }
             for (Field field : king.getPossibleFieldsToMove()){
                 Map<Figure, Field> figureToFieldMap = new HashMap<>();
                 figureToFieldMap.put(king, field);
-                possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
-                                                                .killing(false)
+                possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+                                                                .eating(false)
                                                                 .writtenStyle("")
                                                                 .numberOfTurn(numberOfTurn)
                                                                 .build());
             }
-            for (Figure enemy : king.getWhoCouldBeKilled()){
+            for (Figure enemy : king.getWhoCouldBeEaten()){
                 Map<Figure, Field> figureToFieldMap = new HashMap<>();
                 figureToFieldMap.put(king, enemy.getField());
-                possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
-                        .killing(true)
+                possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+                        .eating(true)
                         .writtenStyle("")
                         .numberOfTurn(numberOfTurn)
                         .build());
@@ -79,30 +79,30 @@ public class Game {
                 for (Field field : ((Figure)figure).getPossibleFieldsToMove()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, field);
-                    possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
-                                                                    .killing(false)
+                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
+                                                                    .eating(false)
                                                                     .numberOfTurn(numberOfTurn)
                                                                     .writtenStyle("")
                                                                     .build());
                 }
-                for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeKilled()){
+                for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, attackedFigure.getField());
-                    possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
-                            .killing(true)
+                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
+                            .eating(true)
                             .numberOfTurn(numberOfTurn)
                             .writtenStyle("")
                             .build());
                 }
             }
-            possibleTurnsAndKillings.add(new Turn.Builder().figureToDestinationField(castling(color))
-                                                            .killing(false)
+            possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(castling(color))
+                                                            .eating(false)
                                                             .writtenStyle("")
                                                             .numberOfTurn(numberOfTurn)
                                                             .build());
             List<StringBuilder> turnsOnTheEndLine = pawnReachesEndLine(color);
             for (StringBuilder stringBuilder : turnsOnTheEndLine){
-                possibleTurnsAndKillings.add(stringBuilder.toString());
+                possibleTurnsAndEatings.add(stringBuilder.toString());
             }
         }
     }
@@ -139,8 +139,8 @@ public class Game {
         return pawnAndField;
     }
 
-    private Set<Turn> turnsIfReachedEndLine(boolean isKilling, Map<Figure, Field> storage){
-        if (isKilling){
+    private Set<Turn> turnsIfReachedEndLine(boolean isEating, Map<Figure, Field> storage){
+        if (isEating){
             StringBuilder turn1 = new StringBuilder(pawn.getField().toString());
             turn1.append("-").append(aimedField.toString()).append("(").append("Q").append(")");
             storage.add(turn1);

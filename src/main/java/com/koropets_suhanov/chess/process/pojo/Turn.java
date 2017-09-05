@@ -1,4 +1,4 @@
-package com.koropets_suhanov.chess.utils;
+package com.koropets_suhanov.chess.process.pojo;
 
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
@@ -11,14 +11,14 @@ import java.util.Map;
 public class Turn {
 
     private Map<Figure, Field> figureToDestinationField;
-    private boolean killing;
+    private boolean eating;
     private String writtenStyle;
     private int numberOfTurn;
 
 
-    private Turn(Map<Figure, Field> figureToDestinationField, boolean killing, String turn, int numberOfTurn) {
+    private Turn(Map<Figure, Field> figureToDestinationField, boolean eating, String turn, int numberOfTurn) {
         this.figureToDestinationField = figureToDestinationField;
-        this.killing = killing;
+        this.eating = eating;
         this.writtenStyle = turn;
         this.numberOfTurn = numberOfTurn;
     }
@@ -27,8 +27,8 @@ public class Turn {
         return writtenStyle;
     }
 
-    public boolean isKilling(){
-        return killing;
+    public boolean isEating(){
+        return eating;
     }
 
     public Map<Figure, Field> getFigures() {
@@ -61,7 +61,7 @@ public class Turn {
     public String toString() {
         return "Turn{" +
                 "figureToDestinationField=" + figureToDestinationField +
-                ", killing=" + killing +
+                ", eating=" + eating +
                 ", writtenStyle='" + writtenStyle + '\'' +
                 ", numberOfTurn=" + numberOfTurn +
                 '}';
@@ -69,7 +69,7 @@ public class Turn {
 
     public static class Builder{
         private Map<Figure, Field> figureToDestinationField;
-        private boolean killing;
+        private boolean eating;
         private String writtenStyle;
         private int numberOfTurn;
 
@@ -78,8 +78,8 @@ public class Turn {
             return this;
         }
 
-        public Builder killing(final boolean killing){
-            this.killing = killing;
+        public Builder eating(final boolean eating){
+            this.eating = eating;
             return this;
         }
 
@@ -94,7 +94,7 @@ public class Turn {
         }
 
         public Turn build(){
-            return new Turn(figureToDestinationField, killing, writtenStyle, numberOfTurn);
+            return new Turn(figureToDestinationField, eating, writtenStyle, numberOfTurn);
         }
     }
 }

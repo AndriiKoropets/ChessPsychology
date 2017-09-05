@@ -105,7 +105,7 @@ public class Pawn extends Figure {
                     figure.addAlien(this);
                 }else {
                     figure.addEnemy(this);
-                    this.getWhoCouldBeKilled().add(figure);
+                    this.getWhoCouldBeEaten().add(figure);
                 }
             }else {
                 getFieldsUnderMyInfluence().add(field);
@@ -119,12 +119,12 @@ public class Pawn extends Figure {
                 Field leftField = new Field(3, this.getField().getY()-1);
                 Figure leftEnemy = Board.getFieldToFigure().get(leftField);
                 if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(leftField)){
-                    this.getWhoCouldBeKilled().add(leftEnemy);
+                    this.getWhoCouldBeEaten().add(leftEnemy);
                 }
                 Field rightField = new Field(3, this.getField().getY() + 1);
                 Figure rightEnemy = Board.getFieldToFigure().get(rightField);
                 if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(rightField)){
-                    this.getWhoCouldBeKilled().add(rightEnemy);
+                    this.getWhoCouldBeEaten().add(rightEnemy);
                 }
             }
         }else {
@@ -132,12 +132,12 @@ public class Pawn extends Figure {
                 Field leftField = new Field(4, this.getField().getY() - 1);
                 Figure leftEnemy = Board.getFieldToFigure().get(leftField);
                 if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(leftField)){
-                    this.getWhoCouldBeKilled().add(leftEnemy);
+                    this.getWhoCouldBeEaten().add(leftEnemy);
                 }
                 Field rightField = new Field(4, this.getField().getY() + 1);
                 Figure rightEnemy = Board.getFieldToFigure().get(rightField);
                 if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(rightField)){
-                    this.getWhoCouldBeKilled().add(rightEnemy);
+                    this.getWhoCouldBeEaten().add(rightEnemy);
                 }
             }
         }

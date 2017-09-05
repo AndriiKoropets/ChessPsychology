@@ -1,6 +1,6 @@
 package com.koropets_suhanov.chess.model;
 
-import com.koropets_suhanov.chess.utils.Turn;
+import com.koropets_suhanov.chess.process.pojo.Turn;
 
 import java.util.Set;
 import java.util.LinkedHashSet;

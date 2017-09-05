@@ -33,7 +33,7 @@ public class King extends Figure {
                         figure.addAlien(this);
                     }else {
                         figure.addEnemy(this);
-                        this.getWhoCouldBeKilled().add(figure);
+                        this.getWhoCouldBeEaten().add(figure);
                     }
                 }else {
                     this.getPossibleFieldsToMove().add(field);
