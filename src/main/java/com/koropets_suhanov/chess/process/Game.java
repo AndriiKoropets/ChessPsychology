@@ -41,50 +41,41 @@ public class Game {
                 break;
             }
         }
-        if (king.isUnderAttack()){
-            if (king.getPossibleFieldsToMove().isEmpty()){
-                Map<Figure, Field> kingMap = new HashMap<>();
-                for (Figure enemy : king.getWhoCouldBeEaten()){
-                    if (enemy.getAliensProtectMe().size() == 0){
-                        kingMap.put(king, enemy.getField());
-                        possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(kingMap)
-                                                                        .eating(true)
-                                                                        .numberOfTurn(numberOfTurn)
-                                                                        .writtenStyle("")
-                                                                        .build());
-                    }
-                }
-                //TODO add case when other figures could eat enemy which attacks king or cover king
-            }
-            for (Field field : king.getPossibleFieldsToMove()){
-                Map<Figure, Field> figureToFieldMap = new HashMap<>();
-                figureToFieldMap.put(king, field);
-                possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
-                                                                .eating(false)
-                                                                .writtenStyle("")
-                                                                .numberOfTurn(numberOfTurn)
-                                                                .build());
-            }
+        if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
+            Map<Figure, Field> kingMap = new HashMap<>();
             for (Figure enemy : king.getWhoCouldBeEaten()){
-                Map<Figure, Field> figureToFieldMap = new HashMap<>();
-                figureToFieldMap.put(king, enemy.getField());
-                possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
-                        .eating(true)
-                        .writtenStyle("")
-                        .numberOfTurn(numberOfTurn)
-                        .build());
-            }
-        }else {
-            for (Observer figure : figures){
-                for (Field field : ((Figure)figure).getPossibleFieldsToMove()){
-                    Map<Figure, Field> figureFieldMap = new HashMap<>();
-                    figureFieldMap.put((Figure)figure, field);
-                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
-                                                                    .eating(false)
+                if (enemy.getAliensProtectMe().size() == 0){
+                    kingMap.put(king, enemy.getField());
+                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(kingMap)
+                                                                    .eating(true)
+                                                                    .targetedFigure(enemy)
                                                                     .numberOfTurn(numberOfTurn)
                                                                     .writtenStyle("")
                                                                     .build());
                 }
+            }
+            Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
+            for (Observer observer : figures){
+                if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
+                    Map<Figure, Field> alienToTargetField = new HashMap<>();
+                    alienToTargetField.put((Figure)observer, whoAttackKing.getField());
+                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(alienToTargetField)
+                                                                                            .eating(true)
+                                                                                            .targetedFigure(whoAttackKing)
+                                                                                            .numberOfTurn(numberOfTurn)
+                                                                                            .writtenStyle("")
+                                                                                            .build());
+                }
+            }
+            //TODO add the case when other figures could cover king
+            peacefulTurn(king);
+        }
+        if (king.isUnderAttack() && king.getEnemiesAttackMe().size() > 1){
+            peacefulTurn(king);
+        }
+        if (!king.isUnderAttack()){
+            for (Observer figure : figures){
+                peacefulTurn((Figure) figure);
                 for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, attackedFigure.getField());
@@ -95,6 +86,13 @@ public class Game {
                             .build());
                 }
             }
+            if (opportunityForShortCastling()){
+
+            }
+            if (opportunityForLongCastling()){
+
+            }
+
             possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(castling(color))
                                                             .eating(false)
                                                             .writtenStyle("")
@@ -105,6 +103,30 @@ public class Game {
                 possibleTurnsAndEatings.add(stringBuilder.toString());
             }
         }
+    }
+
+    private void peacefulTurn(Figure figure){
+        for (Field field : figure.getPossibleFieldsToMove()){
+            Map<Figure, Field> figureToFieldMap = new HashMap<>();
+            figureToFieldMap.put(figure, field);
+            possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+                    .eating(false)
+                    .targetedFigure(null)
+                    .writtenStyle("")
+                    .numberOfTurn(numberOfTurn)
+                    .build());
+        }
+    }
+
+
+    private boolean opportunityForShortCastling() {
+        //TODO write logic which checks short castling
+        return false;
+    }
+
+    private boolean opportunityForLongCastling() {
+        //TODO write logic which checks long castling
+        return false;
     }
 
     private Map<Figure, Field> pawnReachesEndLine(Color color){

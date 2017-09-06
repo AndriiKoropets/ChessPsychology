@@ -32,7 +32,6 @@ public class Process {
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
     private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
-    static boolean run = true;
     private static final Board board = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
     private static Game game = new Game();
@@ -61,13 +60,14 @@ public class Process {
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
-                    whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE);
-                    EstimatePosition.makeTurn(whiteTurn);
+                    whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
+                    //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
+//                    EstimatePosition.makeTurn(whiteTurn);
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
-                        blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK);
-                        EstimatePosition.makeTurn(blackTurn);
+                        blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
+//                        EstimatePosition.makeTurn(blackTurn);
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
                     printAllBoard();
