@@ -34,7 +34,7 @@ public class ProcessingUtils {
     private static Map<Figure, Field> figureToField = new HashMap<>();
     private static Figure figure;
     private static boolean isEating;
-    private static Board board = Board.getInstance();
+    private static Figure targetedFigure;
     private static final String shortCastling = "0-0";
     private static final String longCastling = "0-0-0";
     private static final Field whiteKingShortCastling = new Field(7, 6);
@@ -48,13 +48,11 @@ public class ProcessingUtils {
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
 
-
-    public static Turn getActualTurn(final String turn, final boolean isWhite, int numberOfTurn){
-        candidates.clear();
-        mainTurn = turn;
+    public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
+        mainTurn = turnWrittenStyle;
         number = numberOfTurn;
-        field = parseTargetField(turn);
-        return setTurn(turn, isWhite);
+        field = parseTargetField(turnWrittenStyle);
+        return setTurn(turnWrittenStyle, isWhite);
     }
 
     public static Turn getPossibleTurn(){
@@ -78,19 +76,21 @@ public class ProcessingUtils {
     }
 
     private static void initialize(){
+        candidates.clear();
         figureToField.clear();
         figure = null;
+        targetedFigure = null;
         isEating = false;
     }
 
-    private static void update(boolean eating){
-        if (figure != null){
-            figureToField.put(figure, field);
-            isEating = eating;
-        }else {
-            throw new RuntimeException("Could not read written turn");
-        }
-    }
+//    private static void update(){
+//        if (figure != null){
+//            figureToField.put(figure, field);
+//            isEating = eating;
+//        }/*else {
+//            throw new RuntimeException("Could not read written turn");
+//        }*/
+//    }
 
     private static Turn setTurn(final String writtenStyle, final boolean isWhite){
         initialize();
@@ -107,7 +107,7 @@ public class ProcessingUtils {
                 figureToField.put(blackKing, blackKingShortCastling);
                 figureToField.put(blackRock_H, blackRockShortCastling);
             }
-            return createTurn(figureToField, writtenStyle, false);
+            return createTurn(figureToField, writtenStyle, false, null);
         }
         if (longCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
@@ -122,72 +122,26 @@ public class ProcessingUtils {
                 figureToField.put(blackKing, blackKingLongCastling);
                 figureToField.put(blackRock_A, blackRockLongCastling);
             }
-            return createTurn(figureToField, writtenStyle, false);
+            return createTurn(figureToField, writtenStyle, false, null);
         }
-        if (writtenStyle.contains("R")){
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(Rock.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(Rock.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
+        char firstCharacter = writtenStyle.charAt(0);
+        switch (firstCharacter){
+            case 'R' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Rock.class, isWhite, true) : fetchFigureToTargetField(Rock.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+            case 'N' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Knight.class, isWhite, true) : fetchFigureToTargetField(Knight.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+            case 'B' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Bishop.class, isWhite, true) : fetchFigureToTargetField(Bishop.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+            case 'Q' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Queen.class, isWhite, true) : fetchFigureToTargetField(Queen.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+            case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, isWhite, true) : fetchFigureToTargetField(King.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+            default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, isWhite, true) : fetchFigureToTargetField(Pawn.class, isWhite, false);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
         }
-        if (writtenStyle.contains("N")){
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(Knight.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(Knight.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
-        }
-        if (writtenStyle.contains("B")){
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(Bishop.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(Bishop.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
-        }
-        if (writtenStyle.contains("Q")){
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(Queen.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(Queen.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
-        }
-        if (writtenStyle.contains("K")){
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(King.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(King.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
-        }else {
-            if (writtenStyle.contains("x")){
-                figure = fetchFigure(Pawn.class, isWhite, true);
-                update(true);
-            }else {
-                figure = fetchFigure(Pawn.class, isWhite, false);
-                update(false);
-            }
-            return createTurn(figureToField, writtenStyle, isEating);
-        }
-
     }
 
-    private static Figure fetchFigure(Class clazz, boolean isWhite, boolean isEating){
-        Figure targetFigure = null;
+    private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean isEating){
         List<Observer> targets = new ArrayList<Observer>();
         Set<Observer> figures;
         figures = isWhite ? Board.getWhiteFigures() : Board.getBlackFigures();
@@ -196,43 +150,41 @@ public class ProcessingUtils {
                 if (isEating){
                     Set<Figure> couldBeEaten = ((Figure)figure).getWhoCouldBeEaten();
                     for (Figure figureUnderAttack : couldBeEaten){
-//                        Field couldBeUnderAttack = figureUnderAttack.getField();
                         if (figureUnderAttack.getField().equals(field)){
                             targets.add(figure);
-                            targetFigure = figureUnderAttack;
+                            targetedFigure = figureUnderAttack;
                         }
                     }
                 }else {
-                    for (Field field : ((Figure)figure).getPossibleFieldsToMove()){
-                        if (field.equals(field)){
+                    for (Field fieldToMove : ((Figure)figure).getPossibleFieldsToMove()){
+                        if (fieldToMove.equals(field)){
                             candidates.add(figure);
                         }
                     }
                 }
             }
         }
-        //TODO probably this should be deleted
-        if (targetFigure != null) {
-            board.removeFigure(targetFigure);
-        }
         if (!targets.isEmpty()){
             if (targets.size() == 1){
-                return (Figure)targets.get(0);
+                figure = (Figure)targets.get(0);
             }else{
-                return choseFigureWhichAttack(targets, clazz);
+                figure = choseFigureWhichAttack(targets, clazz);
             }
         }
         if (candidates.size() > 1){
-            return choseProperFigure();
+            figure = choseExactFigure();
         }else {
-            return (Figure) candidates.get(0);
+            figure = (Figure) candidates.get(0);
         }
+        if (figure != null){
+            figureToField.put(figure, field);
+        }
+        throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
     }
 
-    private static Figure choseFigureWhichAttack(List list, Class clazz){
+    private static Figure choseFigureWhichAttack(List<Observer> list, Class clazz){
         if (clazz == Pawn.class){
             char verticalPawn = mainTurn.charAt(0);
-            int integer = Character.getNumericValue(verticalPawn);
             for (Object currentFigure : list){
                 if (((Figure) currentFigure).getField().getY() == Field.getInvertedHorizontal().get(verticalPawn)){
                     return (Figure) currentFigure;
@@ -241,36 +193,27 @@ public class ProcessingUtils {
         }else {
             char secondPosition = mainTurn.charAt(1);
             int integer = Character.getNumericValue(secondPosition);
-            if (integer > Board.SIZE){
-                for (Object figure : list){
-                    if (((Figure) figure).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){
-                        return (Figure) figure;
-                    }
-                }
-            }else {
-                for (Object figure : list){
-                    if (((Figure) figure).getField().getX() == Field.getInvertedVertical().get(integer)){
-                        return (Figure) figure;
-                    }
-                }
-            }
+            chose(integer, secondPosition);
         }
         return null;
     }
 
-    private static Figure choseProperFigure(){
+    private static Figure choseExactFigure(){
         char secondPosition = mainTurn.charAt(1);
         int integer = Character.getNumericValue(secondPosition);
-        if (integer > Board.SIZE){
-            for (Observer figure : candidates){
-                if (((Figure) figure).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){
-                    return (Figure) figure;
+        chose(integer, secondPosition);
+        return null;
+    }
+
+    private static Figure chose(int integer, char secondPosition){
+        for (Observer observer : candidates){
+            if (integer > Board.SIZE){
+                if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){
+                    return (Figure) observer;
                 }
-            }
-        }else {
-            for (Observer figure : candidates){
-                if (((Figure) figure).getField().getX() == Field.getInvertedVertical().get(integer)){
-                    return (Figure) figure;
+            }else {
+                if (((Figure) observer).getField().getX() == Field.getInvertedVertical().get(integer)){
+                    return (Figure) observer;
                 }
             }
         }
@@ -295,10 +238,11 @@ public class ProcessingUtils {
         }
     }
 
-    private static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isEating){
+    private static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isEating, Figure targetedFigure){
         return new Turn.Builder().figureToDestinationField(figureToField)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
+                .targetedFigure(targetedFigure)
                 .numberOfTurn(number)
                 .build();
     }

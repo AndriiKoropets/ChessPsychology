@@ -12,13 +12,14 @@ public class Turn {
 
     private Map<Figure, Field> figureToDestinationField;
     private boolean eating;
+    private Figure targetedFigure;
     private String writtenStyle;
     private int numberOfTurn;
 
-
-    private Turn(Map<Figure, Field> figureToDestinationField, boolean eating, String turn, int numberOfTurn) {
+    private Turn(Map<Figure, Field> figureToDestinationField, boolean eating, Figure targetedFigure, String turn, int numberOfTurn) {
         this.figureToDestinationField = figureToDestinationField;
         this.eating = eating;
+        this.targetedFigure = targetedFigure;
         this.writtenStyle = turn;
         this.numberOfTurn = numberOfTurn;
     }
@@ -29,6 +30,10 @@ public class Turn {
 
     public boolean isEating(){
         return eating;
+    }
+
+    public Figure getTargetedFigure() {
+        return targetedFigure;
     }
 
     public Map<Figure, Field> getFigures() {
@@ -62,6 +67,7 @@ public class Turn {
         return "Turn{" +
                 "figureToDestinationField=" + figureToDestinationField +
                 ", eating=" + eating +
+                ", targetedFigure=" + targetedFigure +
                 ", writtenStyle='" + writtenStyle + '\'' +
                 ", numberOfTurn=" + numberOfTurn +
                 '}';
@@ -70,6 +76,7 @@ public class Turn {
     public static class Builder{
         private Map<Figure, Field> figureToDestinationField;
         private boolean eating;
+        private Figure targetedFigure;
         private String writtenStyle;
         private int numberOfTurn;
 
@@ -80,6 +87,11 @@ public class Turn {
 
         public Builder eating(final boolean eating){
             this.eating = eating;
+            return this;
+        }
+
+        public Builder targetedFigure(final Figure eatenFigure){
+            this.targetedFigure = eatenFigure;
             return this;
         }
 
@@ -94,7 +106,7 @@ public class Turn {
         }
 
         public Turn build(){
-            return new Turn(figureToDestinationField, eating, writtenStyle, numberOfTurn);
+            return new Turn(figureToDestinationField, eating, targetedFigure, writtenStyle, numberOfTurn);
         }
     }
 }
