@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author AndriiKoropets
@@ -116,6 +117,13 @@ public class Board implements Subject{
         List<Figure> returnedFigures = new ArrayList<Figure>();
         figures.stream().filter(f -> f.getClass() == clazz).forEach(f -> returnedFigures.add((Figure) f));
         return returnedFigures;
+    }
+
+    public List<Figure> getFiguresByClass(Class clazz, Color color){
+        Set<Observer> observers = (color == Color.BLACK) ? blackFigures : whiteFigures;
+        List<Figure> figures = new ArrayList<>();
+        observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
+        return figures;
     }
 
 //    public Field getPreviousTurn() {

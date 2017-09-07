@@ -22,17 +22,17 @@ import java.util.ArrayList;
  */
 public class Game {
 
-    private Set<Turn> possibleTurnsAndEatings = new LinkedHashSet<Turn>();
+    private Set<Turn> possibleTurnsAndEating = new LinkedHashSet<Turn>();
     private int numberOfTurn;
 
     public Set<Turn> getPossibleTurnsAndEatings(Color color, int numberOfTurn) {
         this.numberOfTurn = numberOfTurn;
-        setPossibleTurnsAndEatings(color);
-        return possibleTurnsAndEatings;
+        setPossibleTurnsAndEating(color);
+        return possibleTurnsAndEating;
     }
 
-    private void setPossibleTurnsAndEatings(Color color){
-        possibleTurnsAndEatings.clear();
+    private void setPossibleTurnsAndEating(Color color){
+        possibleTurnsAndEating.clear();
         King king = null;
         Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
         for (Observer figure : figures){
@@ -46,7 +46,7 @@ public class Game {
             for (Figure enemy : king.getWhoCouldBeEaten()){
                 if (enemy.getAliensProtectMe().size() == 0){
                     kingMap.put(king, enemy.getField());
-                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(kingMap)
+                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(kingMap)
                                                                     .eating(true)
                                                                     .targetedFigure(enemy)
                                                                     .numberOfTurn(numberOfTurn)
@@ -59,7 +59,7 @@ public class Game {
                 if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
                     Map<Figure, Field> alienToTargetField = new HashMap<>();
                     alienToTargetField.put((Figure)observer, whoAttackKing.getField());
-                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(alienToTargetField)
+                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(alienToTargetField)
                                                                                             .eating(true)
                                                                                             .targetedFigure(whoAttackKing)
                                                                                             .numberOfTurn(numberOfTurn)
@@ -79,7 +79,7 @@ public class Game {
                 for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, attackedFigure.getField());
-                    possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
+                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
                             .eating(true)
                             .numberOfTurn(numberOfTurn)
                             .writtenStyle("")
@@ -93,14 +93,14 @@ public class Game {
 
             }
 
-            possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(castling(color))
+            possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(castling(color))
                                                             .eating(false)
                                                             .writtenStyle("")
                                                             .numberOfTurn(numberOfTurn)
                                                             .build());
             List<StringBuilder> turnsOnTheEndLine = pawnReachesEndLine(color);
             for (StringBuilder stringBuilder : turnsOnTheEndLine){
-                possibleTurnsAndEatings.add(stringBuilder.toString());
+                possibleTurnsAndEating.add(stringBuilder.toString());
             }
         }
     }
@@ -109,7 +109,7 @@ public class Game {
         for (Field field : figure.getPossibleFieldsToMove()){
             Map<Figure, Field> figureToFieldMap = new HashMap<>();
             figureToFieldMap.put(figure, field);
-            possibleTurnsAndEatings.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
+            possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
                     .eating(false)
                     .targetedFigure(null)
                     .writtenStyle("")
@@ -192,15 +192,10 @@ public class Game {
     }
 
     private static Map<Figure, Field> castling(Color color){
-        Board board = Board.getInstance();
         List<String> list = new ArrayList<String>();
-        List<Figure> rocks = Board.getInstance().getFiguresByClass(Rock.class);
-        Set figures;
-        if (color == Color.BLACK){
-            figures = board.getBlackFigures();
-        }else {
-            figures = board.getWhiteFigures();
-        }
+        List<Figure> rocks = Board.getInstance().getFiguresByClass(Rock.class, color);
+        King king = (King) Board.getInstance().getFiguresByClass(King.class, color).get(0);
+        Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
         for (Object figure : figures){
             if (figure.getClass() == King.class){
                 if (((King) figure).getColor() == Color.WHITE){
