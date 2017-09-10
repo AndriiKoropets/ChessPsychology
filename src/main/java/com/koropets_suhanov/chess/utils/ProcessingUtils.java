@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author AndriiKoropets
@@ -35,8 +36,8 @@ public class ProcessingUtils {
     private static Figure figure;
     private static boolean isEating;
     private static Figure targetedFigure;
-    private static final String shortCastling = "0-0";
-    private static final String longCastling = "0-0-0";
+    public static final String shortCastling = "0-0";
+    public static final String longCastling = "0-0-0";
     private static final Field whiteKingShortCastling = new Field(7, 6);
     private static final Field whiteKingLongCastling = new Field(7, 2);
     private static final Field blackKingShortCastling = new Field(0, 6);
@@ -107,7 +108,7 @@ public class ProcessingUtils {
                 figureToField.put(blackKing, blackKingShortCastling);
                 figureToField.put(blackRock_H, blackRockShortCastling);
             }
-            return createTurn(figureToField, writtenStyle, false, null);
+            return createTurn(figureToField, writtenStyle, false, null, number);
         }
         if (longCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
@@ -122,22 +123,22 @@ public class ProcessingUtils {
                 figureToField.put(blackKing, blackKingLongCastling);
                 figureToField.put(blackRock_A, blackRockLongCastling);
             }
-            return createTurn(figureToField, writtenStyle, false, null);
+            return createTurn(figureToField, writtenStyle, false, null, number);
         }
         char firstCharacter = writtenStyle.charAt(0);
         switch (firstCharacter){
             case 'R' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Rock.class, isWhite, true) : fetchFigureToTargetField(Rock.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
             case 'N' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Knight.class, isWhite, true) : fetchFigureToTargetField(Knight.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
             case 'B' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Bishop.class, isWhite, true) : fetchFigureToTargetField(Bishop.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
             case 'Q' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Queen.class, isWhite, true) : fetchFigureToTargetField(Queen.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
             case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, isWhite, true) : fetchFigureToTargetField(King.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
             default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, isWhite, true) : fetchFigureToTargetField(Pawn.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure);
+                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
         }
     }
 
@@ -238,13 +239,67 @@ public class ProcessingUtils {
         }
     }
 
-    private static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isEating, Figure targetedFigure){
+    public static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isEating, Figure targetedFigure, int numberOfTurn){
         return new Turn.Builder().figureToDestinationField(figureToField)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
                 .targetedFigure(targetedFigure)
-                .numberOfTurn(number)
+                .numberOfTurn(numberOfTurn)
                 .build();
+    }
+
+    public static Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition){
+        Set<Field> fieldsBetween = new HashSet<>();
+        if (king.getField().getX() == rockPosition.getX()){
+            if (king.getField().getX() > rockPosition.getX()){
+                for (int i = king.getField().getX() - 1; i > rockPosition.getX(); i--){
+                    fieldsBetween.add(new Field(i, king.getField().getY()));
+                }
+            }else {
+                for (int i = king.getField().getX() + 1; i < rockPosition.getX(); i++){
+                    fieldsBetween.add(new Field(i, king.getField().getY()));
+                }
+            }
+        }
+        if (king.getField().getY() == rockPosition.getY()){
+            if (king.getField().getY() > rockPosition.getY()){
+                for (int j = king.getField().getY() - 1; j > rockPosition.getY(); j--){
+                    fieldsBetween.add(new Field(king.getField().getX(), j));
+                }
+            }else {
+                for (int j = king.getField().getY() + 1; j < rockPosition.getY(); j++){
+                    fieldsBetween.add(new Field(king.getField().getX(), j));
+                }
+            }
+        }
+        return fieldsBetween;
+    }
+
+    public static Set<Field> fieldsBetweenBishopAndKing(final King king, final Field bishopPosition){
+        Set<Field> fieldsBetween =  new HashSet<>();
+        if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()){
+
+        }
+        if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()){
+
+        }
+        if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()){
+
+        }
+        if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()){
+
+        }
+        return fieldsBetween;
+    }
+
+    public static Set<Field> fieldsBetweenQueenAndKing(final King king, final Field queenPosition){
+        Set<Field> fieldsBetweenQueenAndKing = new HashSet<>();
+        if (king.getField().getX() == queenPosition.getX() || king.getField().getY() == queenPosition.getY()){
+            fieldsBetweenQueenAndKing.addAll(fieldsBetweenRockAndKing(king, queenPosition));
+        }else {
+            fieldsBetweenQueenAndKing.addAll(fieldsBetweenBishopAndKing(king, queenPosition));
+        }
+        return fieldsBetweenQueenAndKing;
     }
 
     public static FrequentFigure getWhiteFrequent() {

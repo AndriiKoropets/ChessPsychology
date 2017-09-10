@@ -10,10 +10,12 @@ import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.utils.ProcessingUtils;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -63,12 +65,7 @@ public class Game {
             for (Figure enemy : king.getWhoCouldBeEaten()){
                 if (enemy.getAliensProtectMe().size() == 0){
                     kingMap.put(king, enemy.getField());
-                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(kingMap)
-                                                                    .eating(true)
-                                                                    .targetedFigure(enemy)
-                                                                    .numberOfTurn(numberOfTurn)
-                                                                    .writtenStyle("")
-                                                                    .build());
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingMap, "", true, enemy, numberOfTurn));
                 }
             }
             Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
@@ -76,27 +73,21 @@ public class Game {
                 if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
                     Map<Figure, Field> alienToTargetField = new HashMap<>();
                     alienToTargetField.put((Figure)observer, whoAttackKing.getField());
-                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(alienToTargetField)
-                                                                                            .eating(true)
-                                                                                            .targetedFigure(whoAttackKing)
-                                                                                            .numberOfTurn(numberOfTurn)
-                                                                                            .writtenStyle("")
-                                                                                            .build());
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, "", true, whoAttackKing, numberOfTurn));
                 }
             }
-            //TODO add the case when other figures could cover king
             peacefulTurn(king);
 
             Figure figureAttacksKing = king.getEnemiesAttackMe().iterator().next();
-            List<Turn> alienCovers = new ArrayList<>();
+            Set<Turn> alienCovers = new HashSet<>();
             if (figureAttacksKing instanceof Rock){
-                alienCovers = coveringIfRockAttacks();
+                alienCovers = coveringIfRockAttacks(king, (Rock) figureAttacksKing);
             }
             if (figureAttacksKing instanceof Bishop){
-                alienCovers = coveringIfBishopAttacks();
+                alienCovers = coveringIfBishopAttacks(king, (Bishop) figureAttacksKing);
             }
             if (figureAttacksKing instanceof Queen){
-                alienCovers = coveringIfQueenAttacks();
+                alienCovers = coveringIfQueenAttacks(king, (Queen) figureAttacksKing);
             }
 
             if (alienCovers != null){
@@ -107,32 +98,17 @@ public class Game {
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() > 1){
             peacefulTurn(king);
         }
+        //TODO rewrite to java8 and verify the logic, maybe sth should be changed.
         if (!king.isUnderAttack()){
             for (Observer figure : figures){
                 peacefulTurn((Figure) figure);
                 for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, attackedFigure.getField());
-                    possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(figureFieldMap)
-                            .eating(true)
-                            .numberOfTurn(numberOfTurn)
-                            .writtenStyle("")
-                            .build());
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldMap, "", true, , numberOfTurn));
                 }
             }
             possibleTurnsAndEating.addAll(castling(color));
-
-
-
-//            possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(castling(color))
-//                                                            .eating(false)
-//                                                            .writtenStyle("")
-//                                                            .numberOfTurn(numberOfTurn)
-//                                                            .build());
-//            List<StringBuilder> turnsOnTheEndLine = pawnReachesEndLine(color);
-//            for (StringBuilder stringBuilder : turnsOnTheEndLine){
-//                possibleTurnsAndEating.add(stringBuilder.toString());
-//            }
         }
     }
 
@@ -140,88 +116,45 @@ public class Game {
         for (Field field : figure.getPossibleFieldsToMove()){
             Map<Figure, Field> figureToFieldMap = new HashMap<>();
             figureToFieldMap.put(figure, field);
-            possibleTurnsAndEating.add(new Turn.Builder().figureToDestinationField(figureToFieldMap)
-                    .eating(false)
-                    .targetedFigure(null)
-                    .writtenStyle("")
-                    .numberOfTurn(numberOfTurn)
-                    .build());
+            possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureToFieldMap, "", false, null, numberOfTurn));
         }
     }
 
-    private List<Turn> coveringIfRockAttacks(){
-        return null;
+    private Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
+        Set<Turn> coveringTurns = new HashSet<>();
+        Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
+        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
+        return coveringTurns;
     }
 
-    private List<Turn> coveringIfBishopAttacks(){
-        return null;
+    private Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
+        Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
+        Set<Turn> coveringTurns = new HashSet<>();
+        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
+        return coveringTurns;
     }
 
-    private List<Turn> coveringIfQueenAttacks(){
-        return null;
+    private Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
+        Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenQueenAndKing(king, queen.getField());
+        Set<Turn> coveringTurns = new HashSet<>();
+        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
+        return coveringTurns;
     }
 
-//    private Map<Figure, Field> pawnReachesEndLine(Color color){
-//        Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
-//        Map<Figure, Field> pawnAndField = new HashMap<>();
-//        for (Observer figure : figures){
-//            if (figure.getClass() == Pawn.class){
-//                Pawn pawn = (Pawn) figure;
-//                if (color == Color.BLACK){
-//                    if (pawn.getField().getX() == 6){
-//                        for (Field field : pawn.getPossibleFieldsToMove()){
-//                            pawnAndField.put(pawn, field);
-//                            turnsIfReachedEndLine(false, pawnAndField);
-//                        }
-//                        for (Field field : pawn.getAttackedFields()){
-//                            pawnAndField.put();
-//                            turnsIfReachedEndLine(pawn, (Field) field, true, pawnAndField);
-//                        }
-//                    }
-//                }else {
-//                    if (pawn.getField().getX() == 1){
-//                        for (Object field : pawn.getPossibleFieldsToMove()){
-//                            turnsIfReachedEndLine(pawn, (Field) field, false,pawnAndField);
-//                        }
-//                        for (Object field : pawn.getAttackedFields()){
-//                            turnsIfReachedEndLine(pawn, (Field) field, true, pawnAndField);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return pawnAndField;
-//    }
-
-//    private Set<Turn> turnsIfReachedEndLine(boolean isEating, Map<Figure, Field> storage){
-//        if (isEating){
-//            StringBuilder turn1 = new StringBuilder(pawn.getField().toString());
-//            turn1.append("-").append(aimedField.toString()).append("(").append("Q").append(")");
-//            storage.add(turn1);
-//            StringBuilder turn2 = new StringBuilder(pawn.getField().toString());
-//            turn2.append("-").append(aimedField.toString()).append("(").append("R").append(")");
-//            storage.add(turn2);
-//            StringBuilder turn3 = new StringBuilder(pawn.getField().toString());
-//            turn3.append("-").append(aimedField.toString()).append("(").append("K").append(")");
-//            storage.add(turn3);
-//            StringBuilder turn4 = new StringBuilder(pawn.getField().toString());
-//            turn4.append("-").append(aimedField.toString()).append("(").append("B").append(")");
-//            storage.add(turn4);
-//        }else {
-//            StringBuilder turn1 = new StringBuilder(pawn.getField().toString());
-//            turn1.append("x").append(aimedField.toString()).append("(").append("Q").append(")");
-//            storage.add(turn1);
-//            StringBuilder turn2 = new StringBuilder(pawn.getField().toString());
-//            turn2.append("x").append(aimedField.toString()).append("(").append("R").append(")");
-//            storage.add(turn2);
-//            StringBuilder turn3 = new StringBuilder(pawn.getField().toString());
-//            turn3.append("x").append(aimedField.toString()).append("(").append("K").append(")");
-//            storage.add(turn3);
-//            StringBuilder turn4 = new StringBuilder(pawn.getField().toString());
-//            turn4.append("x").append(aimedField.toString()).append("(").append("B").append(")");
-//            storage.add(turn4);
-//        }
-//    }
+    private void setCoveringTurns(final Set<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
+        alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
+            ((Figure)f).getPossibleFieldsToMove().stream().forEach(k -> {
+                if (fieldsBetween.contains(k)){
+                    Map<Figure, Field> covering = new HashMap<>();
+                    covering.put( (Figure) f, k);
+                    coveringTurns.add(ProcessingUtils.createTurn(covering, "", false, null, numberOfTurn));
+                }
+            });
+        });
+    }
 
     private List<Turn> castling(Color color){
         List<Turn> castlings = new ArrayList<>();
@@ -247,26 +180,14 @@ public class Game {
                         Board.getFieldToFigure().get(f8) == null && Board.getFieldToFigure().get(g8) == null){
                     castlingMap.put(king, g8);
                     castlingMap.put(rock, f8);
-                    shortCastling = new Turn.Builder()
-                                        .eating(false)
-                                        .writtenStyle("0-0")
-                                        .targetedFigure(null)
-                                        .numberOfTurn(numberOfTurn)
-                                        .figureToDestinationField(castlingMap)
-                                        .build();
+                    shortCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.shortCastling, false, null, numberOfTurn);
                 }
             }else{
                 if (!Board.getFieldsUnderBlackInfluence().contains(f1) && !Board.getFieldsUnderBlackInfluence().contains(g1) &&
                         Board.getFieldToFigure().get(f1) == null && Board.getFieldToFigure().get(g1) == null){
                     castlingMap.put(king, g1);
                     castlingMap.put(rock, f1);
-                    shortCastling = new Turn.Builder()
-                                        .eating(false)
-                                        .writtenStyle("0-0")
-                                        .targetedFigure(null)
-                                        .numberOfTurn(numberOfTurn)
-                                        .figureToDestinationField(castlingMap)
-                                        .build();
+                    shortCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.shortCastling, false, null, numberOfTurn);
                 }
             }
         }
@@ -283,13 +204,7 @@ public class Game {
                         Board.getFieldToFigure().get(c8) == null && Board.getFieldToFigure().get(d8) == null){
                     castlingMap.put(king, c8);
                     castlingMap.put(rock, d8);
-                    longCastling = new Turn.Builder()
-                                        .eating(false)
-                                        .writtenStyle("0-0-0")
-                                        .targetedFigure(null)
-                                        .numberOfTurn(numberOfTurn)
-                                        .figureToDestinationField(castlingMap)
-                                        .build();
+                    longCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.longCastling, false, null, numberOfTurn);
                 }
             }else {
                 if (!Board.getFieldsUnderBlackInfluence().contains(b1) && !Board.getFieldsUnderBlackInfluence().contains(c1) &&
@@ -297,13 +212,7 @@ public class Game {
                         Board.getFieldToFigure().get(c1) == null && Board.getFieldToFigure().get(d1) == null){
                     castlingMap.put(king, c1);
                     castlingMap.put(rock, d1);
-                    longCastling = new Turn.Builder()
-                                        .eating(false)
-                                        .writtenStyle("0-0-0")
-                                        .targetedFigure(null)
-                                        .numberOfTurn(numberOfTurn)
-                                        .figureToDestinationField(castlingMap)
-                                        .build();
+                    longCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.longCastling, false, null, numberOfTurn);
                 }
             }
         }
