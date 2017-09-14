@@ -110,12 +110,7 @@ public class Field {
 
     //TODO refactor this method. Should be placed in Board class.
     public boolean isUnderInfluence(Color color){
-        Set  figures;
-        if (color == Color.BLACK){
-            figures = Board.getBlackFigures();
-        }else {
-            figures = Board.getWhiteFigures();
-        }
+        Set<Observer>  figures = Board.getFigures(color);
         for (Object figure : figures){
             for (Object field : ((Figure)figure).getAttackedFields()){
                 if (this.equals(field)){

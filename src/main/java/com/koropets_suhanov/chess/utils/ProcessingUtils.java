@@ -1,15 +1,7 @@
 package com.koropets_suhanov.chess.utils;
 
-import com.koropets_suhanov.chess.model.Field;
-import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Board;
-import com.koropets_suhanov.chess.model.Pawn;
-import com.koropets_suhanov.chess.model.Rock;
-import com.koropets_suhanov.chess.model.Knight;
-import com.koropets_suhanov.chess.model.Bishop;
-import com.koropets_suhanov.chess.model.Queen;
-import com.koropets_suhanov.chess.model.King;
-import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.process.Game;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,13 +90,13 @@ public class ProcessingUtils {
         if (shortCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
             if (isWhite){
-                Figure whiteKing = Board.getFieldToFigure().get(new Field(7, 4));
-                Figure whiteRock_H = Board.getFieldToFigure().get(new Field(7, 7));
+                Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
+                Figure whiteRock_H = Board.getFieldToFigure().get(Game.h1);
                 figureToField.put(whiteKing, whiteKingShortCastling);
                 figureToField.put(whiteRock_H, whiteRockShortCastling);
             }else {
-                Figure blackKing = Board.getFieldToFigure().get(new Field(0, 4));
-                Figure blackRock_H = Board.getFieldToFigure().get(new Field(0, 7));
+                Figure blackKing = Board.getFieldToFigure().get(Game.e8);
+                Figure blackRock_H = Board.getFieldToFigure().get(Game.h8);
                 figureToField.put(blackKing, blackKingShortCastling);
                 figureToField.put(blackRock_H, blackRockShortCastling);
             }
@@ -113,13 +105,13 @@ public class ProcessingUtils {
         if (longCastling.equals(writtenStyle)){
             Map<Figure, Field> figureToField = new HashMap<>();
             if (isWhite){
-                Figure whiteKing = Board.getFieldToFigure().get(new Field(7, 4));
-                Figure whiteRock_A = Board.getFieldToFigure().get(new Field(7, 0));
+                Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
+                Figure whiteRock_A = Board.getFieldToFigure().get(Game.a1);
                 figureToField.put(whiteKing, whiteKingLongCastling);
                 figureToField.put(whiteRock_A, whiteRockLongCastling);
             }else {
-                Figure blackKing = Board.getFieldToFigure().get(new Field(0, 4));
-                Figure blackRock_A = Board.getFieldToFigure().get(new Field(0, 0));
+                Figure blackKing = Board.getFieldToFigure().get(Game.e8);
+                Figure blackRock_A = Board.getFieldToFigure().get(Game.a8);
                 figureToField.put(blackKing, blackKingLongCastling);
                 figureToField.put(blackRock_A, blackRockLongCastling);
             }
@@ -144,8 +136,7 @@ public class ProcessingUtils {
 
     private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean isEating){
         List<Observer> targets = new ArrayList<Observer>();
-        Set<Observer> figures;
-        figures = isWhite ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> figures = isWhite ? Board.getFigures(Color.WHITE) : Board.getFigures(Color.BLACK);
         for (Observer figure : figures){
             if (figure.getClass() == clazz){
                 if (isEating){

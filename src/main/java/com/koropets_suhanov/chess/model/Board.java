@@ -113,17 +113,21 @@ public class Board implements Subject{
         return uniqueInstance;
     }
 
-    public List<Figure> getFiguresByClass(Class clazz){
+    public static List<Figure> getFiguresByClass(Class clazz){
         List<Figure> returnedFigures = new ArrayList<Figure>();
         figures.stream().filter(f -> f.getClass() == clazz).forEach(f -> returnedFigures.add((Figure) f));
         return returnedFigures;
     }
 
-    public List<Figure> getFiguresByClass(Class clazz, Color color){
-        Set<Observer> observers = (color == Color.BLACK) ? blackFigures : whiteFigures;
+    public static List<Figure> getFiguresByClass(Class clazz, Color color){
+        Set<Observer> observers = getFigures(color);
         List<Figure> figures = new ArrayList<>();
         observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
         return figures;
+    }
+
+    public static Set<Observer> getFigures(Color color){
+        return color == Color.WHITE ? whiteFigures : blackFigures;
     }
 
 //    public Field getPreviousTurn() {
@@ -148,16 +152,8 @@ public class Board implements Subject{
         return field.getX() >= 0 && field.getX() < SIZE && field.getY() >= 0 && field.getY() < SIZE;
     }
 
-    public static Set<Observer> getWhiteFigures() {
-        return whiteFigures;
-    }
-
     public static List<Turn> getPossibleTurnsAndKillings() {
         return possibleTurnsAndKillings;
-    }
-
-    public static Set<Observer> getBlackFigures() {
-        return blackFigures;
     }
 
     public static Set<Observer> getFigures() {

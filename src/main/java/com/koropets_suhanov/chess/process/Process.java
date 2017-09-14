@@ -84,12 +84,12 @@ public class Process {
 
     private static void currentStateOfAllFigures(){
         System.out.println("White figures");
-        for (Observer observer : Board.getWhiteFigures()){
+        for (Observer observer : Board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
             System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
         }
         System.out.println("Black figures");
-        for (Observer observer : Board.getBlackFigures()){
+        for (Observer observer : Board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
             System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
         }

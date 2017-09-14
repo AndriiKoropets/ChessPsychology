@@ -64,7 +64,7 @@ public class EstimatePosition {
     private static int estimateSecondParameter(final Turn turn, final Set<Turn> possibleTurns) {
         int parameter = 0;
         Figure figure = null;
-        Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> enemies = Board.getFigures(whoseTurn);
         for (Figure temp : turn.getFigures().keySet()){
             if (turn.getFigures().size() == 1){
                 figure = temp;
@@ -94,7 +94,7 @@ public class EstimatePosition {
 
     private static int estimatePositionFirstParam() {
         int parameter = 0;
-        Set<Observer> figures = (whoseTurn == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> figures = Board.getFigures(whoseTurn);
         for (Observer observer : figures){
             Figure currentFigure = ((Figure) observer);
             for (Figure alien : ((Figure) observer).getAliensProtectMe()){

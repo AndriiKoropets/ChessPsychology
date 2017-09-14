@@ -36,10 +36,12 @@ public class Game {
     private static final Field b8 = new Field(0, 1);
     private static final Field c8 = new Field(0, 2);
     private static final Field d8 = new Field(0, 3);
-    private static final Field a1 = new Field(7, 0);
-    private static final Field h1 = new Field(7, 7);
-    private static final Field a8 = new Field(0, 0);
-    private static final Field h8 = new Field(0, 7);
+    public static final Field a1 = new Field(7, 0);
+    public static final Field h1 = new Field(7, 7);
+    public static final Field e1 = new Field(7, 4);
+    public static final Field a8 = new Field(0, 0);
+    public static final Field h8 = new Field(0, 7);
+    public static final Field e8 = new Field(0, 4);
     private Set<Turn> possibleTurnsAndEating = new LinkedHashSet<Turn>();
     private int numberOfTurn;
 
@@ -52,14 +54,9 @@ public class Game {
 
     private void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
-        King king = null;
-        Set<Observer> figures = (color == Color.BLACK) ? Board.getBlackFigures() : Board.getWhiteFigures();
-        for (Observer figure : figures){
-            if (figure.getClass() == King.class){
-                king = (King) figure;
-                break;
-            }
-        }
+        King king = (King) Board.getFiguresByClass(King.class, color).get(0);
+        Set<Observer> allies = Board.getFigures(color);
+
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
             Map<Figure, Field> kingMap = new HashMap<>();
             for (Figure enemy : king.getWhoCouldBeEaten()){
@@ -69,7 +66,7 @@ public class Game {
                 }
             }
             Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
-            for (Observer observer : figures){
+            for (Observer observer : allies){
                 if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
                     Map<Figure, Field> alienToTargetField = new HashMap<>();
                     alienToTargetField.put((Figure)observer, whoAttackKing.getField());
@@ -98,14 +95,14 @@ public class Game {
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() > 1){
             peacefulTurn(king);
         }
-        //TODO rewrite to java8 and verify the logic, maybe sth should be changed.
+
         if (!king.isUnderAttack()){
-            for (Observer figure : figures){
+            for (Observer figure : allies){
                 peacefulTurn((Figure) figure);
                 for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
                     Map<Figure, Field> figureFieldMap = new HashMap<>();
                     figureFieldMap.put((Figure)figure, attackedFigure.getField());
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldMap, "", true, , numberOfTurn));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldMap, "", true, attackedFigure, numberOfTurn));
                 }
             }
             possibleTurnsAndEating.addAll(castling(color));
@@ -123,7 +120,7 @@ public class Game {
     private Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
         Set<Turn> coveringTurns = new HashSet<>();
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
-        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -131,7 +128,7 @@ public class Game {
     private Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -139,7 +136,7 @@ public class Game {
     private Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenQueenAndKing(king, queen.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        Set<Observer> alienFigures = (king.getColor() == Color.WHITE) ? Board.getWhiteFigures() : Board.getBlackFigures();
+        Set<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -158,8 +155,8 @@ public class Game {
 
     private List<Turn> castling(Color color){
         List<Turn> castlings = new ArrayList<>();
-        List<Figure> rocks = Board.getInstance().getFiguresByClass(Rock.class, color);
-        King king = (King) Board.getInstance().getFiguresByClass(King.class, color).get(0);
+        List<Figure> rocks = Board.getFiguresByClass(Rock.class, color);
+        King king = (King) Board.getFiguresByClass(King.class, color).get(0);
         for (Figure rock : rocks){
             if ((color == Color.BLACK && rock.getField().equals(h8)) || (color == Color.WHITE && rock.getField().equals(h1))){
                 castlings.add(shortCastling((Rock)rock, king, color));
