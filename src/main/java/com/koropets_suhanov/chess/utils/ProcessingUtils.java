@@ -269,16 +269,33 @@ public class ProcessingUtils {
     public static Set<Field> fieldsBetweenBishopAndKing(final King king, final Field bishopPosition){
         Set<Field> fieldsBetween =  new HashSet<>();
         if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()){
-
+            int yPosition = king.getField().getY() - 1;
+            for (int i = king.getField().getX() - 1; i > bishopPosition.getX(); i--){
+                fieldsBetween.add(new Field(i, yPosition));
+                yPosition--;
+            }
         }
         if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()){
-
+            int yPosition = king.getField().getY() + 1;
+            for (int i = king.getField().getX() - 1; i > bishopPosition.getX(); i--){
+                fieldsBetween.add(new Field(i, yPosition));
+                yPosition++;
+            }
         }
         if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()){
+            int yPosition = king.getField().getY() - 1;
+            for (int i = king.getField().getX() + 1; i < bishopPosition.getX(); i++){
+                fieldsBetween.add(new Field(i, yPosition));
+                yPosition--;
+            }
 
         }
         if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()){
-
+            int yPosition = king.getField().getY() + 1;
+            for (int i = king.getField().getX() + 1; i < bishopPosition.getX(); i++){
+                fieldsBetween.add(new Field(i, yPosition));
+                yPosition++;
+            }
         }
         return fieldsBetween;
     }
