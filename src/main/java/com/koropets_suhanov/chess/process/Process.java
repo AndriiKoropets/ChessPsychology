@@ -60,6 +60,7 @@ public class Process {
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
+                    System.out.println("White turn = " + whiteTurn);
                     whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
                     ProcessingUtils.makeTurn(whiteTurn);
@@ -68,13 +69,14 @@ public class Process {
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
+                        System.out.println("Black turn = " + blackTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
                         ProcessingUtils.makeTurn(blackTurn);
                         System.out.println("After turn = " + blackTurn);
                         printAllBoard();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
-                    printAllBoard();
+//                    printAllBoard();
 //                    currentStateOfAllFigures();
                 }
             }

@@ -175,10 +175,12 @@ public class ProcessingUtils {
                 figure = choseFigureWhichAttack(targets, clazz);
             }
         }
-        if (candidates.size() > 1){
-            figure = choseExactFigure();
-        }else {
-            figure = (Figure) candidates.get(0);
+        if (!candidates.isEmpty()){
+            if (candidates.size() > 1){
+                figure = choseExactFigure();
+            }else {
+                figure = (Figure) candidates.get(0);
+            }
         }
         if (figure != null){
             figureToField.put(figure, field);
@@ -333,7 +335,7 @@ public class ProcessingUtils {
 
     public static void makeTurn(Turn turn){
         for (Figure tempFigure: turn.getFigures().keySet()){
-            Process.BOARD.setNewCoordinates(turn.getFigures().get(tempFigure), tempFigure);
+            Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
 //            Process.BOARD.notify(tempFigure);
         }
     }

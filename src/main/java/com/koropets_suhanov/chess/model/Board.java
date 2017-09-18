@@ -205,12 +205,16 @@ public class Board implements Subject{
             whiteFigures.remove(figure);
         }
         fieldToFigure.remove(((Figure) figure).getField());
+        takenFields.remove(((Figure)figure).getField());
     }
 
-    public void setNewCoordinates(Field field, Observer figure){
-        if (figures.contains(figure)){
-            this.field = field;
-            notify(figure);
+    public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure){
+        if (eatenFigure != null){
+            removeFigure(eatenFigure);
+        }
+        if (figures.contains(updatedFigure)){
+            this.field = updatedField;
+            notify(updatedFigure);
             figures.stream().forEach(f -> {
                     ((Figure)f).possibleTurns();
                     ((Figure)f).attackedFields();
