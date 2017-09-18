@@ -215,12 +215,4 @@ public class Game {
         }
         return longCastling;
     }
-
-    private void makeTurn(Turn turn){
-        //TODO make a turn actually
-    }
-
-    private void undo(Turn turn){
-        //TODO undo a turn that made
-    }
 }

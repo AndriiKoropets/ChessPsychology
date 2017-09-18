@@ -1,6 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.pojo.Turn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 import java.util.LinkedHashSet;
@@ -8,7 +10,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * @author AndriiKoropets
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class Board implements Subject{
 
     public final static byte SIZE = 8;
+    private static final Logger LOG = LoggerFactory.getLogger(Board.class);
     private static Set<Observer> figures = new LinkedHashSet<Observer>();
     private static Set<Observer> whiteFigures = new LinkedHashSet<Observer>();
     private static Set<Observer> blackFigures = new LinkedHashSet<Observer>();
@@ -177,11 +179,12 @@ public class Board implements Subject{
     }
 
     public void notify(Observer figure) {
+        updateTakenFields(figure);
         figure.update(field);
         figures.forEach(cf -> ((Figure) cf).update());
         updateFieldsUnderWhiteInfluence();
         updateFieldsUnderBlackInfluence();
-        updateTakenFields(figure);
+
     }
 
     public void register(Observer figure) {
@@ -208,10 +211,13 @@ public class Board implements Subject{
         if (figures.contains(figure)){
             this.field = field;
             notify(figure);
-            for (Observer figure1 : figures){
-                ((Figure)figure1).possibleTurns();
-                ((Figure)figure1).attackedFields();
-            }
+            figures.stream().forEach(f -> {
+                    ((Figure)f).possibleTurns();
+                    ((Figure)f).attackedFields();
+            });
+        }else {
+            LOG.info("There is no such figure on the Board.");
+            throw new RuntimeException();
         }
     }
 
@@ -222,6 +228,8 @@ public class Board implements Subject{
     private void updateTakenFields(Observer figure){
         takenFields.remove(((Figure) figure).getField());
         takenFields.add(field);
+        fieldToFigure.put(field, (Figure) figure);
+        fieldToFigure.replace(((Figure) figure).getField(), null);
     }
 
     private void setTakenFields(){

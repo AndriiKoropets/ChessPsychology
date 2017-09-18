@@ -1,6 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
 
+import com.koropets_suhanov.chess.process.Process;
+
 import static com.koropets_suhanov.chess.model.Field.isValidField;
 
 /**
@@ -118,12 +120,12 @@ public class Pawn extends Figure {
             if(this.getField().getX() == 3){
                 Field leftField = new Field(3, this.getField().getY()-1);
                 Figure leftEnemy = Board.getFieldToFigure().get(leftField);
-                if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(leftField)){
+                if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class && Process.BOARD.getPreviousTurn().equals(leftField)){
                     this.getWhoCouldBeEaten().add(leftEnemy);
                 }
                 Field rightField = new Field(3, this.getField().getY() + 1);
                 Figure rightEnemy = Board.getFieldToFigure().get(rightField);
-                if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(rightField)){
+                if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class && Process.BOARD.getPreviousTurn().equals(rightField)){
                     this.getWhoCouldBeEaten().add(rightEnemy);
                 }
             }
@@ -131,12 +133,12 @@ public class Pawn extends Figure {
             if (this.getField().getX() == 4){
                 Field leftField = new Field(4, this.getField().getY() - 1);
                 Figure leftEnemy = Board.getFieldToFigure().get(leftField);
-                if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(leftField)){
+                if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class && Process.BOARD.getPreviousTurn().equals(leftField)){
                     this.getWhoCouldBeEaten().add(leftEnemy);
                 }
                 Field rightField = new Field(4, this.getField().getY() + 1);
                 Figure rightEnemy = Board.getFieldToFigure().get(rightField);
-                if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class && Board.getInstance().getPreviousTurn().equals(rightField)){
+                if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class && Process.BOARD.getPreviousTurn().equals(rightField)){
                     this.getWhoCouldBeEaten().add(rightEnemy);
                 }
             }

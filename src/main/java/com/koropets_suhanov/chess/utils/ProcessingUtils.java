@@ -1,7 +1,18 @@
 package com.koropets_suhanov.chess.utils;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Bishop;
+import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.Knight;
+import com.koropets_suhanov.chess.model.Queen;
+import com.koropets_suhanov.chess.model.King;
+import com.koropets_suhanov.chess.model.Pawn;
+import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.process.Game;
+import com.koropets_suhanov.chess.process.Process;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +31,7 @@ import java.util.HashSet;
 public class ProcessingUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessingUtils.class);
-    private static List<Observer> candidates = new ArrayList<Observer>();
+    private static List<Observer> candidates;
     private static String mainTurn;
     private static Field field;
     private static int number;
@@ -42,6 +53,7 @@ public class ProcessingUtils {
     private static final FrequentFigure blackFrequent = new FrequentFigure();
 
     public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
+        candidates = new ArrayList<>();
         mainTurn = turnWrittenStyle;
         number = numberOfTurn;
         field = parseTargetField(turnWrittenStyle);
@@ -136,7 +148,7 @@ public class ProcessingUtils {
 
     private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean isEating){
         List<Observer> targets = new ArrayList<Observer>();
-        Set<Observer> figures = isWhite ? Board.getFigures(Color.WHITE) : Board.getFigures(Color.BLACK);
+        List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer figure : figures){
             if (figure.getClass() == clazz){
                 if (isEating){
@@ -171,7 +183,8 @@ public class ProcessingUtils {
         if (figure != null){
             figureToField.put(figure, field);
         }
-        throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
+        return figureToField;
+//        throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
     }
 
     private static Figure choseFigureWhichAttack(List<Observer> list, Class clazz){
@@ -316,5 +329,16 @@ public class ProcessingUtils {
 
     public static FrequentFigure getBlackFrequent() {
         return blackFrequent;
+    }
+
+    public static void makeTurn(Turn turn){
+        for (Figure tempFigure: turn.getFigures().keySet()){
+            Process.BOARD.setNewCoordinates(turn.getFigures().get(tempFigure), tempFigure);
+//            Process.BOARD.notify(tempFigure);
+        }
+    }
+
+    public static void undoTurn(Turn turn){
+
     }
 }

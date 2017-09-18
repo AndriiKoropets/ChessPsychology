@@ -32,7 +32,7 @@ public class Process {
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
     private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
-    private static final Board board = Board.getInstance();
+    public static final Board BOARD = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
     private static Game game = new Game();
     private static Parameter whiteEstimationWholeParty;
@@ -62,12 +62,16 @@ public class Process {
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
                     whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
-//                    EstimatePosition.makeTurn(whiteTurn);
+                    ProcessingUtils.makeTurn(whiteTurn);
+                    System.out.println("After turn = " + whiteTurn);
+                    printAllBoard();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
-//                        EstimatePosition.makeTurn(blackTurn);
+                        ProcessingUtils.makeTurn(blackTurn);
+                        System.out.println("After turn = " + blackTurn);
+                        printAllBoard();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                     }
                     printAllBoard();
@@ -103,6 +107,8 @@ public class Process {
             for (int j = 0; j < Board.SIZE; j++){
                 Field currentPoint = new Field(i, j);
                 if (currentPoint.isTaken()){
+//                    System.out.println("Currentpoint = " + currentPoint);
+//                    System.out.println("Figure to field = " + Board.getFieldToFigure().get(currentPoint));
                     System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
                 }else {
                     System.out.print("   ");
@@ -122,18 +128,11 @@ public class Process {
     }
 
     private static String printFigure(Figure figure){
-        if (figure.getClass() == King.class){
+        if (figure.getClass() == Pawn.class){
             if (figure.getColor() == Color.WHITE){
-                return "K";
+                return "P";
             }else {
-                return "k";
-            }
-        }
-        if (figure.getClass() == Queen.class){
-            if (figure.getColor() == Color.WHITE){
-                return "Q";
-            }else {
-                return "q";
+                return "p";
             }
         }
         if (figure.getClass() == Rock.class){
@@ -157,11 +156,18 @@ public class Process {
                 return "b";
             }
         }
-        if (figure.getClass() == Pawn.class){
+        if (figure.getClass() == King.class){
             if (figure.getColor() == Color.WHITE){
-                return "P";
+                return "K";
             }else {
-                return "p";
+                return "k";
+            }
+        }
+        if (figure.getClass() == Queen.class){
+            if (figure.getColor() == Color.WHITE){
+                return "Q";
+            }else {
+                return "q";
             }
         }
         return null;
