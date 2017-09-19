@@ -7,7 +7,7 @@ import static java.lang.Math.abs;
  */
 public class Queen extends Figure {
 
-    private final static int QUEEN_WEIGHT = 3;
+    private final static int QUEEN_WEIGHT = 9;
     private final static int POINT = 4;
 
     public Queen(Field field, Color color) {

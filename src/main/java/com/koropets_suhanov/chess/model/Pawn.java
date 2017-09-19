@@ -12,7 +12,7 @@ public class Pawn extends Figure {
 
     private final static int PAWN_WEIGHT = 1;
     private final static int POINT = 1;
-    private int numberOfDoneTurns;
+    private int numberOfMadeTurns;
 
     public Pawn(Field field, Color color) {
         super(field, color);

@@ -209,10 +209,20 @@ public class Board implements Subject{
     }
 
     public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure){
+        //TODO had to write this junk, cause was problem with contains method for Set
+        boolean flag = false;
+        for (Observer f : figures){
+            if (f.equals(updatedFigure)){
+                System.out.println(f + " equals " + updatedFigure);
+                flag = true;
+                break;
+            }
+        }
+
         if (eatenFigure != null){
             removeFigure(eatenFigure);
         }
-        if (figures.contains(updatedFigure)){
+        if (flag){
             this.field = updatedField;
             notify(updatedFigure);
             figures.stream().forEach(f -> {

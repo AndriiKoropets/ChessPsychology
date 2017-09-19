@@ -146,12 +146,13 @@ public class ProcessingUtils {
         }
     }
 
-    private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean isEating){
+    private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean eating){
+        isEating = eating;
         List<Observer> targets = new ArrayList<Observer>();
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer figure : figures){
             if (figure.getClass() == clazz){
-                if (isEating){
+                if (eating){
                     Set<Figure> couldBeEaten = ((Figure)figure).getWhoCouldBeEaten();
                     for (Figure figureUnderAttack : couldBeEaten){
                         if (figureUnderAttack.getField().equals(field)){

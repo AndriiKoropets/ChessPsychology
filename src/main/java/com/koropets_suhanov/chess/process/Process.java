@@ -30,7 +30,7 @@ import java.util.Set;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-    private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     public static final Board BOARD = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");

@@ -92,6 +92,20 @@ public class Parameter {
         this.eighthDontTakeAChanceToWithdrawAttackOnMe = eighthDontTakeAChanceToWithdrawAttackOnMe;
     }
 
+    @Override
+    public String toString() {
+        return "Parameter{" +
+                "firstAttackEnemy=" + firstAttackEnemy +
+                ", secondBeUnderAttack=" + secondBeUnderAttack +
+                ", thirdWithdrawAttackOnEnemy=" + thirdWithdrawAttackOnEnemy +
+                ", fourthWithdrawAttackOnMe=" + fourthWithdrawAttackOnMe +
+                ", fifthDontTakeAChanceToAttack=" + fifthDontTakeAChanceToAttack +
+                ", sixthDontTakeAChanceToBeUnderAttack=" + sixthDontTakeAChanceToBeUnderAttack +
+                ", seventhDontTakeAChanceToWithdrawAttackOnEnemy=" + seventhDontTakeAChanceToWithdrawAttackOnEnemy +
+                ", eighthDontTakeAChanceToWithdrawAttackOnMe=" + eighthDontTakeAChanceToWithdrawAttackOnMe +
+                '}';
+    }
+
     public static final class Builder{
 
         private int first;
