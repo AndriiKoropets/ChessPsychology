@@ -6,7 +6,7 @@ package com.koropets_suhanov.chess.model;
 public class Rock extends Figure {
 
     private final static double ROCK_WEIGHT = 4.5;
-    private final static int POINT = 4;
+    private final static int POINT = 3;
     private boolean opportunityToCastling = true;
 
     public Rock(Field field, Color color) {

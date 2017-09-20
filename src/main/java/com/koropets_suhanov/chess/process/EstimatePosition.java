@@ -111,10 +111,11 @@ public class EstimatePosition {
 
     private static int estimateTurnFirstParam(final Turn turn) {
         int parameter = 0;
+        //TODO add logic for attacking via ally.
         for (Figure figure : turn.getFigures().keySet()){
             for (Figure prey : figure.getWhoCouldBeEaten()){
                 if (prey.getEnemiesAttackMe().size() >= prey.getAliensProtectMe().size() || prey.getValue() >= figure.getValue()){
-                    parameter++;
+                    parameter += prey.getPoint();
                 }
             }
         }

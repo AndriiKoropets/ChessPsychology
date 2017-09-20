@@ -79,6 +79,8 @@ public class Process {
 //                    printAllBoard();
 //                    currentStateOfAllFigures();
                 }
+                System.out.println("White estimation = " + whiteEstimationWholeParty);
+                System.out.println("Black estimation = " + blackEstimationWholeParty);
             }
             System.out.println("White estimation = " + whiteEstimationWholeParty);
             System.out.println("Black estimation = " + blackEstimationWholeParty);
