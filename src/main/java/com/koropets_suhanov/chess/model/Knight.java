@@ -48,4 +48,9 @@ public class Knight extends Figure {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "N" + this.getField().toString();
+    }
 }

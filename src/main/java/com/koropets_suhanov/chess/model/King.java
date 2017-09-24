@@ -19,28 +19,25 @@ public class King extends Figure {
 
     @Override
     public void possibleTurns(){
-        Set<Field> enemyInfluence;
-        for (Field field : this.getAttackedFields()){
-            Figure figure = Board.getFieldToFigure().get(field);
-            if (this.getColor() == Color.BLACK){
-                enemyInfluence = Board.getFieldsUnderWhiteInfluence();
-            }else {
-                enemyInfluence = Board.getFieldsUnderBlackInfluence();
-            }
-            if (!enemyInfluence.contains(field)){
+        Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
+                : Board.getFieldsUnderBlackInfluence();
+        this.getAttackedFields().forEach(f -> {
+            Figure figure = Board.getFieldToFigure().get(f);
+            if (!enemyInfluence.contains(f)){
                 if (figure != null){
                     if (this.getColor() == figure.getColor()){
-                        figure.addAlien(this);
+                        figure.addAllyProtectMe(this);
+                        this.addAllyIProtect(figure);
                     }else {
                         figure.addEnemy(this);
                         this.getWhoCouldBeEaten().add(figure);
                     }
                 }else {
-                    this.getPossibleFieldsToMove().add(field);
-                    this.getFieldsUnderMyInfluence().add(field);
+                    this.getPossibleFieldsToMove().add(f);
+                    this.getFieldsUnderMyInfluence().add(f);
                 }
             }
-        }
+        });
     }
 
     @Override
@@ -62,12 +59,8 @@ public class King extends Figure {
     }
 
     public boolean isUnderAttack(){
-        Set<Field> enemyInfluence;
-        if (this.getColor() == Color.WHITE){
-            enemyInfluence = Board.getFieldsUnderBlackInfluence();
-        }else {
-            enemyInfluence = Board.getFieldsUnderWhiteInfluence();
-        }
+        Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
+                : Board.getFieldsUnderWhiteInfluence();
         return enemyInfluence.contains(this.getField());
     }
 
@@ -84,5 +77,10 @@ public class King extends Figure {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "K" + this.getField().toString();
     }
 }

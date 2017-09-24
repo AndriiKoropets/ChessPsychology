@@ -81,4 +81,9 @@ public class Rock extends Figure {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "R" + this.getField();
+    }
 }

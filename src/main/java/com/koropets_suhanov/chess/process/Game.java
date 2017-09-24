@@ -60,7 +60,7 @@ public class Game {
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
             Map<Figure, Field> kingMap = new HashMap<>();
             for (Figure enemy : king.getWhoCouldBeEaten()){
-                if (enemy.getAliensProtectMe().size() == 0){
+                if (enemy.getAlliesProtectMe().size() == 0){
                     kingMap.put(king, enemy.getField());
                     possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingMap, "", true, enemy, numberOfTurn));
                 }

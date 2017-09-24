@@ -142,4 +142,9 @@ public class Queen extends Figure {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Q" + this.getField();
+    }
 }

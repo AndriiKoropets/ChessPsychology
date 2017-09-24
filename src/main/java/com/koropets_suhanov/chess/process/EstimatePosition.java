@@ -1,11 +1,6 @@
 package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Observer;
-import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.model.Board;
-import com.koropets_suhanov.chess.model.Field;
-import com.koropets_suhanov.chess.model.Rock;
+import com.koropets_suhanov.chess.model.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +19,7 @@ public class EstimatePosition {
     private static Color whoseTurn;
 
     static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
+        whoseTurn = side;
         return new Parameter.Builder().first(estimateFirstParameter(turn, possibleTurns))
                 .second(estimateSecondParameter(turn, possibleTurns))
                 .third(estimateThirdParameter(turn, possibleTurns))
@@ -88,37 +84,70 @@ public class EstimatePosition {
     }
 
     private static int estimateFirstParameter(final Turn turn, final Set<Turn> possibleTurns){
-        return estimateTurnFirstParam(turn) + estimatePositionFirstParam();
+        return firstParamActualAttack(turn) + firstParamAttackViaAlly(turn)/* + firstParamAttackOthersAllies(turn)*/;
     }
 
-    private static int estimatePositionFirstParam() {
-        int parameter = 0;
-        Set<Observer> figures = Board.getFigures(whoseTurn);
-        for (Observer observer : figures){
-            Figure currentFigure = ((Figure) observer);
-            for (Figure alien : ((Figure) observer).getAliensProtectMe()){
-                for (Figure prey : currentFigure.getWhoCouldBeEaten()){
-                    Field preyField = prey.getField();
-                    if (alien.getFieldsUnderMyInfluence().contains(preyField) && !alien.getPossibleFieldsToMove().contains(preyField) && !alien.getPreyField().contains(preyField)){
-                        parameter++;
-                        prey.getEnemiesAttackMe().add(alien);
-                    }
+    private static int firstParamAttackOthersAllies(Turn turn){
+        int curFirParExceptActiveFigures = 0;
+        int previousState = (whoseTurn == Color.WHITE) ? Process.fullWhiteEstimation.getFirstAttackEnemy() :
+                Process.fullBlackEstimation.getFirstAttackEnemy();
+        Set<Observer> allies = Board.getFigures(whoseTurn);
+        for (Observer observer : allies){
+            Figure ally = (Figure)observer;
+            for (Figure figureOfTheTurn : turn.getFigures().keySet()){
+                if (!ally.equals(figureOfTheTurn)){
+                    curFirParExceptActiveFigures += ally.getWhoCouldBeEaten().size();
                 }
             }
         }
+        return previousState - curFirParExceptActiveFigures;
+    }
+
+    private static int firstParamAttackViaAlly(Turn turn) {
+        int parameter = 0;
+//        System.out.println("All =========");
+//        for (Observer observer : allies){
+//            System.out.println(observer);
+//        }
+//        System.out.println("--------------");
+        for (Figure curFigure : turn.getFigures().keySet()){
+            if (curFigure.getClass() == Queen.class){
+                System.out.println("here");
+                System.out.println(curFigure.getAttackedFields());
+            }
+            for (Figure ally : curFigure.getAlliesIProtect()){
+                System.out.println("Ally = " + ally);
+                for (Figure prey : ally.getWhoCouldBeEaten()){
+                    Field preyField = prey.getField();
+                    System.out.println("PreyField = " + preyField + " for such ally" + ally);
+                    if (curFigure.getAttackedFields().contains(preyField) && !curFigure.getPreyField().contains(preyField)){
+                        parameter += prey.getPoint();
+                        System.out.println("Parameter = " + parameter);
+                    }
+                }
+//                for (Figure prey : currentFigure.getWhoCouldBeEaten()){
+//                    Field preyField = prey.getField();
+//                    if (ally.getFieldsUnderMyInfluence().contains(preyField) && !ally.getPossibleFieldsToMove().contains(preyField) && !ally.getPreyField().contains(preyField)){
+//                        parameter++;
+//                        prey.getEnemiesAttackMe().add(ally);
+//                    }
+//                }
+            }
+        }
+        System.out.println("Parameter via = " + parameter);
         return parameter;
     }
 
-    private static int estimateTurnFirstParam(final Turn turn) {
+    private static int firstParamActualAttack(final Turn turn) {
         int parameter = 0;
-        //TODO add logic for attacking via ally.
         for (Figure figure : turn.getFigures().keySet()){
             for (Figure prey : figure.getWhoCouldBeEaten()){
-                if (prey.getEnemiesAttackMe().size() >= prey.getAliensProtectMe().size() || prey.getValue() >= figure.getValue()){
+                if (prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size() || prey.getValue() >= figure.getValue()){
                     parameter += prey.getPoint();
                 }
             }
         }
+        System.out.println("Parameter actual = " + parameter);
         return parameter;
     }
 }

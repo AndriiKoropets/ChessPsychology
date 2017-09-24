@@ -38,12 +38,19 @@ public class Process {
     private static Parameter whiteEstimationWholeParty;
     private static Parameter blackEstimationWholeParty;
 
+    static Parameter fullWhiteEstimation;
+    static Parameter fullBlackEstimation;
+
     public static void main(String[] args){
         process();
     }
 
     private static void process(){
         LOG.info("Process is starting");
+        whiteEstimationWholeParty = new Parameter.Builder().build();
+        blackEstimationWholeParty = new Parameter.Builder().build();
+        fullWhiteEstimation = new Parameter.Builder().build();
+        fullBlackEstimation = new Parameter.Builder().build();
         printAllBoard();
         File file = null;
         try{
@@ -67,6 +74,7 @@ public class Process {
                     System.out.println("After turn = " + whiteTurn);
                     printAllBoard();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
+                    fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
                         System.out.println("Black turn = " + blackTurn);
@@ -75,6 +83,7 @@ public class Process {
                         System.out.println("After turn = " + blackTurn);
                         printAllBoard();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
+                        fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
 //                    printAllBoard();
 //                    currentStateOfAllFigures();
@@ -82,8 +91,11 @@ public class Process {
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
             }
-            System.out.println("White estimation = " + whiteEstimationWholeParty);
-            System.out.println("Black estimation = " + blackEstimationWholeParty);
+//            System.out.println("White estimation = " + whiteEstimationWholeParty);
+//            System.out.println("Black estimation = " + blackEstimationWholeParty);
+            System.out.println("Full estimation");
+            System.out.println("White = " + fullWhiteEstimation);
+            System.out.println("Black = " + fullBlackEstimation);
         } catch (IOException e) {
             LOG.info("File {} was not found", file);
             throw new RuntimeException();
@@ -94,12 +106,12 @@ public class Process {
         System.out.println("White figures");
         for (Observer observer : Board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAlliesProtectMe());
         }
         System.out.println("Black figures");
         for (Observer observer : Board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAliensProtectMe());
+            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAlliesProtectMe());
         }
     }
 
@@ -177,9 +189,9 @@ public class Process {
         return null;
     }
 
-    private void updateEstimationParameter(Parameter parameter, Color color){
-        Parameter globalEstimation = (color == Color.BLACK) ? blackEstimationWholeParty : whiteEstimationWholeParty;
-        globalEstimation = new Parameter.Builder().first(globalEstimation.getFirstAttackEnemy() + parameter.getFirstAttackEnemy())
+    private static Parameter countFullEstimation(Parameter parameter, Color color){
+        Parameter globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
+        return new Parameter.Builder().first(globalEstimation.getFirstAttackEnemy() + parameter.getFirstAttackEnemy())
                 .second(globalEstimation.getSecondBeUnderAttack() + parameter.getSecondBeUnderAttack())
                 .third(globalEstimation.getThirdWithdrawAttackOnEnemy() + parameter.getThirdWithdrawAttackOnEnemy())
                 .fourth(globalEstimation.getFourthWithdrawAttackOnMe() + parameter.getFourthWithdrawAttackOnMe())

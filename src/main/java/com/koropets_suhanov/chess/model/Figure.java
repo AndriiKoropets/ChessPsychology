@@ -12,8 +12,9 @@ public abstract class Figure implements Observer {
     private Field field;
     private Color color;
     private Set<Figure> enemiesAttackMe = new LinkedHashSet<Figure>();
-    private Set<Figure> aliensProtectMe = new LinkedHashSet<Figure>();
+    private Set<Figure> alliesProtectMe = new LinkedHashSet<Figure>();
     private Set<Figure> whoCouldBeEaten = new LinkedHashSet<Figure>();
+    private Set<Figure> alliesIProtect = new LinkedHashSet<Figure>();
     private Set<Field> attackedFields = new LinkedHashSet<Field>();
     private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
     private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
@@ -42,8 +43,9 @@ public abstract class Figure implements Observer {
     public void update(Field field){
         this.field = field;
         this.enemiesAttackMe.clear();
-        this.aliensProtectMe.clear();
+        this.alliesProtectMe.clear();
         this.whoCouldBeEaten.clear();
+        this.alliesIProtect.clear();
         this.attackedFields.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
@@ -60,8 +62,9 @@ public abstract class Figure implements Observer {
 
     public void update(){
         this.enemiesAttackMe.clear();
-        this.aliensProtectMe.clear();
+        this.alliesProtectMe.clear();
         this.whoCouldBeEaten.clear();
+        this.alliesIProtect.clear();
         this.attackedFields.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
@@ -97,8 +100,12 @@ public abstract class Figure implements Observer {
         return enemiesAttackMe;
     }
 
-    public Set<Figure> getAliensProtectMe() {
-        return aliensProtectMe;
+    public Set<Figure> getAlliesProtectMe() {
+        return alliesProtectMe;
+    }
+
+    public Set<Figure> getAlliesIProtect(){
+        return alliesIProtect;
     }
 
     public Set<Field> getPossibleFieldsToMove() {
@@ -109,15 +116,19 @@ public abstract class Figure implements Observer {
         return preyField;
     }
 
-    public void addAlien(Figure figure){
-        aliensProtectMe.add(figure);
+    public void addAllyProtectMe(Figure figure){
+        alliesProtectMe.add(figure);
+    }
+
+    public void addAllyIProtect(Figure figure){
+        alliesIProtect.add(figure);
     }
 
 //    public void possibleTurns(){
 //        for (Field field : attackedFields){
 //            if (field.isTaken()){
 //                if (this.getColor() == field.getFigureByField().getColor()){
-//                    field.getFigureByField().addAlien(this);
+//                    field.getFigureByField().addAllyProtectMe(this);
 //                }else {
 //                    field.getFigureByField().addEnemy(this);
 //                    this.getWhoCouldBeEaten().add(field.getFigureByField());
@@ -134,7 +145,8 @@ public abstract class Figure implements Observer {
         }else {
             Figure tempFigure = Board.getFieldToFigure().get(field);
             if (tempFigure.getColor() == this.getColor()){
-                tempFigure.addAlien(this);
+                tempFigure.addAllyProtectMe(this);
+                this.addAllyIProtect(tempFigure);
                 return true;
             }else {
                 tempFigure.addEnemy(this);
@@ -155,28 +167,5 @@ public abstract class Figure implements Observer {
     @Override
     public int hashCode(){
         return 31*this.getField().getX() + 97*this.getField().getY();
-    }
-
-    @Override
-    public String toString(){
-        if (this.getClass() == Pawn.class) {
-            return "" + this.getField().toString();
-        }
-        if (this.getClass() == Rock.class) {
-            return "R" + this.getField().toString();
-        }
-        if (this.getClass() == Knight.class) {
-            return "N" + this.getField().toString();
-        }
-        if (this.getClass() == Bishop.class) {
-            return "B" + this.getField().toString();
-        }
-        if (this.getClass() == Queen.class) {
-            return "Q" + this.getField().toString();
-        }
-        if (this.getClass() == King.class) {
-            return "K" + this.getField().toString();
-        }
-        return null;
     }
 }

@@ -213,7 +213,7 @@ public class Board implements Subject{
         boolean flag = false;
         for (Observer f : figures){
             if (f.equals(updatedFigure)){
-                System.out.println(f + " equals " + updatedFigure);
+//                System.out.println(f + " equals " + updatedFigure);
                 flag = true;
                 break;
             }

@@ -9,17 +9,6 @@ public class Bishop extends Figure {
 
     private final static int BISHOP_WEIGHT = 3;
     private final static int POINT = 2;
-//    private final static Set<Integer> set = new LinkedHashSet<Integer>(8);
-
-//    static {
-//        set.add(1);
-//        set.add(2);
-//        set.add(3);
-//        set.add(4);
-//        set.add(5);
-//        set.add(6);
-//        set.add(7);
-//    }
 
     public Bishop(Field field, Color color) {
         super(field, color);
@@ -117,5 +106,10 @@ public class Bishop extends Figure {
     @Override
     public int getPoint() {
         return POINT;
+    }
+
+    @Override
+    public String toString() {
+        return "B" + this.getField().toString();
     }
 }

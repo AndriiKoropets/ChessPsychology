@@ -100,19 +100,20 @@ public class Pawn extends Figure {
     }
 
     private void fillAttackedAndProtectedFigures(){
-        for (Field field : getAttackedFields()){
-            Figure figure = Board.getFieldToFigure().get(field);
+        getAttackedFields().forEach(f -> {
+            Figure figure = Board.getFieldToFigure().get(f);
             if (figure != null){
                 if (figure.getColor() == this.getColor()){
-                    figure.addAlien(this);
+                    figure.addAllyProtectMe(this);
+                    this.addAllyIProtect(figure);
                 }else {
                     figure.addEnemy(this);
                     this.getWhoCouldBeEaten().add(figure);
                 }
             }else {
-                getFieldsUnderMyInfluence().add(field);
+                getFieldsUnderMyInfluence().add(f);
             }
-        }
+        });
     }
 
     private void enPassant(){
@@ -143,5 +144,10 @@ public class Pawn extends Figure {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.getField().toString();
     }
 }
