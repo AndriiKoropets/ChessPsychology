@@ -225,7 +225,7 @@ public class Board implements Subject{
         if (flag){
             this.field = updatedField;
             notify(updatedFigure);
-            figures.stream().forEach(f -> {
+            figures.forEach(f -> {
                     ((Figure)f).possibleTurns();
                     ((Figure)f).attackedFields();
             });

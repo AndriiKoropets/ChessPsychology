@@ -56,31 +56,43 @@ public class EstimatePosition {
         return 0;
     }
 
-    private static int estimateSecondParameter(final Turn turn, final Set<Turn> possibleTurns) {
+    private static int estimateSecondParameter(final Turn turn, final Set<Turn> possibleTurns){
+        return secParamActualSubstitution(turn) + secParamSubstitutionViaFigure(turn);
+    }
+
+     private static int secParamSubstitutionViaFigure(final Turn turn){
+        int param = 0;
+        Figure figure = retrieveFigureFromTurn(turn);
+         Set<Observer> enemies = (whoseTurn == Color.BLACK) ? Board.getFigures(Color.WHITE) : Board.getFigures(Color.BLACK);
+        //TODO
+        return param;
+     }
+
+    private static int secParamActualSubstitution(final Turn turn) {
         int parameter = 0;
-        Figure figure = null;
-        Set<Observer> enemies = Board.getFigures(whoseTurn);
-        for (Figure temp : turn.getFigures().keySet()){
-            if (turn.getFigures().size() == 1){
-                figure = temp;
-                break;
-            }else if (temp.getClass() == Rock.class){
-                figure = temp;
-            }
-        }
-        if (figure != null){
-            for (Observer enemyObserver : enemies){
-                Figure enemy = ((Figure) enemyObserver);
-                for (Figure prey : enemy.getWhoCouldBeEaten()){
-                    if (prey.equals(figure)){
-                        parameter++;
-                    }
+        Figure figure = retrieveFigureFromTurn(turn);
+        Set<Observer> enemies = (whoseTurn == Color.BLACK) ? Board.getFigures(Color.WHITE) : Board.getFigures(Color.BLACK);
+        for (Observer enemyObserver : enemies){
+            Figure enemy = ((Figure) enemyObserver);
+            for (Figure prey : enemy.getWhoCouldBeEaten()){
+                if (prey.equals(figure)){
+                    parameter += figure.getPoint();
                 }
             }
-        }else {
-            throw new RuntimeException("Could not choose figure from actual turn");
         }
         return parameter;
+    }
+
+    private static Figure retrieveFigureFromTurn(final Turn turn){
+        if (turn.getFigures().size() == 1){
+            return turn.getFigures().keySet().iterator().next();
+        }
+        for (Figure temp : turn.getFigures().keySet()){
+            if (temp.getClass() == Rock.class){
+                return  temp;
+            }
+        }
+        throw new RuntimeException("Could not choose figure from actual turn");
     }
 
     private static int estimateFirstParameter(final Turn turn, final Set<Turn> possibleTurns){

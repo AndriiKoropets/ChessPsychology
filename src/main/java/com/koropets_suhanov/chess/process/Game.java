@@ -143,7 +143,7 @@ public class Game {
 
     private void setCoveringTurns(final Set<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
         alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
-            ((Figure)f).getPossibleFieldsToMove().stream().forEach(k -> {
+            ((Figure)f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)){
                     Map<Figure, Field> covering = new HashMap<>();
                     covering.put( (Figure) f, k);
