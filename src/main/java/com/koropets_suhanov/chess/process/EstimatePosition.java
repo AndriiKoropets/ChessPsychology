@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.Math.abs;
+
 import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import scala.Tuple2;
@@ -132,7 +134,8 @@ public class EstimatePosition {
                 for (Figure prey : ally.getWhoCouldBeEaten()){
                     Field preyField = prey.getField();
                     System.out.println("PreyField = " + preyField + " for such ally" + ally);
-                    if (curFigure.getAttackedFields().contains(preyField) && !curFigure.getPreyField().contains(preyField)){
+                    if (curFigure.getAttackedFields().contains(preyField) && !curFigure.getPreyField().contains(preyField)
+                            && isOnTheSameLine(curFigure, ally, prey)){
                         parameter += prey.getPoint();
                         System.out.println("Parameter = " + parameter);
                     }
@@ -148,6 +151,14 @@ public class EstimatePosition {
         }
         System.out.println("Parameter via = " + parameter);
         return parameter;
+    }
+
+    private static boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3){
+        return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
+                ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY())) ||
+                (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
+                        && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY())))
+                        && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
     }
 
     private static int firstParamActualAttack(final Turn turn) {
