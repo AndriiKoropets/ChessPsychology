@@ -1,6 +1,12 @@
 package com.koropets_suhanov.chess.process;
 
-import com.koropets_suhanov.chess.model.*;
+import com.koropets_suhanov.chess.model.Color;
+import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Queen;
+import com.koropets_suhanov.chess.model.Board;
+import com.koropets_suhanov.chess.model.Rock;
 
 import java.util.HashMap;
 import java.util.Map;
