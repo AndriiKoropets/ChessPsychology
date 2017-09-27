@@ -14,6 +14,7 @@ public abstract class Figure implements Observer {
     private Set<Figure> enemiesAttackMe = new LinkedHashSet<Figure>();
     private Set<Figure> alliesProtectMe = new LinkedHashSet<Figure>();
     private Set<Figure> whoCouldBeEaten = new LinkedHashSet<Figure>();
+    private Set<Figure> whoCouldBeEatenPreviousState = new LinkedHashSet<Figure>();
     private Set<Figure> alliesIProtect = new LinkedHashSet<Figure>();
     private Set<Field> attackedFields = new LinkedHashSet<Field>();
     private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
@@ -44,6 +45,8 @@ public abstract class Figure implements Observer {
         this.field = field;
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
+        this.whoCouldBeEatenPreviousState.clear();
+        this.whoCouldBeEatenPreviousState.addAll(whoCouldBeEaten);
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();
@@ -116,6 +119,10 @@ public abstract class Figure implements Observer {
         return preyField;
     }
 
+    public Set<Figure> getWhoCouldBeEatenPreviousState(){
+        return whoCouldBeEatenPreviousState;
+    }
+
     public void addAllyProtectMe(Figure figure){
         alliesProtectMe.add(figure);
     }
@@ -123,7 +130,6 @@ public abstract class Figure implements Observer {
     public void addAllyIProtect(Figure figure){
         alliesIProtect.add(figure);
     }
-
 //    public void possibleTurns(){
 //        for (Field field : attackedFields){
 //            if (field.isTaken()){

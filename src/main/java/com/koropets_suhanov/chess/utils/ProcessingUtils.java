@@ -326,6 +326,17 @@ public class ProcessingUtils {
         return fieldsBetweenQueenAndKing;
     }
 
+    public static Set<Figure> getFiguresAffectField(final Field underAffect, final Color color){
+        final Set<Figure> acceptedFigures = new HashSet<>();
+        Set<Observer> observers = Board.getFigures(color);
+        observers.forEach(o -> {
+            if (((Figure)o).getAttackedFields().contains(underAffect)){
+                acceptedFigures.add((Figure)o);
+            }
+        });
+        return acceptedFigures;
+    }
+
     public static FrequentFigure getWhiteFrequent() {
         return whiteFrequent;
     }

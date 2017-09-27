@@ -16,6 +16,7 @@ import static java.lang.Math.abs;
 
 import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import scala.Tuple2;
 
 /**
@@ -108,6 +109,17 @@ public class EstimatePosition {
     }
 
     private static int firstParamAttackOthersAllies(Turn turn){
+        Set<Figure> acceptedFigures = null;
+        for (Figure f : turn.getFigures().keySet()){
+            if (acceptedFigures == null){
+                acceptedFigures = ProcessingUtils.getFiguresAffectField(turn.getFigures().get(f), whoseTurn);
+                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(f.getField(), whoseTurn));
+            }else {
+                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(turn.getFigures().get(f), whoseTurn));
+                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(f.getField(), whoseTurn));
+            }
+        }
+        //TODO add additional logic
         int curFirParExceptActiveFigures = 0;
         int previousState = (whoseTurn == Color.WHITE) ? Process.fullWhiteEstimation.getFirstAttackEnemy() :
                 Process.fullBlackEstimation.getFirstAttackEnemy();
@@ -155,7 +167,7 @@ public class EstimatePosition {
 //                }
             }
         }
-        System.out.println("Parameter via = " + parameter);
+//        System.out.println("Parameter via = " + parameter);
         return parameter;
     }
 
@@ -170,13 +182,19 @@ public class EstimatePosition {
     private static int firstParamActualAttack(final Turn turn) {
         int parameter = 0;
         for (Figure figure : turn.getFigures().keySet()){
+            System.out.println(figure.getAttackedFields());
+            System.out.println(figure.getPossibleFieldsToMove());
+            System.out.println("Previoud = " + figure.getWhoCouldBeEatenPreviousState());
+            System.out.println(figure.getWhoCouldBeEaten());
+            System.out.println(figure.getAlliesProtectMe());
+            System.out.println(" ---- " + figure.getAlliesIProtect());
             for (Figure prey : figure.getWhoCouldBeEaten()){
                 if (prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size() || prey.getValue() >= figure.getValue()){
                     parameter += prey.getPoint();
                 }
             }
         }
-        System.out.println("Parameter actual = " + parameter);
+//        System.out.println("Parameter actual = " + parameter);
         return parameter;
     }
 }
