@@ -66,6 +66,8 @@ public abstract class Figure implements Observer {
     public void update(){
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
+        this.whoCouldBeEatenPreviousState.clear();
+        this.whoCouldBeEatenPreviousState.addAll(whoCouldBeEaten);
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();

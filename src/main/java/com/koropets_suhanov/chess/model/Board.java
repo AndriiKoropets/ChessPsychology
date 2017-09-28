@@ -27,7 +27,7 @@ public class Board implements Subject{
     private static final Set<Field> takenFields = new LinkedHashSet<Field>();
     private static final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
     private Field field;
-    private Field previousTurn;
+    private Turn previousTurn;
     private volatile static Board uniqueInstance;
 
     private Board(){
@@ -174,8 +174,13 @@ public class Board implements Subject{
         return fieldToFigure;
     }
 
-    public Field getPreviousTurn() {
+    public Turn getPreviousTurn() {
         return previousTurn;
+    }
+
+    public void setPreviousTurn(Turn previousTurn){
+        //TODO  add the logic for setting previous turn
+        this.previousTurn = previousTurn;
     }
 
     public void notify(Observer figure) {

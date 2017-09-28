@@ -31,7 +31,7 @@ public class EstimatePosition {
     static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
         whoseTurn = side;
         return new Parameter.Builder().first(estimateFirstParameter(turn, possibleTurns))
-                .second(estimateSecondParameter(turn, possibleTurns))
+//                .second(estimateSecondParameter(turn, possibleTurns))
                 .third(estimateThirdParameter(turn, possibleTurns))
                 .fourth(estimateFourthParameter(turn, possibleTurns))
                 .fifth(estimateFifthParameter(turn, possibleTurns))
@@ -111,24 +111,15 @@ public class EstimatePosition {
 
     private static int firstParamAttackOthersAllies(Turn turn){
         int parameter = 0;
-        Set<Figure> acceptedFigures = null;
-        for (Figure f : turn.getFigures().keySet()){
-            if (acceptedFigures == null){
-                acceptedFigures = ProcessingUtils.getFiguresAffectField(turn.getFigures().get(f), whoseTurn);
-                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(f.getField(), whoseTurn));
-            }else {
-                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(turn.getFigures().get(f), whoseTurn));
-                acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(f.getField(), whoseTurn));
-            }
-        }
-
+        Set<Figure> acceptedFigures = ProcessingUtils.getAffectedFigures(whoseTurn);
+        System.out.println("Accepted figures = " + acceptedFigures);
         Set<Figure> firstLineFigure = new HashSet<>();
         for (Figure f : acceptedFigures){
-            if (isCollectionsChanged(f)){
+            if (isCollectionsChanged(f) && !turn.getFigures().keySet().contains(f)){
                 firstLineFigure.add(f);
             }
         }
-
+        System.out.println("First line = " + firstLineFigure);
         Map<Figure, Set<Figure>> figureToItsPreys = new HashMap<>();
 
         for (Figure f : firstLineFigure){
@@ -136,17 +127,32 @@ public class EstimatePosition {
             figureToItsPreys.put(f, preys);
         }
 
+        System.out.println("Figures to preys = " + figureToItsPreys);
+
+
         for (Figure curFigure : figureToItsPreys.keySet()){
             for (Figure prey : figureToItsPreys.get(curFigure)){
                 for (Figure ally : curFigure.getAlliesIProtect()){
-                    updateWhoCouldBeEaten(curFigure, ally, prey);
+                    System.out.println("ally - " + ally);
+                    updateWhoCouldBeEaten(ally, curFigure, prey);
                 }
             }
         }
 
         for (Figure f : acceptedFigures){
+            System.out.println( f + "Before = " + f.getWhoCouldBeEatenPreviousState());
+            System.out.println( f + "Now ==== " + f.getWhoCouldBeEaten());
+        }
+
+        System.out.println("Accepted figures = " + acceptedFigures);
+
+        for (Figure f : acceptedFigures){
+            System.out.println("Figure = " + f);
             for (Figure prey : f.getWhoCouldBeEaten()){
-                if (!f.getWhoCouldBeEatenPreviousState().contains(prey) && prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size()){
+                System.out.println("Prey - " + prey);
+                if (!f.getWhoCouldBeEatenPreviousState().contains(prey)
+                        && prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size()
+                        && !turn.getFigures().keySet().contains(f)){
                     parameter += prey.getPoint();
                 }
             }

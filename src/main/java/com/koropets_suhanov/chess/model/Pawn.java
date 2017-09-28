@@ -95,7 +95,8 @@ public class Pawn extends Figure {
                 getAttackedFields().add(new Field(left, right));
             }
         }
-        enPassant();
+        //TODO verify the logic for enPassant.
+//        enPassant();
         fillAttackedAndProtectedFigures();
     }
 
@@ -134,6 +135,10 @@ public class Pawn extends Figure {
             if (this.getField().getX() == 4){
                 Field leftField = new Field(4, this.getField().getY() - 1);
                 Figure leftEnemy = Board.getFieldToFigure().get(leftField);
+                System.out.println("Pawn = " + this);
+                System.out.println("Left field = " + leftField);
+                System.out.println("Left enemy = " + leftEnemy);
+                System.out.println("Previous turn = " + Process.BOARD.getPreviousTurn());
                 if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class && Process.BOARD.getPreviousTurn().equals(leftField)){
                     this.getWhoCouldBeEaten().add(leftEnemy);
                 }

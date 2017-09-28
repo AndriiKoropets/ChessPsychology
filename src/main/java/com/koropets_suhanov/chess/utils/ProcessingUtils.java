@@ -35,6 +35,7 @@ public class ProcessingUtils {
     private static String mainTurn;
     private static Field field;
     private static int number;
+    private static Set<Field> affectedFields;
     private static Map<Figure, Field> figureToField = new HashMap<>();
     private static Figure figure;
     private static boolean isEating;
@@ -326,15 +327,25 @@ public class ProcessingUtils {
         return fieldsBetweenQueenAndKing;
     }
 
-    public static Set<Figure> getFiguresAffectField(final Field underAffect, final Color color){
-        final Set<Figure> acceptedFigures = new HashSet<>();
+    public static Set<Figure> getAffectedFigures(Color color){
+        Set<Figure> acceptedFigures = new HashSet<>();
         Set<Observer> observers = Board.getFigures(color);
-        observers.forEach(o -> {
-            if (((Figure)o).getAttackedFields().contains(underAffect)){
-                acceptedFigures.add((Figure)o);
-            }
+        affectedFields.forEach(f -> {
+            observers.forEach(o -> {
+                if (((Figure)o).getAttackedFields().contains(f)){
+                    acceptedFigures.add((Figure)o);
+                }
+            });
         });
         return acceptedFigures;
+    }
+
+    private static void getAffectedFields(Turn turn){
+        affectedFields = new HashSet<>();
+        for (Figure f : turn.getFigures().keySet()){
+            affectedFields.add(f.getField());
+        }
+        affectedFields.addAll(turn.getFigures().values());
     }
 
     public static FrequentFigure getWhiteFrequent() {
@@ -346,6 +357,7 @@ public class ProcessingUtils {
     }
 
     public static void makeTurn(Turn turn){
+        getAffectedFields(turn);
         for (Figure tempFigure: turn.getFigures().keySet()){
             Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
 //            Process.BOARD.notify(tempFigure);
