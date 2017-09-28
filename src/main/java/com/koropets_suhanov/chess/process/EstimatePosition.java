@@ -9,6 +9,7 @@ import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Rock;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -105,10 +106,11 @@ public class EstimatePosition {
     }
 
     private static int estimateFirstParameter(final Turn turn, final Set<Turn> possibleTurns){
-        return firstParamActualAttack(turn) + firstParamAttackViaAlly(turn)/* + firstParamAttackOthersAllies(turn)*/;
+        return firstParamActualAttack(turn) + firstParamAttackViaAlly(turn) + firstParamAttackOthersAllies(turn);
     }
 
     private static int firstParamAttackOthersAllies(Turn turn){
+        int parameter = 0;
         Set<Figure> acceptedFigures = null;
         for (Figure f : turn.getFigures().keySet()){
             if (acceptedFigures == null){
@@ -119,29 +121,42 @@ public class EstimatePosition {
                 acceptedFigures.addAll(ProcessingUtils.getFiguresAffectField(f.getField(), whoseTurn));
             }
         }
-        //TODO add additional logic
-        int curFirParExceptActiveFigures = 0;
-        int previousState = (whoseTurn == Color.WHITE) ? Process.fullWhiteEstimation.getFirstAttackEnemy() :
-                Process.fullBlackEstimation.getFirstAttackEnemy();
-        Set<Observer> allies = Board.getFigures(whoseTurn);
-        for (Observer observer : allies){
-            Figure ally = (Figure)observer;
-            for (Figure figureOfTheTurn : turn.getFigures().keySet()){
-                if (!ally.equals(figureOfTheTurn)){
-                    curFirParExceptActiveFigures += ally.getWhoCouldBeEaten().size();
+
+        Set<Figure> firstLineFigure = new HashSet<>();
+        for (Figure f : acceptedFigures){
+            if (isCollectionsChanged(f)){
+                firstLineFigure.add(f);
+            }
+        }
+
+        Map<Figure, Set<Figure>> figureToItsPreys = new HashMap<>();
+
+        for (Figure f : firstLineFigure){
+            Set<Figure> preys = appearedPreys(f);
+            figureToItsPreys.put(f, preys);
+        }
+
+        for (Figure curFigure : figureToItsPreys.keySet()){
+            for (Figure prey : figureToItsPreys.get(curFigure)){
+                for (Figure ally : curFigure.getAlliesIProtect()){
+                    updateWhoCouldBeEaten(curFigure, ally, prey);
                 }
             }
         }
-        return previousState - curFirParExceptActiveFigures;
+
+        for (Figure f : acceptedFigures){
+            for (Figure prey : f.getWhoCouldBeEaten()){
+                if (!f.getWhoCouldBeEatenPreviousState().contains(prey)){
+                    parameter += prey.getPoint();
+                }
+            }
+        }
+
+        return parameter;
     }
 
     private static int firstParamAttackViaAlly(Turn turn) {
         int parameter = 0;
-//        System.out.println("All =========");
-//        for (Observer observer : allies){
-//            System.out.println(observer);
-//        }
-//        System.out.println("--------------");
         for (Figure curFigure : turn.getFigures().keySet()){
             if (curFigure.getClass() == Queen.class){
                 System.out.println("here");
@@ -154,17 +169,11 @@ public class EstimatePosition {
                     System.out.println("PreyField = " + preyField + " for such ally" + ally);
                     if (curFigure.getAttackedFields().contains(preyField) && !curFigure.getPreyField().contains(preyField)
                             && isOnTheSameLine(curFigure, ally, prey)){
+                        curFigure.getWhoCouldBeEaten().add(prey);
                         parameter += prey.getPoint();
                         System.out.println("Parameter = " + parameter);
                     }
                 }
-//                for (Figure prey : currentFigure.getWhoCouldBeEaten()){
-//                    Field preyField = prey.getField();
-//                    if (ally.getFieldsUnderMyInfluence().contains(preyField) && !ally.getPossibleFieldsToMove().contains(preyField) && !ally.getPreyField().contains(preyField)){
-//                        parameter++;
-//                        prey.getEnemiesAttackMe().add(ally);
-//                    }
-//                }
             }
         }
 //        System.out.println("Parameter via = " + parameter);
@@ -177,6 +186,34 @@ public class EstimatePosition {
                 (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
                         && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY())))
                         && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
+    }
+
+    private static boolean isCollectionsChanged(Figure figure){
+        return !figure.getWhoCouldBeEatenPreviousState().containsAll(figure.getWhoCouldBeEaten());
+    }
+
+    private static void updateWhoCouldBeEaten(Figure curFigure, Figure ally, Figure prey){
+        if (!curFigure.getWhoCouldBeEaten().contains(prey) && ally.getWhoCouldBeEaten().contains(prey)
+                && curFigure.getAttackedFields().contains(prey.getField()) && isOnTheSameLine(curFigure, ally, prey)){
+            curFigure.getWhoCouldBeEaten().add(prey);
+            for (Figure f : curFigure.getAlliesIProtect()){
+                if (!f.equals(ally)){
+                    updateWhoCouldBeEaten(f, curFigure, prey);
+                }
+            }
+        }
+    }
+
+    private static Set<Figure> appearedPreys(final Figure curFigure){
+        Set<Figure> appearedPreys = new HashSet<>();
+        Set<Figure> preysBefore = curFigure.getWhoCouldBeEatenPreviousState();
+        Set<Figure> preysNow = curFigure.getWhoCouldBeEaten();
+        for (Figure f : preysNow){
+            if (!preysBefore.contains(f)){
+                appearedPreys.add(f);
+            }
+        }
+        return appearedPreys;
     }
 
     private static int firstParamActualAttack(final Turn turn) {
