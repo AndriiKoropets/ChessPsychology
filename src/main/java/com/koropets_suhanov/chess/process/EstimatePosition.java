@@ -119,7 +119,7 @@ public class EstimatePosition {
                 firstLineFigure.add(f);
             }
         }
-//        System.out.println("First line = " + firstLineFigure);
+        System.out.println("First line = " + firstLineFigure);
         Map<Figure, Set<Figure>> figureToItsPreys = new HashMap<>();
 
         for (Figure f : firstLineFigure){
@@ -127,29 +127,29 @@ public class EstimatePosition {
             figureToItsPreys.put(f, preys);
         }
 
-//        System.out.println("Figures to preys = " + figureToItsPreys);
+        System.out.println("Figures to preys = " + figureToItsPreys);
 
 
         for (Figure curFigure : figureToItsPreys.keySet()){
             for (Figure prey : figureToItsPreys.get(curFigure)){
                 for (Figure ally : curFigure.getAlliesIProtect()){
-//                    System.out.println("ally - " + ally);
+                    System.out.println("ally - " + ally);
                     updateWhoCouldBeEaten(ally, curFigure, prey);
                 }
             }
         }
 
-//        for (Figure f : acceptedFigures){
-//            System.out.println( f + "Before = " + f.getWhoCouldBeEatenPreviousState());
-//            System.out.println( f + "Now ==== " + f.getWhoCouldBeEaten());
-//        }
-//
-//        System.out.println("Accepted figures = " + acceptedFigures);
+        for (Figure f : acceptedFigures){
+            System.out.println( f + "Before = " + f.getWhoCouldBeEatenPreviousState());
+            System.out.println( f + "Now ==== " + f.getWhoCouldBeEaten());
+        }
+
+        System.out.println("Accepted figures = " + acceptedFigures);
 
         for (Figure f : acceptedFigures){
-//            System.out.println("Figure = " + f);
+            System.out.println("Figure = " + f);
             for (Figure prey : f.getWhoCouldBeEaten()){
-//                System.out.println("Prey - " + prey);
+                System.out.println("Prey - " + prey);
                 if (!f.getWhoCouldBeEatenPreviousState().contains(prey)
                         && prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size()
                         && !turn.getFigures().keySet().contains(f)){
@@ -223,14 +223,20 @@ public class EstimatePosition {
 
     private static int firstParamActualAttack(final Turn turn) {
         int parameter = 0;
+        for (Observer f : Board.getFigures()){
+            System.out.println(f + "Previous preys = " + ((Figure) f).getWhoCouldBeEatenPreviousState());
+            System.out.println(f + "Current preys = " + ((Figure) f). getWhoCouldBeEaten());
+        }
+
         for (Figure figure : turn.getFigures().keySet()){
-//            System.out.println("All attacked fields = " + figure.getAttackedFields());
-//            System.out.println("Where to move = " + figure.getPossibleFieldsToMove());
-//            System.out.println("Previous preys = " + figure.getWhoCouldBeEatenPreviousState());
-//            System.out.println("Current preys = " + figure.getWhoCouldBeEaten());
-//            System.out.println("All allies protect me = " + figure.getAlliesProtectMe());
-//            System.out.println("Allies I protect = " + figure.getAlliesIProtect());
-//            System.out.println("Prey's fields = " + figure.getPreyField());
+            System.out.println("Figure = " + figure);
+            System.out.println("All attacked fields = " + figure.getAttackedFields());
+            System.out.println("Where to move = " + figure.getPossibleFieldsToMove());
+            System.out.println("Previous preys = " + figure.getWhoCouldBeEatenPreviousState());
+            System.out.println("Current preys = " + figure.getWhoCouldBeEaten());
+            System.out.println("All allies protect me = " + figure.getAlliesProtectMe());
+            System.out.println("Allies I protect = " + figure.getAlliesIProtect());
+            System.out.println("Prey's fields = " + figure.getPreyField());
             for (Figure prey : figure.getWhoCouldBeEaten()){
                 if (prey.getEnemiesAttackMe().size() >= prey.getAlliesProtectMe().size() || prey.getValue() > figure.getValue()){
                     parameter += prey.getPoint();
