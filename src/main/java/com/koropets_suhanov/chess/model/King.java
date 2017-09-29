@@ -31,6 +31,7 @@ public class King extends Figure {
                     }else {
                         figure.addEnemy(this);
                         this.getWhoCouldBeEaten().add(figure);
+                        this.getPreyField().add(figure.getField());
                     }
                 }else {
                     this.getPossibleFieldsToMove().add(f);

@@ -50,6 +50,7 @@ public abstract class Figure implements Observer {
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();
+        this.preyField.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
         if (this.getClass() == King.class){
@@ -71,6 +72,7 @@ public abstract class Figure implements Observer {
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();
+        this.preyField.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
         attackedFields();

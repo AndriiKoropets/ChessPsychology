@@ -151,22 +151,26 @@ public class ProcessingUtils {
         isEating = eating;
         List<Observer> targets = new ArrayList<Observer>();
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
-        for (Observer figure : figures){
-            if (figure.getClass() == clazz){
-                if (eating){
-                    Set<Figure> couldBeEaten = ((Figure)figure).getWhoCouldBeEaten();
-                    for (Figure figureUnderAttack : couldBeEaten){
-                        if (figureUnderAttack.getField().equals(field)){
-                            targets.add(figure);
-                            targetedFigure = figureUnderAttack;
-                        }
-                    }
-                }else {
-                    for (Field fieldToMove : ((Figure)figure).getPossibleFieldsToMove()){
-                        if (fieldToMove.equals(field)){
-                            candidates.add(figure);
-                        }
-                    }
+        for (Observer curFigure : figures){
+            if (eating){
+//                Set<Figure> couldBeEaten = ((Figure)curFigure).getWhoCouldBeEaten();
+//                for (Figure figureUnderAttack : couldBeEaten){
+//                    if (figureUnderAttack.getField().equals(field)){
+//                        targets.add(curFigure);
+//                        targetedFigure = figureUnderAttack;
+//                    }
+//                }
+                System.out.println(curFigure + " Prey fields = " + ((Figure) curFigure).getPreyField());
+                System.out.println(curFigure + " targets = " + ((Figure) curFigure).getWhoCouldBeEaten());
+                System.out.println("Targeted figure = " + Board.getFieldToFigure().get(field));
+                if (((Figure) curFigure).getPreyField().contains(field)){
+
+                    targets.add(curFigure);
+                    targetedFigure = Board.getFieldToFigure().get(field);
+                }
+            }else {
+                if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)){
+                    candidates.add(curFigure);
                 }
             }
         }
@@ -187,8 +191,10 @@ public class ProcessingUtils {
         if (figure != null){
             figureToField.put(figure, field);
         }
+        if (figureToField.size() == 0){
+            throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
+        }
         return figureToField;
-//        throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
     }
 
     private static Figure choseFigureWhichAttack(List<Observer> list, Class clazz){
@@ -210,8 +216,7 @@ public class ProcessingUtils {
     private static Figure choseExactFigure(){
         char secondPosition = mainTurn.charAt(1);
         int integer = Character.getNumericValue(secondPosition);
-        chose(integer, secondPosition);
-        return null;
+        return chose(integer, secondPosition);
     }
 
     private static Figure chose(int integer, char secondPosition){
@@ -346,6 +351,7 @@ public class ProcessingUtils {
             affectedFields.add(f.getField());
         }
         affectedFields.addAll(turn.getFigures().values());
+//        System.out.println("Affected fields =====================" + affectedFields);
     }
 
     public static FrequentFigure getWhiteFrequent() {

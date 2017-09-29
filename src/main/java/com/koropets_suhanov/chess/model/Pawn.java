@@ -110,6 +110,7 @@ public class Pawn extends Figure {
                 }else {
                     figure.addEnemy(this);
                     this.getWhoCouldBeEaten().add(figure);
+                    this.getPreyField().add(figure.getField());
                 }
             }else {
                 getFieldsUnderMyInfluence().add(f);
