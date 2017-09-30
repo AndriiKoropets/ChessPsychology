@@ -24,6 +24,7 @@ public abstract class Figure implements Observer {
     public abstract void possibleTurns();
     public abstract double getValue();
     public abstract int getPoint();
+    public abstract Set<Figure> pullAdditionalAlliesAndEnemies();
 
     public Figure(){}
 
@@ -46,7 +47,7 @@ public abstract class Figure implements Observer {
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
         this.whoCouldBeEatenPreviousState.clear();
-        this.whoCouldBeEatenPreviousState.addAll(whoCouldBeEaten);
+        this.whoCouldBeEatenPreviousState.addAll(this.whoCouldBeEaten);
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();
@@ -68,7 +69,7 @@ public abstract class Figure implements Observer {
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
         this.whoCouldBeEatenPreviousState.clear();
-        this.whoCouldBeEatenPreviousState.addAll(whoCouldBeEaten);
+        this.whoCouldBeEatenPreviousState.addAll(this.whoCouldBeEaten);
         this.whoCouldBeEaten.clear();
         this.alliesIProtect.clear();
         this.attackedFields.clear();

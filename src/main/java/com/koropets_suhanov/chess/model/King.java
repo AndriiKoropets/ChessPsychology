@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
 import java.util.Set;
+
 import static java.lang.Math.abs;
 
 /**
@@ -49,6 +50,11 @@ public class King extends Figure {
     @Override
     public int getPoint() {
         return POINT;
+    }
+
+    @Override
+    public Set<Figure> pullAdditionalAlliesAndEnemies() {
+        return null;
     }
 
     public boolean isOpportunityToCastling() {

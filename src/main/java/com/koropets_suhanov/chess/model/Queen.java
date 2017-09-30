@@ -1,5 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static java.lang.Math.abs;
 
 /**
@@ -127,6 +130,17 @@ public class Queen extends Figure {
     @Override
     public int getPoint() {
         return POINT;
+    }
+
+    @Override
+    public Set<Figure> pullAdditionalAlliesAndEnemies() {
+        Set<Figure> chosenAllies = new HashSet<>();
+        this.getAlliesIProtect().forEach(f -> {
+            if (f.getClass() == Bishop.class || f.getClass() == Rock.class || f.getClass() == Queen.class){
+                chosenAllies.add(f);
+            }
+        });
+        return chosenAllies;
     }
 
     @Override

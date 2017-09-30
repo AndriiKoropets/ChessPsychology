@@ -153,13 +153,6 @@ public class ProcessingUtils {
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer curFigure : figures){
             if (eating){
-//                Set<Figure> couldBeEaten = ((Figure)curFigure).getWhoCouldBeEaten();
-//                for (Figure figureUnderAttack : couldBeEaten){
-//                    if (figureUnderAttack.getField().equals(field)){
-//                        targets.add(curFigure);
-//                        targetedFigure = figureUnderAttack;
-//                    }
-//                }
                 System.out.println(curFigure + " Prey fields = " + ((Figure) curFigure).getPreyField());
                 System.out.println(curFigure + " targets = " + ((Figure) curFigure).getWhoCouldBeEaten());
                 System.out.println("Targeted figure = " + Board.getFieldToFigure().get(field));
@@ -351,7 +344,7 @@ public class ProcessingUtils {
             affectedFields.add(f.getField());
         }
         affectedFields.addAll(turn.getFigures().values());
-//        System.out.println("Affected fields =====================" + affectedFields);
+        System.out.println("Affected fields =====================" + affectedFields);
     }
 
     public static FrequentFigure getWhiteFrequent() {
@@ -364,13 +357,33 @@ public class ProcessingUtils {
 
     public static void makeTurn(Turn turn){
         getAffectedFields(turn);
-        for (Figure tempFigure: turn.getFigures().keySet()){
+//        for (Figure tempFigure: turn.getFigures().keySet()){
             Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
 //            Process.BOARD.notify(tempFigure);
-        }
+//        }
+        makePullAdditionalAlliesAndEnemies();
     }
 
     public static void undoTurn(Turn turn){
+        makePullAdditionalAlliesAndEnemies();
+    }
 
+    private static void makePullAdditionalAlliesAndEnemies(){
+        Map<Figure, Set<Figure>> figureToChosenAllies = new HashMap<>();
+        Board.getFigures().forEach(f -> {
+            Set<Figure> chosenAllies = ((Figure)f).pullAdditionalAlliesAndEnemies();
+            if (!isEmpty(chosenAllies)){
+                figureToChosenAllies.put((Figure)f, chosenAllies);
+            }
+        });
+        for (Figure curFigure : figureToChosenAllies.keySet()){
+            for (Figure ally : figureToChosenAllies.get(curFigure)){
+                //TODO implement the logic
+            }
+        }
+    }
+
+    public static boolean isEmpty(Set<?> set){
+        return set == null || set.isEmpty();
     }
 }

@@ -99,8 +99,7 @@ public class Board implements Subject{
         register(blackBishopF);
         register(blackQueen);
         register(blackKing);
-        //TODO change the logic for searching possible turns for each figure.
-        //TODO Because it throws StackOverFlowError
+
         setTakenFields();
 //        blackPawnA.possibleTurns();
         figures.forEach(v -> ((Figure)v).possibleTurns());
@@ -186,7 +185,11 @@ public class Board implements Subject{
     public void notify(Observer figure) {
         updateTakenFields(figure);
         figure.update(field);
-        figures.forEach(cf -> ((Figure) cf).update());
+        figures.forEach(cf -> {
+            if (!cf.equals(figure)) {
+                ((Figure) cf).update();
+            }
+        });
         updateFieldsUnderWhiteInfluence();
         updateFieldsUnderBlackInfluence();
 
@@ -235,8 +238,7 @@ public class Board implements Subject{
                     ((Figure)f).attackedFields();
             });
         }else {
-            LOG.info("There is no such figure on the Board.");
-            throw new RuntimeException();
+            throw new RuntimeException("There is no such figure on the Board.");
         }
     }
 

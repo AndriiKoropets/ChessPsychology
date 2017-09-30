@@ -3,6 +3,8 @@ package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.Process;
 
+import java.util.Set;
+
 import static com.koropets_suhanov.chess.model.Field.isValidField;
 
 /**
@@ -66,6 +68,11 @@ public class Pawn extends Figure {
     @Override
     public int getPoint() {
         return POINT;
+    }
+
+    @Override
+    public Set<Figure> pullAdditionalAlliesAndEnemies() {
+        return null;
     }
 
     @Override

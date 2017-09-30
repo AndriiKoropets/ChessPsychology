@@ -2,6 +2,7 @@ package com.koropets_suhanov.chess.model;
 
 import static java.lang.Math.abs;
 
+import java.util.Set;
 /**
  * @author AndriiKoropets
  */
@@ -32,6 +33,11 @@ public class Knight extends Figure {
     @Override
     public int getPoint() {
         return POINT;
+    }
+
+    @Override
+    public Set<Figure> pullAdditionalAlliesAndEnemies() {
+        return null;
     }
 
     @Override
