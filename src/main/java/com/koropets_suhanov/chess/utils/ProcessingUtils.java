@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+import static java.lang.Math.abs;
+
 /**
  * @author AndriiKoropets
  */
@@ -378,9 +380,33 @@ public class ProcessingUtils {
         });
         for (Figure curFigure : figureToChosenAllies.keySet()){
             for (Figure ally : figureToChosenAllies.get(curFigure)){
-                //TODO implement the logic
+                for (Figure prey : ally.getWhoCouldBeEaten()){
+                    updateWhoCouldBeEaten(curFigure, ally, prey);
+                    //TODO don't forget to add enemy for each prey to count parameters properly
+                }
             }
         }
+    }
+
+    private static void updateWhoCouldBeEaten(Figure curFigure, Figure ally, Figure prey){
+        if (!curFigure.getWhoCouldBeEaten().contains(prey) && ally.getWhoCouldBeEaten().contains(prey)
+                && curFigure.getAttackedFields().contains(prey.getField()) && isOnTheSameLine(curFigure, ally, prey)){
+            curFigure.getWhoCouldBeEaten().add(prey);
+            prey.addEnemy(curFigure);
+            for (Figure f : curFigure.getAlliesIProtect()){
+                if (!f.equals(ally)){
+                    updateWhoCouldBeEaten(f, curFigure, prey);
+                }
+            }
+        }
+    }
+
+    private static boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3){
+        return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
+                ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY())) ||
+                (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
+                        && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY())))
+                        && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
     }
 
     public static boolean isEmpty(Set<?> set){
