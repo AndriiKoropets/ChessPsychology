@@ -74,6 +74,7 @@ public class Process {
                     ProcessingUtils.makeTurn(whiteTurn);
                     System.out.println("After turn = " + whiteTurn);
                     printAllBoard();
+                    currentStateOfAllFigures();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
@@ -83,6 +84,7 @@ public class Process {
                         ProcessingUtils.makeTurn(blackTurn);
                         System.out.println("After turn = " + blackTurn);
                         printAllBoard();
+                        currentStateOfAllFigures();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
@@ -107,13 +109,23 @@ public class Process {
         System.out.println("White figures");
         for (Observer observer : Board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAlliesProtectMe());
+            printInfoAboutFigure(currentFigure);
         }
         System.out.println("Black figures");
         for (Observer observer : Board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
-            System.out.println(currentFigure.toString() + currentFigure.getPossibleFieldsToMove() + currentFigure.getFieldsUnderMyInfluence() + currentFigure.getWhoCouldBeEaten() + currentFigure.getAlliesProtectMe());
+            printInfoAboutFigure(currentFigure);
         }
+    }
+
+    private static void printInfoAboutFigure(Figure currentFigure){
+        System.out.println(currentFigure);
+//        System.out.println("Possible fields to move = " + currentFigure.getPossibleFieldsToMove());
+        System.out.println("Who could be eaten previous state = " + currentFigure.getWhoCouldBeEatenPreviousState());
+        System.out.println("Who could be eaten now = " + currentFigure.getWhoCouldBeEaten());
+        System.out.println("Get allies I protect = " + currentFigure.getAlliesIProtect());
+        System.out.println("Get allies protect me = " + currentFigure.getAlliesProtectMe());
+        System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
     private static void printAllBoard(){
