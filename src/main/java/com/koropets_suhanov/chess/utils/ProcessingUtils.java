@@ -378,11 +378,26 @@ public class ProcessingUtils {
                 figureToChosenAllies.put((Figure)f, chosenAllies);
             }
         });
+        System.out.println(figureToChosenAllies);
+//        Set<Figure> taken = new HashSet<>();
         for (Figure curFigure : figureToChosenAllies.keySet()){
+//            taken.add(curFigure);
+            Set<Figure> alliesOfTheCurrentFigure = figureToChosenAllies.get(curFigure);
+            for (Figure ally : figureToChosenAllies.get(curFigure)){
+                if (ally != null && !curFigure.equals(ally)/* && !taken.contains(ally)*/){
+                    System.out.println("Cur figure = " + curFigure);
+                    System.out.println("ally = " + ally);
+                    System.out.println("alliesOfTheCurFigure = " + alliesOfTheCurrentFigure);
+                    System.out.println("Figure to chosen Allies = " + figureToChosenAllies);
+                    updateProtection(curFigure, ally, alliesOfTheCurrentFigure, figureToChosenAllies);
+//                    updateWhoCouldBeEaten(curFigure, ally, prey);
+//                    TODO don't forget to add enemy for each prey to count parameters properly
+                }
+            }
+            curFigure.getAlliesIProtect().addAll(alliesOfTheCurrentFigure);
             for (Figure ally : figureToChosenAllies.get(curFigure)){
                 for (Figure prey : ally.getWhoCouldBeEaten()){
                     updateWhoCouldBeEaten(curFigure, ally, prey);
-                    //TODO don't forget to add enemy for each prey to count parameters properly
                 }
             }
         }
@@ -393,15 +408,36 @@ public class ProcessingUtils {
                 && curFigure.getAttackedFields().contains(prey.getField()) && isOnTheSameLine(curFigure, ally, prey)){
             curFigure.getWhoCouldBeEaten().add(prey);
             prey.addEnemy(curFigure);
-            for (Figure f : curFigure.getAlliesIProtect()){
-                if (!f.equals(ally)){
-                    updateWhoCouldBeEaten(f, curFigure, prey);
+        }
+    }
+
+    private static void updateProtection(Figure curfigure, Figure ally, Set<Figure> alliesOfTheCurrentFigure, Map<Figure, Set<Figure>> figureSetMap){
+        System.out.println("Figure set map = " + figureSetMap);
+        System.out.println("ally = " + ally);
+        if (figureSetMap.keySet().contains(ally)){
+
+            for (Figure secondAlly : figureSetMap.get(ally)){
+                if (secondAlly != null && !alliesOfTheCurrentFigure.contains(secondAlly)){
+                    if (isOnTheSameLine(curfigure, ally, secondAlly)){
+                        alliesOfTheCurrentFigure.add(secondAlly);
+                        curfigure.addAllyProtectMe(secondAlly);
+                        updateProtection(curfigure, secondAlly, alliesOfTheCurrentFigure, figureSetMap);
+                    }
                 }
             }
         }
     }
 
     private static boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3){
+        if (f1.getClass() == Bishop.class || f2.getClass() == Bishop.class  || f3.getClass() == Bishop.class){
+            return (abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
+                    && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY()))
+                    && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY()));
+        }
+        if (f1.getClass() == Rock.class || f2.getClass() == Rock.class  || f3.getClass() == Rock.class){
+            return  ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
+                    ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY()));
+        }
         return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
                 ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY())) ||
                 (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))

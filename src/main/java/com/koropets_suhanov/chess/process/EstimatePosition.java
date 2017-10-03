@@ -33,8 +33,8 @@ public class EstimatePosition {
         whoseTurn = side;
         return new Parameter.Builder().first(estimateFirstParameter())
                 .second(estimateSecondParameter())
-                .third(estimateThirdParameter(turn, possibleTurns))
-                .fourth(estimateFourthParameter(turn, possibleTurns))
+                .third(estimateThirdParameter())
+                .fourth(estimateFourthParameter())
                 .fifth(estimateFifthParameter(turn, possibleTurns))
                 .sixth(estimateSixthParameter(turn, possibleTurns))
                 .seventh(estimateSeventhParameter(turn, possibleTurns))
@@ -59,13 +59,14 @@ public class EstimatePosition {
         return 0;
     }
 
-    private static int estimateFourthParameter(final Turn turn, final Set<Turn> possibleTurns) {
-        return 0;
+    private static int estimateFourthParameter() {
+        Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+        return calculateWithdrawingAttackAndBeUnderAttack(enemies);
     }
 
-    private static int estimateThirdParameter(final Turn turn, final Set<Turn> possibleTurns) {
-
-        return 0;
+    private static int estimateThirdParameter() {
+        Set<Observer> alliesObservers = Board.getFigures(whoseTurn);
+        return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
     }
 
     private static int estimateSecondParameter(){
@@ -98,12 +99,40 @@ public class EstimatePosition {
         return param;
     }
 
+    private static int calculateWithdrawingAttackAndBeUnderAttack(Set<Observer> figures){
+        int param = 0;
+        Set<Figure> chosenFigures = new HashSet<>();
+        figures.forEach(o -> {
+            if (isPreysBecameSmaller(((Figure)o).getWhoCouldBeEatenPreviousState(), ((Figure)o).getWhoCouldBeEaten())){
+                chosenFigures.add(((Figure)o));
+            }
+        });
+        for (Figure curFigure : chosenFigures){
+            for (Figure prevPrey : curFigure.getWhoCouldBeEatenPreviousState()){
+                if (!curFigure.getWhoCouldBeEaten().contains(prevPrey)){
+                    param += prevPrey.getPoint();
+                }
+            }
+        }
+        return param;
+    }
+
     private static boolean isPreysBecameBigger(Set<Figure> previousPreys, Set<Figure> curPreys){
-        return curPreys.containsAll(previousPreys);
+        for (Figure curPrey : curPreys){
+            if (!previousPreys.contains(curPrey)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean isPreysBecameSmaller(Set<Figure> previousPreys, Set<Figure> curPreys){
-        return previousPreys.containsAll(curPreys);
+        for (Figure prevPrey : previousPreys){
+            if (!curPreys.contains(prevPrey)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //     private static int secParamSubstitutionViaFigure(final Turn turn){
