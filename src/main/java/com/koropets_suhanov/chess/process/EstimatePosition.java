@@ -10,8 +10,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.koropets_suhanov.chess.process.pojo.AntiParameter;
 import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import scala.Tuple2;
 
 /**
@@ -19,37 +21,110 @@ import scala.Tuple2;
  */
 public class EstimatePosition {
 
-    Map<String, Tuple2<Observer, Parameter>> turnToReflection = new HashMap<>();
     private static Color whoseTurn;
 
     static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
         whoseTurn = side;
-        return new Parameter.Builder().first(estimateFirstParameter())
-                .second(estimateSecondParameter())
-                .third(estimateThirdParameter())
-                .fourth(estimateFourthParameter())
-                .fifth(estimateFifthParameter(turn, possibleTurns))
-                .sixth(estimateSixthParameter(turn, possibleTurns))
-                .seventh(estimateSeventhParameter(turn, possibleTurns))
-                .eighth(estimateEightParameter(turn, possibleTurns))
+        int firstParam = estimateFirstParameter();
+        int secondParam = estimateSecondParameter();
+        int thirdParam = estimateThirdParameter();
+        int fourthParam = estimateFourthParameter();
+        Map<Turn, AntiParameter> antiParameterMap = estimateAntiParameter(turn, possibleTurns);
+        int fifthParam = estimateFifthParameter(antiParameterMap)._2 - firstParam;
+        int sixthParam = estimateSixthParameter(antiParameterMap)._2 - secondParam;
+        int seventhParam = estimateSeventhParameter(antiParameterMap)._2 - thirdParam;
+        int eighthParam = estimateEightParameter(antiParameterMap)._2 - fourthParam;
+        return new Parameter.Builder()
+                .first(firstParam)
+                .second(secondParam)
+                .third(thirdParam)
+                .fourth(fourthParam)
+                .fifth(fifthParam)
+                .sixth(sixthParam)
+                .seventh(seventhParam)
+                .eighth(eighthParam)
                 .build();
     }
 
-    private static int estimateEightParameter(final Turn turn, final Set<Turn> possibleTurns) {
-        int parameter = 0;
-        return 0;
+    private static Tuple2<Turn, Integer> estimateEightParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+        int max = 0;
+        Turn turnOfTheMaxParam = null;
+        for (Turn curTurn : turnAntiParameterMap.keySet()){
+            int paramPerTurn = turnAntiParameterMap.get(curTurn).getEighthParam();
+            if (paramPerTurn >= max){
+                max = paramPerTurn;
+                turnOfTheMaxParam = curTurn;
+            }
+        }
+        if (turnOfTheMaxParam == null){
+            throw new RuntimeException("Unexpected exception during estimating eighth parameter");
+        }
+        return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static int estimateSeventhParameter(final Turn turn, final Set<Turn> possibleTurns) {
-        return 0;
+    private static Tuple2<Turn, Integer> estimateSeventhParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+        int max = 0;
+        Turn turnOfTheMaxParam = null;
+        for (Turn curTurn : turnAntiParameterMap.keySet()){
+            int paramPerTurn = turnAntiParameterMap.get(curTurn).getSeventhParam();
+            if (paramPerTurn >= max){
+                max = paramPerTurn;
+                turnOfTheMaxParam = curTurn;
+            }
+        }
+        if (turnOfTheMaxParam == null){
+            throw new RuntimeException("Unexpected exception during estimating seventh parameter");
+        }
+        return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static int estimateSixthParameter(final Turn turn, final Set<Turn> possibleTurns) {
-        return 0;
+    private static Tuple2<Turn, Integer> estimateSixthParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+        int max = 0;
+        Turn turnOfTheMaxParam = null;
+        for (Turn curTurn : turnAntiParameterMap.keySet()){
+            int paramPerTurn = turnAntiParameterMap.get(curTurn).getSixthParam();
+            if (paramPerTurn >= max){
+                max = paramPerTurn;
+                turnOfTheMaxParam = curTurn;
+            }
+        }
+        if (turnOfTheMaxParam == null){
+            throw new RuntimeException("Unexpected exception during estimating sixth parameter");
+        }
+        return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static int estimateFifthParameter(final Turn turn, final Set<Turn> possibleTurns) {
-        return 0;
+    private static Tuple2<Turn, Integer> estimateFifthParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+        int max = 0;
+        Turn turnOfTheMaxParam = null;
+        for (Turn curTurn : turnAntiParameterMap.keySet()){
+            int paramPerTurn = turnAntiParameterMap.get(curTurn).getFifthParam();
+            if (paramPerTurn >= max){
+                max = paramPerTurn;
+                turnOfTheMaxParam = curTurn;
+            }
+        }
+        if (turnOfTheMaxParam == null){
+            throw new RuntimeException("Unexpected exception during estimating fifth parameter");
+        }
+        return new Tuple2<>(turnOfTheMaxParam, max);
+    }
+
+    private static Map<Turn, AntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
+        ProcessingUtils.undoTurn(turn);
+        Map<Turn, AntiParameter> turnAntiParameterMap = new HashMap<>();
+        for (Turn posTurn : possibleTurns){
+            ProcessingUtils.makeTurn(posTurn);
+            AntiParameter antiParameter = new AntiParameter.Builder()
+                    .fifth(estimateFirstParameter())
+                    .sixth(estimateSecondParameter())
+                    .seventh(estimateThirdParameter())
+                    .eighth(estimateFourthParameter())
+                    .build();
+            turnAntiParameterMap.put(posTurn, antiParameter);
+            ProcessingUtils.undoTurn(posTurn);
+        }
+        return turnAntiParameterMap;
     }
 
     private static int estimateFourthParameter() {
