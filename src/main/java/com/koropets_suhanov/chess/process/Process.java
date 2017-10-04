@@ -74,7 +74,7 @@ public class Process {
                     ProcessingUtils.makeTurn(whiteTurn);
                     System.out.println("After turn = " + whiteTurn);
                     printAllBoard();
-                    currentStateOfAllFigures();
+//                    currentStateOfAllFigures();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
@@ -84,7 +84,7 @@ public class Process {
                         ProcessingUtils.makeTurn(blackTurn);
                         System.out.println("After turn = " + blackTurn);
                         printAllBoard();
-                        currentStateOfAllFigures();
+//                        currentStateOfAllFigures();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
@@ -136,8 +136,6 @@ public class Process {
             for (int j = 0; j < Board.SIZE; j++){
                 Field currentPoint = new Field(i, j);
                 if (currentPoint.isTaken()){
-//                    System.out.println("Currentpoint = " + currentPoint);
-//                    System.out.println("Figure to field = " + Board.getFieldToFigure().get(currentPoint));
                     System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
                 }else {
                     System.out.print("   ");
@@ -158,46 +156,22 @@ public class Process {
 
     private static String printFigure(Figure figure){
         if (figure.getClass() == Pawn.class){
-            if (figure.getColor() == Color.WHITE){
-                return "P";
-            }else {
-                return "p";
-            }
+            return figure.getColor() == Color.WHITE ? "P" : "p";
         }
         if (figure.getClass() == Rock.class){
-            if (figure.getColor() == Color.WHITE){
-                return "R";
-            }else {
-                return "r";
-            }
+            return figure.getColor() == Color.WHITE ? "R" : "r";
         }
         if (figure.getClass() == Knight.class){
-            if (figure.getColor() == Color.WHITE){
-                return "N";
-            }else {
-                return "n";
-            }
+            return figure.getColor() == Color.WHITE ? "N" : "n";
         }
         if (figure.getClass() == Bishop.class){
-            if (figure.getColor() == Color.WHITE){
-                return "B";
-            }else {
-                return "b";
-            }
+            return figure.getColor() == Color.WHITE ? "B" : "b";
         }
         if (figure.getClass() == King.class){
-            if (figure.getColor() == Color.WHITE){
-                return "K";
-            }else {
-                return "k";
-            }
+            return figure.getColor() == Color.WHITE ? "K" : "k";
         }
         if (figure.getClass() == Queen.class){
-            if (figure.getColor() == Color.WHITE){
-                return "Q";
-            }else {
-                return "q";
-            }
+            return figure.getColor() == Color.WHITE ? "Q" : "q";
         }
         return null;
     }

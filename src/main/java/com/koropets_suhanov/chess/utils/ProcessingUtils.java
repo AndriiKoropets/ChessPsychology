@@ -155,11 +155,7 @@ public class ProcessingUtils {
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer curFigure : figures){
             if (eating){
-                System.out.println(curFigure + " Prey fields = " + ((Figure) curFigure).getPreyField());
-                System.out.println(curFigure + " targets = " + ((Figure) curFigure).getWhoCouldBeEaten());
-                System.out.println("Targeted figure = " + Board.getFieldToFigure().get(field));
                 if (((Figure) curFigure).getPreyField().contains(field)){
-
                     targets.add(curFigure);
                     targetedFigure = Board.getFieldToFigure().get(field);
                 }
@@ -359,10 +355,7 @@ public class ProcessingUtils {
 
     public static void makeTurn(Turn turn){
         getAffectedFields(turn);
-//        for (Figure tempFigure: turn.getFigures().keySet()){
-            Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
-//            Process.BOARD.notify(tempFigure);
-//        }
+        Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
         makePullAdditionalAlliesAndEnemies();
     }
 
@@ -379,27 +372,23 @@ public class ProcessingUtils {
             }
         });
         System.out.println(figureToChosenAllies);
-//        Set<Figure> taken = new HashSet<>();
-        for (Figure curFigure : figureToChosenAllies.keySet()){
-//            taken.add(curFigure);
-            Set<Figure> alliesOfTheCurrentFigure = figureToChosenAllies.get(curFigure);
-            for (Figure ally : figureToChosenAllies.get(curFigure)){
-                if (ally != null && !curFigure.equals(ally)/* && !taken.contains(ally)*/){
-                    System.out.println("Cur figure = " + curFigure);
-                    System.out.println("ally = " + ally);
-                    System.out.println("alliesOfTheCurFigure = " + alliesOfTheCurrentFigure);
-                    System.out.println("Figure to chosen Allies = " + figureToChosenAllies);
-                    updateProtection(curFigure, ally, alliesOfTheCurrentFigure, figureToChosenAllies);
-//                    updateWhoCouldBeEaten(curFigure, ally, prey);
-//                    TODO don't forget to add enemy for each prey to count parameters properly
+        for (int i = 0; i < Board.SIZE; i++){
+            for (Figure curFigure : figureToChosenAllies.keySet()){
+                for (Figure ally : figureToChosenAllies.get(curFigure)){
+                    if (ally != null){
+                        doUpdate(curFigure, ally);
+                    }
                 }
             }
-            curFigure.getAlliesIProtect().addAll(alliesOfTheCurrentFigure);
-            for (Figure ally : figureToChosenAllies.get(curFigure)){
-                for (Figure prey : ally.getWhoCouldBeEaten()){
-                    updateWhoCouldBeEaten(curFigure, ally, prey);
-                }
-            }
+        }
+    }
+
+    private static void doUpdate(Figure curFigure, Figure ally){
+        for (Figure undefendedAlly : ally.getAlliesIProtect()){
+            updateProtectionOfUndefendedAllies(curFigure, ally, undefendedAlly);
+        }
+        for (Figure prey : ally.getWhoCouldBeEaten()){
+            updateWhoCouldBeEaten(curFigure, ally, prey);
         }
     }
 
@@ -411,20 +400,12 @@ public class ProcessingUtils {
         }
     }
 
-    private static void updateProtection(Figure curfigure, Figure ally, Set<Figure> alliesOfTheCurrentFigure, Map<Figure, Set<Figure>> figureSetMap){
-        System.out.println("Figure set map = " + figureSetMap);
-        System.out.println("ally = " + ally);
-        if (figureSetMap.keySet().contains(ally)){
-
-            for (Figure secondAlly : figureSetMap.get(ally)){
-                if (secondAlly != null && !alliesOfTheCurrentFigure.contains(secondAlly)){
-                    if (isOnTheSameLine(curfigure, ally, secondAlly)){
-                        alliesOfTheCurrentFigure.add(secondAlly);
-                        curfigure.addAllyProtectMe(secondAlly);
-                        updateProtection(curfigure, secondAlly, alliesOfTheCurrentFigure, figureSetMap);
-                    }
-                }
-            }
+    private static void updateProtectionOfUndefendedAllies(Figure curFigure, Figure ally, Figure undefendedAlly){
+        if (!curFigure.getAlliesIProtect().contains(undefendedAlly) && ally.getAlliesIProtect().contains(undefendedAlly)
+                && curFigure.getAttackedFields().contains(undefendedAlly.getField()) && isOnTheSameLine(curFigure, ally, undefendedAlly)
+                && !curFigure.equals(undefendedAlly) && !ally.equals(undefendedAlly)){
+            curFigure.addAllyIProtect(undefendedAlly);
+            undefendedAlly.addAllyProtectMe(curFigure);
         }
     }
 

@@ -3,22 +3,15 @@ package com.koropets_suhanov.chess.process;
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Field;
-import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Board;
-import com.koropets_suhanov.chess.model.Rock;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.abs;
 
 import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.process.pojo.Turn;
-import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import scala.Tuple2;
 
 /**
@@ -139,7 +132,7 @@ public class EstimatePosition {
 //        int param = 0;
 //        Figure figure = retrieveFigureFromTurn(turn);
 //         Set<Observer> enemies = (whoseTurn == Color.BLACK) ? Board.getFigures(Color.WHITE) : Board.getFigures(Color.BLACK);
-//        //TODO
+//
 //        return param;
 //     }
 //
