@@ -57,6 +57,11 @@ public class King extends Figure {
         return null;
     }
 
+    @Override
+    public Figure createNewFigure() {
+        return new King(this.getField(), this.getColor());
+    }
+
     public boolean isOpportunityToCastling() {
         return opportunityToCastling;
     }

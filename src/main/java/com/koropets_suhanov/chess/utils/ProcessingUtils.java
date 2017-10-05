@@ -54,6 +54,8 @@ public class ProcessingUtils {
     private static final Field blackRockLongCastling = new Field(0, 3);
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
+    private static Map<Figure, Field> turnForUndoing = new HashMap<>();
+    public static Figure eatenFigureToResurrection;
 
     public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
         candidates = new ArrayList<>();
@@ -90,15 +92,6 @@ public class ProcessingUtils {
         targetedFigure = null;
         isEating = false;
     }
-
-//    private static void update(){
-//        if (figure != null){
-//            figureToField.put(figure, field);
-//            isEating = eating;
-//        }/*else {
-//            throw new RuntimeException("Could not read written turn");
-//        }*/
-//    }
 
     private static Turn setTurn(final String writtenStyle, final boolean isWhite){
         initialize();
@@ -345,23 +338,46 @@ public class ProcessingUtils {
         System.out.println("Affected fields =====================" + affectedFields);
     }
 
-    public static FrequentFigure getWhiteFrequent() {
-        return whiteFrequent;
-    }
-
-    public static FrequentFigure getBlackFrequent() {
-        return blackFrequent;
-    }
-
     public static void makeTurn(Turn turn){
         getAffectedFields(turn);
-        Process.BOARD.setNewCoordinates(turn.getFigures().keySet().iterator().next(), turn.getFigures().values().iterator().next(), turn.getTargetedFigure());
+        setTurnForUndoing(turn);
+        for (Figure curFigure : turn.getFigures().keySet()){
+            Process.BOARD.setNewCoordinates(curFigure, turn.getFigures().get(curFigure), turn.getTargetedFigure(), false);
+        }
         makePullAdditionalAlliesAndEnemies();
     }
 
     public static void undoTurn(Turn turn){
-        //TODO add the logic
+        System.out.println("==============" + turn);
+        for (Figure f : turn.getFigures().keySet()){
+            if (!turnForUndoing.keySet().contains(f)){
+                throw new RuntimeException("There is no such turn to undo");
+            }
+        }
+        Turn undoTurn = new Turn.Builder()
+                .figureToDestinationField(turnForUndoing)
+                .eating(false)
+                .writtenStyle("")
+                .numberOfTurn(turn.getNumberOfTurn())
+                .build();
+        for (Figure curFigure : undoTurn.getFigures().keySet()){
+            Process.BOARD.setNewCoordinates(curFigure, turn.getFigures().get(curFigure), turn.getTargetedFigure(), true);
+        }
         makePullAdditionalAlliesAndEnemies();
+    }
+
+    private static void setTurnForUndoing(Turn turn){
+        turnForUndoing.clear();
+        eatenFigureToResurrection = null;
+        for (Figure f : turn.getFigures().keySet()){
+            turnForUndoing.put(f, f.getField());
+        }
+        if (turn.isEating()){
+            Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().values().iterator().next());
+            eatenFigureToResurrection = tempFigure.createNewFigure();
+        }
+        System.out.println("Turn for undoing = " + turnForUndoing);
+        System.out.println("Eating Figure to resurrection = " + eatenFigureToResurrection);
     }
 
     private static void makePullAdditionalAlliesAndEnemies(){

@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,7 +217,7 @@ public class Board implements Subject{
         takenFields.remove(((Figure)figure).getField());
     }
 
-    public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure){
+    public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing){
         //TODO had to write this junk, cause was problem with contains method for Set
         boolean flag = false;
         for (Observer f : figures){
@@ -227,6 +228,12 @@ public class Board implements Subject{
             }
         }
 
+        if (isUndoing){
+            Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
+            if (figureToResurrect != null){
+                register(figureToResurrect);
+            }
+        }
         if (eatenFigure != null){
             removeFigure(eatenFigure);
         }

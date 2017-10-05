@@ -25,6 +25,7 @@ public abstract class Figure implements Observer {
     public abstract double getValue();
     public abstract int getPoint();
     public abstract Set<Figure> pullAdditionalAlliesAndEnemies();
+    public abstract Figure createNewFigure();
 
     public Figure(){}
 
@@ -32,15 +33,6 @@ public abstract class Figure implements Observer {
         this.field = field;
         this.color = color;
     }
-
-//    public boolean isAttack(int coordinate_X, int coordinate_Y){
-//        boolean flag = false;
-//        Point givenPointForCheck = new Point(coordinate_X, coordinate_Y);
-//        if (attackedFields.contains(givenPointForCheck)){
-//            flag = true;
-//        }
-//        return flag;
-//    }
 
     public void update(Field field){
         this.field = field;
@@ -135,20 +127,6 @@ public abstract class Figure implements Observer {
     public void addAllyIProtect(Figure figure){
         alliesIProtect.add(figure);
     }
-//    public void possibleTurns(){
-//        for (Field field : attackedFields){
-//            if (field.isTaken()){
-//                if (this.getColor() == field.getFigureByField().getColor()){
-//                    field.getFigureByField().addAllyProtectMe(this);
-//                }else {
-//                    field.getFigureByField().addEnemy(this);
-//                    this.getWhoCouldBeEaten().add(field.getFigureByField());
-//                }
-//            }else {
-//                possibleFieldsToMove.add(field);
-//            }
-//        }
-//    }
 
     protected boolean checkingFieldForTaken(Field field){
         if (!field.isTaken()){

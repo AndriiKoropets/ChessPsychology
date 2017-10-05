@@ -123,6 +123,11 @@ public class Bishop extends Figure {
     }
 
     @Override
+    public Figure createNewFigure() {
+        return new Bishop(this.getField(), this.getColor());
+    }
+
+    @Override
     public String toString() {
         return "B" + this.getField().toString();
     }

@@ -144,6 +144,11 @@ public class Queen extends Figure {
     }
 
     @Override
+    public Figure createNewFigure() {
+        return new Queen(this.getField(), this.getColor());
+    }
+
+    @Override
     protected void attackedFields() {
         for (int i = 0; i < Board.SIZE; i++){
             for (int j = 0; j < Board.SIZE; j++){
