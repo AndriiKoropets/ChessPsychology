@@ -54,7 +54,7 @@ public class ProcessingUtils {
     private static final Field blackRockLongCastling = new Field(0, 3);
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
-    private static Map<Figure, Field> turnForUndoing = new HashMap<>();
+    private static List<Tuple2<Figure, Field>> tuplesFigureToField;
     public static Figure eatenFigureToResurrection;
 
     public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
@@ -335,7 +335,7 @@ public class ProcessingUtils {
             affectedFields.add(f.getField());
         }
         affectedFields.addAll(turn.getFigures().values());
-        System.out.println("Affected fields =====================" + affectedFields);
+//        System.out.println("Affected fields =====================" + affectedFields);
     }
 
     public static void makeTurn(Turn turn){
@@ -348,36 +348,38 @@ public class ProcessingUtils {
     }
 
     public static void undoTurn(Turn turn){
-        System.out.println("==============" + turn);
-        for (Figure f : turn.getFigures().keySet()){
-            if (!turnForUndoing.keySet().contains(f)){
-                throw new RuntimeException("There is no such turn to undo");
-            }
-        }
+        Map<Figure, Field> undoingMap = convertFromTupleToMap();
         Turn undoTurn = new Turn.Builder()
-                .figureToDestinationField(turnForUndoing)
+                .figureToDestinationField(undoingMap)
                 .eating(false)
                 .writtenStyle("")
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
+        System.out.println("Undoing turn here = " + undoTurn);
         for (Figure curFigure : undoTurn.getFigures().keySet()){
-            Process.BOARD.setNewCoordinates(curFigure, turn.getFigures().get(curFigure), turn.getTargetedFigure(), true);
+            Process.BOARD.setNewCoordinates(curFigure, undoTurn.getFigures().get(curFigure), undoTurn.getTargetedFigure(), true);
         }
         makePullAdditionalAlliesAndEnemies();
     }
 
     private static void setTurnForUndoing(Turn turn){
-        turnForUndoing.clear();
+        tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
         for (Figure f : turn.getFigures().keySet()){
-            turnForUndoing.put(f, f.getField());
+            tuplesFigureToField.add(new Tuple2<>(f, f.getField()));
         }
         if (turn.isEating()){
             Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().values().iterator().next());
             eatenFigureToResurrection = tempFigure.createNewFigure();
         }
-        System.out.println("Turn for undoing = " + turnForUndoing);
-        System.out.println("Eating Figure to resurrection = " + eatenFigureToResurrection);
+    }
+
+    private static Map<Figure, Field> convertFromTupleToMap(){
+        Map<Figure, Field> map = new HashMap<>();
+        for (Tuple2<Figure, Field> tuple : tuplesFigureToField){
+            map.put(tuple._1, tuple._2);
+        }
+        return map;
     }
 
     private static void makePullAdditionalAlliesAndEnemies(){
