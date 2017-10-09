@@ -98,6 +98,8 @@ public class EstimatePosition {
         int max = 0;
         Turn turnOfTheMaxParam = null;
         for (Turn curTurn : turnAntiParameterMap.keySet()){
+            System.out.println("TurnAntiParameterMap = " + turnAntiParameterMap);
+            System.out.println("Cur turn = " + curTurn);
             int paramPerTurn = turnAntiParameterMap.get(curTurn).getFifthParam();
             if (paramPerTurn >= max){
                 max = paramPerTurn;
@@ -113,17 +115,23 @@ public class EstimatePosition {
     private static Map<Turn, AntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
         ProcessingUtils.undoTurn(turn);
         Map<Turn, AntiParameter> turnAntiParameterMap = new HashMap<>();
+        int counter = 0;
         for (Turn posTurn : possibleTurns){
-            ProcessingUtils.makeTurn(posTurn);
-            AntiParameter antiParameter = new AntiParameter.Builder()
-                    .fifth(estimateFirstParameter())
-                    .sixth(estimateSecondParameter())
-                    .seventh(estimateThirdParameter())
-                    .eighth(estimateFourthParameter())
-                    .build();
-            turnAntiParameterMap.put(posTurn, antiParameter);
-            ProcessingUtils.undoTurn(posTurn);
+            if (!possibleTurns.equals(turn)){
+                ProcessingUtils.makeTurn(posTurn);
+                AntiParameter antiParameter = new AntiParameter.Builder()
+                        .fifth(estimateFirstParameter())
+                        .sixth(estimateSecondParameter())
+                        .seventh(estimateThirdParameter())
+                        .eighth(estimateFourthParameter())
+                        .build();
+                turnAntiParameterMap.put(posTurn, antiParameter);
+                ProcessingUtils.undoTurn(posTurn);
+                counter++;
+                System.out.println(counter);
+            }
         }
+//        System.out.println(counter);
         return turnAntiParameterMap;
     }
 

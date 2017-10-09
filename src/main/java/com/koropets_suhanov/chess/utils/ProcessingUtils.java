@@ -390,7 +390,7 @@ public class ProcessingUtils {
                 figureToChosenAllies.put((Figure)f, chosenAllies);
             }
         });
-        System.out.println(figureToChosenAllies);
+//        System.out.println(figureToChosenAllies);
         for (int i = 0; i < Board.SIZE; i++){
             for (Figure curFigure : figureToChosenAllies.keySet()){
                 for (Figure ally : figureToChosenAllies.get(curFigure)){
