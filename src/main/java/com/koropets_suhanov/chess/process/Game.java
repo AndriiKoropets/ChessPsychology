@@ -11,6 +11,7 @@ import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
+import scala.Tuple2;
 
 import java.util.Map;
 import java.util.Set;
@@ -58,19 +59,19 @@ public class Game {
         Set<Observer> allies = Board.getFigures(color);
 
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
-            Map<Figure, Field> kingMap = new HashMap<>();
+            List<Tuple2<Figure, Field>> kingTuple2 = new ArrayList<>();
             for (Figure enemy : king.getWhoCouldBeEaten()){
                 if (enemy.getAlliesProtectMe().size() == 0){
-                    kingMap.put(king, enemy.getField());
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingMap, "", true, enemy, numberOfTurn));
+                    kingTuple2.add(new Tuple2<>(king, enemy.getField()));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingTuple2, null, "", true, enemy, numberOfTurn));
                 }
             }
             Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
             for (Observer observer : allies){
                 if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
-                    Map<Figure, Field> alienToTargetField = new HashMap<>();
-                    alienToTargetField.put((Figure)observer, whoAttackKing.getField());
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, "", true, whoAttackKing, numberOfTurn));
+                    List<Tuple2<Figure, Field>> alienToTargetField = new ArrayList<>();
+                    alienToTargetField.add(new Tuple2<>(((Figure)observer), whoAttackKing.getField()));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, null, "", true, whoAttackKing, numberOfTurn));
                 }
             }
             peacefulTurn(king);
@@ -100,9 +101,9 @@ public class Game {
             for (Observer figure : allies){
                 peacefulTurn((Figure) figure);
                 for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
-                    Map<Figure, Field> figureFieldMap = new HashMap<>();
-                    figureFieldMap.put((Figure)figure, attackedFigure.getField());
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldMap, "", true, attackedFigure, numberOfTurn));
+                    List<Tuple2<Figure, Field>> figureFieldTuple = new ArrayList<>();
+                    figureFieldTuple.add(new Tuple2<Figure, Field>((Figure)figure, attackedFigure.getField()));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldTuple, null, "", true, attackedFigure, numberOfTurn));
                 }
             }
             possibleTurnsAndEating.addAll(castling(color));
@@ -111,9 +112,9 @@ public class Game {
 
     private void peacefulTurn(Figure figure){
         for (Field field : figure.getPossibleFieldsToMove()){
-            Map<Figure, Field> figureToFieldMap = new HashMap<>();
-            figureToFieldMap.put(figure, field);
-            possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureToFieldMap, "", false, null, numberOfTurn));
+            List<Tuple2<Figure, Field>> figureToFieldTuple = new ArrayList<>();
+            figureToFieldTuple.add(new Tuple2<>(figure, field));
+            possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureToFieldTuple, null, "", false, null, numberOfTurn));
         }
     }
 
@@ -145,9 +146,9 @@ public class Game {
         alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
             ((Figure)f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)){
-                    Map<Figure, Field> covering = new HashMap<>();
-                    covering.put( (Figure) f, k);
-                    coveringTurns.add(ProcessingUtils.createTurn(covering, "", false, null, numberOfTurn));
+                    List<Tuple2<Figure, Field>> covering = new ArrayList<>();
+                    covering.add(new Tuple2<>((Figure)f, k));
+                    coveringTurns.add(ProcessingUtils.createTurn(covering, null, "", false, null, numberOfTurn));
                 }
             });
         });
@@ -170,21 +171,21 @@ public class Game {
 
     private Turn shortCastling(Rock rock, King king, Color color){
         Turn shortCastling = null;
-        Map<Figure, Field> castlingMap = new HashMap<>();
+        List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
             if (color == Color.BLACK){
                 if (!Board.getFieldsUnderWhiteInfluence().contains(f8) && !Board.getFieldsUnderWhiteInfluence().contains(g8) &&
                         Board.getFieldToFigure().get(f8) == null && Board.getFieldToFigure().get(g8) == null){
-                    castlingMap.put(king, g8);
-                    castlingMap.put(rock, f8);
-                    shortCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.shortCastling, false, null, numberOfTurn);
+                    castlingTuple.add(new Tuple2<>(king, g8));
+                    castlingTuple.add(new Tuple2<>(rock, f8));
+                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, null, numberOfTurn);
                 }
             }else{
                 if (!Board.getFieldsUnderBlackInfluence().contains(f1) && !Board.getFieldsUnderBlackInfluence().contains(g1) &&
                         Board.getFieldToFigure().get(f1) == null && Board.getFieldToFigure().get(g1) == null){
-                    castlingMap.put(king, g1);
-                    castlingMap.put(rock, f1);
-                    shortCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.shortCastling, false, null, numberOfTurn);
+                    castlingTuple.add(new Tuple2<>(king, g1));
+                    castlingTuple.add(new Tuple2<>(rock, f1));
+                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, null, numberOfTurn);
                 }
             }
         }
@@ -193,23 +194,23 @@ public class Game {
 
     private Turn longCastling(Rock rock, King king, Color color){
         Turn longCastling = null;
-        Map<Figure, Field> castlingMap = new HashMap<>();
+        List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
             if (color == Color.BLACK){
                 if (!Board.getFieldsUnderWhiteInfluence().contains(b8) && !Board.getFieldsUnderWhiteInfluence().contains(c8) &&
                         !Board.getFieldsUnderWhiteInfluence().contains(d8) && Board.getFieldToFigure().get(b8) == null &&
                         Board.getFieldToFigure().get(c8) == null && Board.getFieldToFigure().get(d8) == null){
-                    castlingMap.put(king, c8);
-                    castlingMap.put(rock, d8);
-                    longCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.longCastling, false, null, numberOfTurn);
+                    castlingTuple.add(new Tuple2<>(king, c8));
+                    castlingTuple.add(new Tuple2<>(rock, d8));
+                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, null, numberOfTurn);
                 }
             }else {
                 if (!Board.getFieldsUnderBlackInfluence().contains(b1) && !Board.getFieldsUnderBlackInfluence().contains(c1) &&
                         !Board.getFieldsUnderBlackInfluence().contains(d1) && Board.getFieldToFigure().get(b1) == null &&
                         Board.getFieldToFigure().get(c1) == null && Board.getFieldToFigure().get(d1) == null){
-                    castlingMap.put(king, c1);
-                    castlingMap.put(rock, d1);
-                    longCastling = ProcessingUtils.createTurn(castlingMap, ProcessingUtils.longCastling, false, null, numberOfTurn);
+                    castlingTuple.add(new Tuple2<>(king, c1));
+                    castlingTuple.add(new Tuple2<>(rock, d1));
+                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, null, numberOfTurn);
                 }
             }
         }

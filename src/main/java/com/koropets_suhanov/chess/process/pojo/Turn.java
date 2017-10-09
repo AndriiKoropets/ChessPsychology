@@ -2,22 +2,26 @@ package com.koropets_suhanov.chess.process.pojo;
 
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
+import scala.Tuple2;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author AndriiKoropets
  */
 public class Turn {
 
-    private Map<Figure, Field> figureToDestinationField;
+    private List<Tuple2<Figure, Field>> figureToDestinationField;
+    private Figure figureToReborn;
     private boolean eating;
     private Figure targetedFigure;
     private String writtenStyle;
     private int numberOfTurn;
 
-    private Turn(Map<Figure, Field> figureToDestinationField, boolean eating, Figure targetedFigure, String turn, int numberOfTurn) {
+    private Turn(List<Tuple2<Figure, Field>> figureToDestinationField, Figure figureToReborn, boolean eating,
+                 Figure targetedFigure, String turn, int numberOfTurn) {
         this.figureToDestinationField = figureToDestinationField;
+        this.figureToReborn = figureToReborn;
         this.eating = eating;
         this.targetedFigure = targetedFigure;
         this.writtenStyle = turn;
@@ -28,6 +32,10 @@ public class Turn {
         return writtenStyle;
     }
 
+    public Figure getFigureToReborn(){
+        return figureToReborn;
+    }
+
     public boolean isEating(){
         return eating;
     }
@@ -36,7 +44,7 @@ public class Turn {
         return targetedFigure;
     }
 
-    public Map<Figure, Field> getFigures() {
+    public List<Tuple2<Figure, Field>> getFigures() {
         return figureToDestinationField;
     }
 
@@ -74,14 +82,20 @@ public class Turn {
     }
 
     public static class Builder{
-        private Map<Figure, Field> figureToDestinationField;
+        private List<Tuple2<Figure, Field>> figureToDestinationField;
+        private Figure figureToReborn;
         private boolean eating;
         private Figure targetedFigure;
         private String writtenStyle;
         private int numberOfTurn;
 
-        public Builder figureToDestinationField(final Map<Figure, Field> figureToDestinationField){
+        public Builder figureToDestinationField(final List<Tuple2<Figure, Field>> figureToDestinationField){
             this.figureToDestinationField = figureToDestinationField;
+            return this;
+        }
+
+        public Builder figureToReborn(final Figure figureToReborn){
+            this.figureToReborn = figureToReborn;
             return this;
         }
 
@@ -106,7 +120,7 @@ public class Turn {
         }
 
         public Turn build(){
-            return new Turn(figureToDestinationField, eating, targetedFigure, writtenStyle, numberOfTurn);
+            return new Turn(figureToDestinationField, figureToReborn, eating, targetedFigure, writtenStyle, numberOfTurn);
         }
     }
 }

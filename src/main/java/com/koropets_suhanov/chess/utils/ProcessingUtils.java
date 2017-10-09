@@ -38,7 +38,7 @@ public class ProcessingUtils {
     private static Field field;
     private static int number;
     private static Set<Field> affectedFields;
-    private static Map<Figure, Field> figureToField = new HashMap<>();
+    private static List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
     private static Figure figure;
     private static boolean isEating;
     private static Figure targetedFigure;
@@ -55,6 +55,7 @@ public class ProcessingUtils {
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
     private static List<Tuple2<Figure, Field>> tuplesFigureToField;
+    private static Figure figureToReborn;
     public static Figure eatenFigureToResurrection;
 
     public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
@@ -96,53 +97,53 @@ public class ProcessingUtils {
     private static Turn setTurn(final String writtenStyle, final boolean isWhite){
         initialize();
         if (shortCastling.equals(writtenStyle)){
-            Map<Figure, Field> figureToField = new HashMap<>();
+            List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
             if (isWhite){
                 Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
                 Figure whiteRock_H = Board.getFieldToFigure().get(Game.h1);
-                figureToField.put(whiteKing, whiteKingShortCastling);
-                figureToField.put(whiteRock_H, whiteRockShortCastling);
+                figureToField.add(new Tuple2<>(whiteKing, whiteKingShortCastling));
+                figureToField.add(new Tuple2<>(whiteRock_H, whiteRockShortCastling));
             }else {
                 Figure blackKing = Board.getFieldToFigure().get(Game.e8);
                 Figure blackRock_H = Board.getFieldToFigure().get(Game.h8);
-                figureToField.put(blackKing, blackKingShortCastling);
-                figureToField.put(blackRock_H, blackRockShortCastling);
+                figureToField.add(new Tuple2<>(blackKing, blackKingShortCastling));
+                figureToField.add(new Tuple2<>(blackRock_H, blackRockShortCastling));
             }
-            return createTurn(figureToField, writtenStyle, false, null, number);
+            return createTurn(figureToField, null, writtenStyle, false, null, number);
         }
         if (longCastling.equals(writtenStyle)){
-            Map<Figure, Field> figureToField = new HashMap<>();
+            List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
             if (isWhite){
                 Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
                 Figure whiteRock_A = Board.getFieldToFigure().get(Game.a1);
-                figureToField.put(whiteKing, whiteKingLongCastling);
-                figureToField.put(whiteRock_A, whiteRockLongCastling);
+                figureToField.add(new Tuple2<>(whiteKing, whiteKingLongCastling));
+                figureToField.add(new Tuple2<>(whiteRock_A, whiteRockLongCastling));
             }else {
                 Figure blackKing = Board.getFieldToFigure().get(Game.e8);
                 Figure blackRock_A = Board.getFieldToFigure().get(Game.a8);
-                figureToField.put(blackKing, blackKingLongCastling);
-                figureToField.put(blackRock_A, blackRockLongCastling);
+                figureToField.add(new Tuple2<>(blackKing, blackKingLongCastling));
+                figureToField.add(new Tuple2<>(blackRock_A, blackRockLongCastling));
             }
-            return createTurn(figureToField, writtenStyle, false, null, number);
+            return createTurn(figureToField, null, writtenStyle, false, null, number);
         }
         char firstCharacter = writtenStyle.charAt(0);
         switch (firstCharacter){
             case 'R' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Rock.class, isWhite, true) : fetchFigureToTargetField(Rock.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
             case 'N' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Knight.class, isWhite, true) : fetchFigureToTargetField(Knight.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
             case 'B' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Bishop.class, isWhite, true) : fetchFigureToTargetField(Bishop.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
             case 'Q' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Queen.class, isWhite, true) : fetchFigureToTargetField(Queen.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
             case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, isWhite, true) : fetchFigureToTargetField(King.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
             default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, isWhite, true) : fetchFigureToTargetField(Pawn.class, isWhite, false);
-                        return createTurn(figureToField, writtenStyle, isEating, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, targetedFigure, number);
         }
     }
 
-    private static Map<Figure, Field> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean eating){
+    private static List<Tuple2<Figure, Field>> fetchFigureToTargetField(Class clazz, boolean isWhite, boolean eating){
         isEating = eating;
         List<Observer> targets = new ArrayList<Observer>();
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
@@ -173,7 +174,7 @@ public class ProcessingUtils {
             }
         }
         if (figure != null){
-            figureToField.put(figure, field);
+            figureToField.add(new Tuple2<>(figure, field));
         }
         if (figureToField.size() == 0){
             throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + mainTurn);
@@ -236,8 +237,10 @@ public class ProcessingUtils {
         }
     }
 
-    public static Turn createTurn(Map<Figure, Field> figureToField, String writtenStyle, boolean isEating, Figure targetedFigure, int numberOfTurn){
+    public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureToReborn,
+                                  String writtenStyle, boolean isEating, Figure targetedFigure, int numberOfTurn){
         return new Turn.Builder().figureToDestinationField(figureToField)
+                .figureToReborn(figureToReborn)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
                 .targetedFigure(targetedFigure)
@@ -331,33 +334,32 @@ public class ProcessingUtils {
 
     private static void getAffectedFields(Turn turn){
         affectedFields = new HashSet<>();
-        for (Figure f : turn.getFigures().keySet()){
-            affectedFields.add(f.getField());
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+            affectedFields.add(tuple2._1.getField());
+            affectedFields.add(tuple2._2);
         }
-        affectedFields.addAll(turn.getFigures().values());
 //        System.out.println("Affected fields =====================" + affectedFields);
     }
 
     public static void makeTurn(Turn turn){
         getAffectedFields(turn);
         setTurnForUndoing(turn);
-        for (Figure curFigure : turn.getFigures().keySet()){
-            Process.BOARD.setNewCoordinates(curFigure, turn.getFigures().get(curFigure), turn.getTargetedFigure(), false);
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+            Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, turn.getTargetedFigure(), false);
         }
         makePullAdditionalAlliesAndEnemies();
     }
 
     public static void undoTurn(Turn turn){
-        Map<Figure, Field> undoingMap = convertFromTupleToMap();
         Turn undoTurn = new Turn.Builder()
-                .figureToDestinationField(undoingMap)
+                .figureToDestinationField(tuplesFigureToField)
                 .eating(false)
                 .writtenStyle("")
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
         System.out.println("Undoing turn here = " + undoTurn);
-        for (Figure curFigure : undoTurn.getFigures().keySet()){
-            Process.BOARD.setNewCoordinates(curFigure, undoTurn.getFigures().get(curFigure), undoTurn.getTargetedFigure(), true);
+        for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
+            Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
         }
         makePullAdditionalAlliesAndEnemies();
     }
@@ -365,21 +367,14 @@ public class ProcessingUtils {
     private static void setTurnForUndoing(Turn turn){
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
-        for (Figure f : turn.getFigures().keySet()){
-            tuplesFigureToField.add(new Tuple2<>(f, f.getField()));
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+            tuplesFigureToField.add(new Tuple2<>(tuple2._1, tuple2._1.getField()));
         }
         if (turn.isEating()){
-            Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().values().iterator().next());
+            Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().get(0)._2);
             eatenFigureToResurrection = tempFigure.createNewFigure();
         }
-    }
-
-    private static Map<Figure, Field> convertFromTupleToMap(){
-        Map<Figure, Field> map = new HashMap<>();
-        for (Tuple2<Figure, Field> tuple : tuplesFigureToField){
-            map.put(tuple._1, tuple._2);
-        }
-        return map;
+        figureToReborn = turn.getFigureToReborn();
     }
 
     private static void makePullAdditionalAlliesAndEnemies(){
