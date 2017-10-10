@@ -5,9 +5,9 @@ import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Board;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 import com.koropets_suhanov.chess.process.pojo.AntiParameter;
@@ -29,11 +29,12 @@ public class EstimatePosition {
         int secondParam = estimateSecondParameter();
         int thirdParam = estimateThirdParameter();
         int fourthParam = estimateFourthParameter();
-        Map<Turn, AntiParameter> antiParameterMap = estimateAntiParameter(turn, possibleTurns);
-        int fifthParam = estimateFifthParameter(antiParameterMap)._2 - firstParam;
-        int sixthParam = estimateSixthParameter(antiParameterMap)._2 - secondParam;
-        int seventhParam = estimateSeventhParameter(antiParameterMap)._2 - thirdParam;
-        int eighthParam = estimateEightParameter(antiParameterMap)._2 - fourthParam;
+        List<Tuple2<Turn, AntiParameter>> turnToAntiParameter = estimateAntiParameter(turn, possibleTurns);
+        int fifthParam = estimateFifthParameter(turnToAntiParameter)._2 - firstParam;
+        int sixthParam = estimateSixthParameter(turnToAntiParameter)._2 - secondParam;
+        int seventhParam = estimateSeventhParameter(turnToAntiParameter)._2 - thirdParam;
+        int eighthParam = estimateEightParameter(turnToAntiParameter)._2 - fourthParam;
+//        ProcessingUtils.makeTurn(turn);
         return new Parameter.Builder()
                 .first(firstParam)
                 .second(secondParam)
@@ -46,14 +47,14 @@ public class EstimatePosition {
                 .build();
     }
 
-    private static Tuple2<Turn, Integer> estimateEightParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+    private static Tuple2<Turn, Integer> estimateEightParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
-        for (Turn curTurn : turnAntiParameterMap.keySet()){
-            int paramPerTurn = turnAntiParameterMap.get(curTurn).getEighthParam();
+        for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
+            int paramPerTurn = curTuple._2.getEighthParam();
             if (paramPerTurn >= max){
                 max = paramPerTurn;
-                turnOfTheMaxParam = curTurn;
+                turnOfTheMaxParam = curTuple._1;
             }
         }
         if (turnOfTheMaxParam == null){
@@ -62,14 +63,14 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateSeventhParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+    private static Tuple2<Turn, Integer> estimateSeventhParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
-        for (Turn curTurn : turnAntiParameterMap.keySet()){
-            int paramPerTurn = turnAntiParameterMap.get(curTurn).getSeventhParam();
+        for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
+            int paramPerTurn = curTuple._2.getSeventhParam();
             if (paramPerTurn >= max){
                 max = paramPerTurn;
-                turnOfTheMaxParam = curTurn;
+                turnOfTheMaxParam = curTuple._1;
             }
         }
         if (turnOfTheMaxParam == null){
@@ -78,14 +79,14 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateSixthParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+    private static Tuple2<Turn, Integer> estimateSixthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
-        for (Turn curTurn : turnAntiParameterMap.keySet()){
-            int paramPerTurn = turnAntiParameterMap.get(curTurn).getSixthParam();
+        for (Tuple2<Turn, AntiParameter> curTuple2 : turnAntiParameterMap){
+            int paramPerTurn = curTuple2._2.getSixthParam();
             if (paramPerTurn >= max){
                 max = paramPerTurn;
-                turnOfTheMaxParam = curTurn;
+                turnOfTheMaxParam = curTuple2._1;
             }
         }
         if (turnOfTheMaxParam == null){
@@ -94,16 +95,16 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateFifthParameter(final Map<Turn, AntiParameter> turnAntiParameterMap) {
+    private static Tuple2<Turn, Integer> estimateFifthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
-        for (Turn curTurn : turnAntiParameterMap.keySet()){
-            System.out.println("TurnAntiParameterMap = " + turnAntiParameterMap);
-            System.out.println("Cur turn = " + curTurn);
-            int paramPerTurn = turnAntiParameterMap.get(curTurn).getFifthParam();
+        for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
+//            System.out.println("TurnAntiParameterMap = " + turnAntiParameterMap);
+//            System.out.println("Cur turn = " + curTuple._1);
+            int paramPerTurn = curTuple._2.getFifthParam();
             if (paramPerTurn >= max){
                 max = paramPerTurn;
-                turnOfTheMaxParam = curTurn;
+                turnOfTheMaxParam = curTuple._1;
             }
         }
         if (turnOfTheMaxParam == null){
@@ -112,9 +113,9 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Map<Turn, AntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
+    private static List<Tuple2<Turn, AntiParameter>> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
         ProcessingUtils.undoTurn(turn);
-        Map<Turn, AntiParameter> turnAntiParameterMap = new HashMap<>();
+        List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap = new ArrayList<>();
         int counter = 0;
         for (Turn posTurn : possibleTurns){
             if (!possibleTurns.equals(turn)){
@@ -125,12 +126,13 @@ public class EstimatePosition {
                         .seventh(estimateThirdParameter())
                         .eighth(estimateFourthParameter())
                         .build();
-                turnAntiParameterMap.put(posTurn, antiParameter);
+                turnAntiParameterMap.add(new Tuple2<>(posTurn, antiParameter));
                 ProcessingUtils.undoTurn(posTurn);
                 counter++;
-                System.out.println(counter);
+
             }
         }
+        System.out.println(counter);
 //        System.out.println(counter);
         return turnAntiParameterMap;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 public class Turn {
 
     private List<Tuple2<Figure, Field>> figureToDestinationField;
-    private Figure figureToReborn;
+    private Figure figureFromTransformation;
     private boolean eating;
     private Figure targetedFigure;
     private String writtenStyle;
@@ -21,19 +21,23 @@ public class Turn {
     private Turn(List<Tuple2<Figure, Field>> figureToDestinationField, Figure figureToReborn, boolean eating,
                  Figure targetedFigure, String turn, int numberOfTurn) {
         this.figureToDestinationField = figureToDestinationField;
-        this.figureToReborn = figureToReborn;
+        this.figureFromTransformation = figureToReborn;
         this.eating = eating;
         this.targetedFigure = targetedFigure;
         this.writtenStyle = turn;
         this.numberOfTurn = numberOfTurn;
     }
 
+    public List<Tuple2<Figure, Field>> getFigureToDestinationField() {
+        return figureToDestinationField;
+    }
+
     public String getWrittenStyle() {
         return writtenStyle;
     }
 
-    public Figure getFigureToReborn(){
-        return figureToReborn;
+    public Figure getFigureFromTransformation(){
+        return figureFromTransformation;
     }
 
     public boolean isEating(){
@@ -55,12 +59,12 @@ public class Turn {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
-        Turn turn = (Turn) o;
+        Turn otherTurn = (Turn) o;
 
-        if (numberOfTurn != turn.numberOfTurn) return false;
-        return figureToDestinationField.equals(turn.figureToDestinationField);
+        if (this.getNumberOfTurn() != otherTurn.getNumberOfTurn()) return false;
+        return this.getFigureToDestinationField().equals(otherTurn.getFigureToDestinationField());
     }
 
     @Override
@@ -74,6 +78,7 @@ public class Turn {
     public String toString() {
         return "Turn{" +
                 "figureToDestinationField=" + figureToDestinationField +
+                "figureFromTransformation=" + figureFromTransformation +
                 ", eating=" + eating +
                 ", targetedFigure=" + targetedFigure +
                 ", writtenStyle='" + writtenStyle + '\'' +
@@ -83,7 +88,7 @@ public class Turn {
 
     public static class Builder{
         private List<Tuple2<Figure, Field>> figureToDestinationField;
-        private Figure figureToReborn;
+        private Figure figureFromTransformation;
         private boolean eating;
         private Figure targetedFigure;
         private String writtenStyle;
@@ -94,8 +99,8 @@ public class Turn {
             return this;
         }
 
-        public Builder figureToReborn(final Figure figureToReborn){
-            this.figureToReborn = figureToReborn;
+        public Builder figureToReborn(final Figure figureFromTransformation){
+            this.figureFromTransformation = figureFromTransformation;
             return this;
         }
 
@@ -120,7 +125,7 @@ public class Turn {
         }
 
         public Turn build(){
-            return new Turn(figureToDestinationField, figureToReborn, eating, targetedFigure, writtenStyle, numberOfTurn);
+            return new Turn(figureToDestinationField, figureFromTransformation, eating, targetedFigure, writtenStyle, numberOfTurn);
         }
     }
 }

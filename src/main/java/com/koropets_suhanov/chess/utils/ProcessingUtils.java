@@ -55,7 +55,7 @@ public class ProcessingUtils {
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
     private static List<Tuple2<Figure, Field>> tuplesFigureToField;
-    private static Figure figureToReborn;
+    private static Figure figureFromTranstormation;
     public static Figure eatenFigureToResurrection;
 
     public static Turn getActualTurn(final String turnWrittenStyle, final boolean isWhite, int numberOfTurn){
@@ -357,7 +357,7 @@ public class ProcessingUtils {
                 .writtenStyle("")
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
-        System.out.println("Undoing turn here = " + undoTurn);
+//        System.out.println("Undoing turn here = " + undoTurn);
         for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
             Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
         }
@@ -373,8 +373,9 @@ public class ProcessingUtils {
         if (turn.isEating()){
             Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().get(0)._2);
             eatenFigureToResurrection = tempFigure.createNewFigure();
+            System.out.println("Eaten figure = " + eatenFigureToResurrection);
         }
-        figureToReborn = turn.getFigureToReborn();
+        figureFromTranstormation = turn.getFigureFromTransformation();
     }
 
     private static void makePullAdditionalAlliesAndEnemies(){

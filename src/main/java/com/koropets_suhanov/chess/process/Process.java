@@ -77,6 +77,7 @@ public class Process {
 //                    currentStateOfAllFigures();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
+                    ProcessingUtils.makeTurn(whiteTurn);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
                         System.out.println("Black turn = " + blackTurn);
@@ -87,12 +88,15 @@ public class Process {
 //                        currentStateOfAllFigures();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
+                        ProcessingUtils.makeTurn(blackTurn);
                     }
 //                    printAllBoard();
 //                    currentStateOfAllFigures();
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
+                System.out.println("White figures = " + Board.getFigures(Color.WHITE));
+                System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
             }
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
 //            System.out.println("Black estimation = " + blackEstimationWholeParty);

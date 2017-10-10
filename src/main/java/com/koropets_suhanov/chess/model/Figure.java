@@ -149,8 +149,17 @@ public abstract class Figure implements Observer {
 
     @Override
     public boolean equals(Object o){
-        return this.getClass() == o.getClass() && this.field.equals(((Figure)o).getField())
-                && this.getColor() == ((Figure)o).getColor();
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+//        if (!(o instanceof Figure)) return false;
+        Figure other = (Figure)o;
+        if (other.getField().getX() == 3 && other.getField().getY() == 4){
+            System.out.println("Current object = " + o  + " and is compared with = " + this);
+            System.out.println(this.getField().equals(other.getField()));
+        }
+        if (this.getColor() != other.getColor()) return false;
+        return this.getField().getY() == other.getField().getY() &&
+                this.getField().getX() == other.getField().getX();
     }
 
     @Override

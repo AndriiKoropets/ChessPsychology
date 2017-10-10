@@ -207,10 +207,21 @@ public class Board implements Subject{
     }
 
     public void removeFigure(Observer figure) {
-        figures.remove(figure);
+        System.out.println("Observer to remove = " + figure);
+        System.out.println("Figures =       " + figures);
+        System.out.println(figures.remove(figure));
+//        for (Observer o : figures){
+//            if (o.equals(figure)){
+//                System.out.println(o + " they are equals with " + figure);
+//                System.out.println(figures.remove((Figure)o));
+//            }
+//        }
+        System.out.println("Figures after = " + figures);
         if (((Figure)figure).getColor() == Color.BLACK){
+            System.out.println(figure + " is black");
             blackFigures.remove(figure);
         } else {
+            System.out.println(figure + " is white");
             whiteFigures.remove(figure);
         }
         fieldToFigure.remove(((Figure) figure).getField());
@@ -231,11 +242,17 @@ public class Board implements Subject{
         if (isUndoing){
             Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
             if (figureToResurrect != null){
+                System.out.println("Figure to resurrect is going to be registered = " + figureToResurrect);
                 register(figureToResurrect);
             }
         }
         if (eatenFigure != null){
+            System.out.println("Figure is going to be removed = " + eatenFigure);
+            System.out.println("Before white = " + getFigures(Color.WHITE));
+            System.out.println("Before black = " + getFigures(Color.BLACK));
             removeFigure(eatenFigure);
+            System.out.println("After white = " + getFigures(Color.WHITE));
+            System.out.println("After black = " + getFigures(Color.BLACK));
         }
         if (flag){
             this.field = updatedField;

@@ -152,21 +152,20 @@ public class Field {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         Field field = (Field) o;
-        if (x == field.x && y == field.y) return true;
-        return false;
+        return this.getX() == field.getX() && this.getY() == field.getY();
     }
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = this.getX();
+        result = 31 * result + this.getY();
         return result;
     }
 
     @Override
     public String toString() {
-        return horizontal.get(y) + "" + vertical.get(x);
+        return horizontal.get(this.getY()) + "" + vertical.get(this.getX());
     }
 }
