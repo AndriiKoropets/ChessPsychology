@@ -1,5 +1,6 @@
 package com.koropets_suhanov.chess.model;
 
+import com.koropets_suhanov.chess.process.Process;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import org.slf4j.Logger;
@@ -19,9 +20,9 @@ public class Board implements Subject{
 
     public final static byte SIZE = 8;
     private static final Logger LOG = LoggerFactory.getLogger(Board.class);
-    private static Set<Observer> figures = new LinkedHashSet<Observer>();
-    private static Set<Observer> whiteFigures = new LinkedHashSet<Observer>();
-    private static Set<Observer> blackFigures = new LinkedHashSet<Observer>();
+    private static List<Observer> figures = new ArrayList<>();
+    private static List<Observer> whiteFigures = new ArrayList<Observer>();
+    private static List<Observer> blackFigures = new ArrayList<>();
     private static Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<Field>();
     private static Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<Field>();
     private static List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
@@ -122,13 +123,13 @@ public class Board implements Subject{
     }
 
     public static List<Figure> getFiguresByClass(Class clazz, Color color){
-        Set<Observer> observers = getFigures(color);
+        List<Observer> observers = getFigures(color);
         List<Figure> figures = new ArrayList<>();
         observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
         return figures;
     }
 
-    public static Set<Observer> getFigures(Color color){
+    public static List<Observer> getFigures(Color color){
         return color == Color.WHITE ? whiteFigures : blackFigures;
     }
 
@@ -158,7 +159,7 @@ public class Board implements Subject{
         return possibleTurnsAndKillings;
     }
 
-    public static Set<Observer> getFigures() {
+    public static List<Observer> getFigures() {
         return figures;
     }
 
@@ -203,25 +204,19 @@ public class Board implements Subject{
         } else {
             blackFigures.add(figure);
         }
+        Field field = ((Figure) figure).getField();
         fieldToFigure.put(((Figure) figure).getField(), ((Figure)figure));
+        takenFields.add(field);
     }
 
     public void removeFigure(Observer figure) {
-        System.out.println("Observer to remove = " + figure);
-        System.out.println("Figures =       " + figures);
-        System.out.println(figures.remove(figure));
-//        for (Observer o : figures){
-//            if (o.equals(figure)){
-//                System.out.println(o + " they are equals with " + figure);
-//                System.out.println(figures.remove((Figure)o));
-//            }
-//        }
-        System.out.println("Figures after = " + figures);
+        figures.remove(figure);
+//        System.out.println("Figures after = " + figures);
         if (((Figure)figure).getColor() == Color.BLACK){
-            System.out.println(figure + " is black");
+//            System.out.println(figure + " is black");
             blackFigures.remove(figure);
         } else {
-            System.out.println(figure + " is white");
+//            System.out.println(figure + " is white");
             whiteFigures.remove(figure);
         }
         fieldToFigure.remove(((Figure) figure).getField());
@@ -229,32 +224,12 @@ public class Board implements Subject{
     }
 
     public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing){
-        //TODO had to write this junk, cause was problem with contains method for Set
-        boolean flag = false;
-        for (Observer f : figures){
-            if (f.equals(updatedFigure)){
-//                System.out.println(f + " equals " + updatedFigure);
-                flag = true;
-                break;
-            }
-        }
-
-        if (isUndoing){
-            Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
-            if (figureToResurrect != null){
-                System.out.println("Figure to resurrect is going to be registered = " + figureToResurrect);
-                register(figureToResurrect);
-            }
-        }
+//        Figure replacedFigure = null;
         if (eatenFigure != null){
-            System.out.println("Figure is going to be removed = " + eatenFigure);
-            System.out.println("Before white = " + getFigures(Color.WHITE));
-            System.out.println("Before black = " + getFigures(Color.BLACK));
             removeFigure(eatenFigure);
-            System.out.println("After white = " + getFigures(Color.WHITE));
-            System.out.println("After black = " + getFigures(Color.BLACK));
         }
-        if (flag){
+        if (figures.contains(updatedFigure)){
+
             this.field = updatedField;
             notify(updatedFigure);
             figures.forEach(f -> {
@@ -262,7 +237,14 @@ public class Board implements Subject{
                     ((Figure)f).attackedFields();
             });
         }else {
-            throw new RuntimeException("There is no such figure on the Board.");
+            throw new RuntimeException("There is no such figure on the Board." + updatedFigure);
+        }
+        if (isUndoing){
+            Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
+            if (figureToResurrect != null){
+                Process.printAllBoard();
+                register(figureToResurrect);
+            }
         }
     }
 

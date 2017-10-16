@@ -56,7 +56,7 @@ public class Game {
     private void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
         King king = (King) Board.getFiguresByClass(King.class, color).get(0);
-        Set<Observer> allies = Board.getFigures(color);
+        List<Observer> allies = Board.getFigures(color);
 
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
             List<Tuple2<Figure, Field>> kingTuple2 = new ArrayList<>();
@@ -121,7 +121,7 @@ public class Game {
     private Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
         Set<Turn> coveringTurns = new HashSet<>();
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
-        Set<Observer> alienFigures = Board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -129,7 +129,7 @@ public class Game {
     private Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        Set<Observer> alienFigures = Board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -137,12 +137,12 @@ public class Game {
     private Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenQueenAndKing(king, queen.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        Set<Observer> alienFigures = Board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
 
-    private void setCoveringTurns(final Set<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
+    private void setCoveringTurns(final List<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
         alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
             ((Figure)f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)){

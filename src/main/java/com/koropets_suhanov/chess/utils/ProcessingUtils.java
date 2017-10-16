@@ -321,7 +321,7 @@ public class ProcessingUtils {
 
     public static Set<Figure> getAffectedFigures(Color color){
         Set<Figure> acceptedFigures = new HashSet<>();
-        Set<Observer> observers = Board.getFigures(color);
+        List<Observer> observers = Board.getFigures(color);
         affectedFields.forEach(f -> {
             observers.forEach(o -> {
                 if (((Figure)o).getAttackedFields().contains(f)){
@@ -357,10 +357,10 @@ public class ProcessingUtils {
                 .writtenStyle("")
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
-//        System.out.println("Undoing turn here = " + undoTurn);
         for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
             Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
         }
+        ProcessingUtils.eatenFigureToResurrection = null;
         makePullAdditionalAlliesAndEnemies();
     }
 
@@ -373,7 +373,7 @@ public class ProcessingUtils {
         if (turn.isEating()){
             Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().get(0)._2);
             eatenFigureToResurrection = tempFigure.createNewFigure();
-            System.out.println("Eaten figure = " + eatenFigureToResurrection);
+//            System.out.println("Eaten figure = " + eatenFigureToResurrection);
         }
         figureFromTranstormation = turn.getFigureFromTransformation();
     }

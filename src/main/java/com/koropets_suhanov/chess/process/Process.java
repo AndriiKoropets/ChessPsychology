@@ -30,8 +30,9 @@ import java.util.Set;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/testFirstParameter.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/14.txt";
+    //14, 19 are processed properly
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     public static final Board BOARD = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
@@ -77,20 +78,21 @@ public class Process {
 //                    currentStateOfAllFigures();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
-                    ProcessingUtils.makeTurn(whiteTurn);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
                         System.out.println("Black turn = " + blackTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
                         ProcessingUtils.makeTurn(blackTurn);
                         System.out.println("After turn = " + blackTurn);
+                        System.out.println("Figures = " + Board.getFigures());
+                        System.out.println("White figures = " + Board.getFigures(Color.WHITE));
+                        System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
+                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
                         printAllBoard();
-//                        currentStateOfAllFigures();
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
-                        ProcessingUtils.makeTurn(blackTurn);
                     }
-//                    printAllBoard();
+                    printAllBoard();
 //                    currentStateOfAllFigures();
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
@@ -132,7 +134,7 @@ public class Process {
         System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
-    private static void printAllBoard(){
+    public static void printAllBoard(){
         System.out.println();
         int counter = 1;
         for (int i = 0; i < Board.SIZE; i++){

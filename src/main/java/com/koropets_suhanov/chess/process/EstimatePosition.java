@@ -34,7 +34,7 @@ public class EstimatePosition {
         int sixthParam = estimateSixthParameter(turnToAntiParameter)._2 - secondParam;
         int seventhParam = estimateSeventhParameter(turnToAntiParameter)._2 - thirdParam;
         int eighthParam = estimateEightParameter(turnToAntiParameter)._2 - fourthParam;
-//        ProcessingUtils.makeTurn(turn);
+        ProcessingUtils.makeTurn(turn);
         return new Parameter.Builder()
                 .first(firstParam)
                 .second(secondParam)
@@ -138,26 +138,26 @@ public class EstimatePosition {
     }
 
     private static int estimateFourthParameter() {
-        Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
         return calculateWithdrawingAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateThirdParameter() {
-        Set<Observer> alliesObservers = Board.getFigures(whoseTurn);
+        List<Observer> alliesObservers = Board.getFigures(whoseTurn);
         return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
     }
 
     private static int estimateSecondParameter(){
-        Set<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
         return calculateAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateFirstParameter(){
-        Set<Observer> chosenFigures = Board.getFigures(whoseTurn);
+        List<Observer> chosenFigures = Board.getFigures(whoseTurn);
         return calculateAttackAndBeUnderAttack(chosenFigures);
     }
 
-    private static int calculateAttackAndBeUnderAttack(Set<Observer> figures){
+    private static int calculateAttackAndBeUnderAttack(List<Observer> figures){
         int param = 0;
         Set<Figure> chosenFigures = new HashSet<>();
         figures.forEach(o -> {
@@ -177,7 +177,7 @@ public class EstimatePosition {
         return param;
     }
 
-    private static int calculateWithdrawingAttackAndBeUnderAttack(Set<Observer> figures){
+    private static int calculateWithdrawingAttackAndBeUnderAttack(List<Observer> figures){
         int param = 0;
         Set<Figure> chosenFigures = new HashSet<>();
         figures.forEach(o -> {

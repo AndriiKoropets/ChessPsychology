@@ -133,15 +133,17 @@ public abstract class Figure implements Observer {
             this.getPossibleFieldsToMove().add(field);
         }else {
             Figure tempFigure = Board.getFieldToFigure().get(field);
-            if (tempFigure.getColor() == this.getColor()){
-                tempFigure.addAllyProtectMe(this);
-                this.addAllyIProtect(tempFigure);
-                return true;
-            }else {
-                tempFigure.addEnemy(this);
-                this.getWhoCouldBeEaten().add(tempFigure);
-                this.getPreyField().add(tempFigure.getField());
-                return true;
+            if (tempFigure != null){
+                if (tempFigure.getColor() == this.getColor()){
+                    tempFigure.addAllyProtectMe(this);
+                    this.addAllyIProtect(tempFigure);
+                    return true;
+                }else {
+                    tempFigure.addEnemy(this);
+                    this.getWhoCouldBeEaten().add(tempFigure);
+                    this.getPreyField().add(tempFigure.getField());
+                    return true;
+                }
             }
         }
         return false;
@@ -151,11 +153,8 @@ public abstract class Figure implements Observer {
     public boolean equals(Object o){
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-//        if (!(o instanceof Figure)) return false;
         Figure other = (Figure)o;
         if (other.getField().getX() == 3 && other.getField().getY() == 4){
-            System.out.println("Current object = " + o  + " and is compared with = " + this);
-            System.out.println(this.getField().equals(other.getField()));
         }
         if (this.getColor() != other.getColor()) return false;
         return this.getField().getY() == other.getField().getY() &&

@@ -1,8 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public class Field {
             this.y = y;
             LOG.debug("Created field with such points: x = {}, y = {}", x, y);
         }else {
-            RuntimeException runtimeException = new RuntimeException("Invalid points for field");
+            RuntimeException runtimeException = new RuntimeException("Invalid points for field, x = " + x + ", y = " + y);
             LOG.error("Field was not created due to invalid points, x = {}, y = {}", x, y,runtimeException);
             throw runtimeException;
         }
@@ -110,7 +110,7 @@ public class Field {
 
     //TODO refactor this method. Should be placed in Board class.
     public boolean isUnderInfluence(Color color){
-        Set<Observer>  figures = Board.getFigures(color);
+        List<Observer> figures = Board.getFigures(color);
         for (Object figure : figures){
             for (Object field : ((Figure)figure).getAttackedFields()){
                 if (this.equals(field)){
