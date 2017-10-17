@@ -13,8 +13,8 @@
 13.	f3	Bxb1
 14.	Rxb1	a5
 15.	Ne2	a4
-16.	O-O	axb3
-17.	axb3	O-O
+16.	0-0	axb3
+17.	axb3	0-0
 18.	Ra1	Nb6
 19.	Ra7	Nxc4
 20.	bxc4	Rxc4

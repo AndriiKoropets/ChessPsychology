@@ -6,9 +6,9 @@
 6.	d3	Qxg5
 7.	Bxg5	Ndb4
 8.	Nc3	Nd4
-9.	O-O	Bc5
+9.	0-0	Bc5
 10.	a3	Nbxc2
-11.	Rc1	O-O
+11.	Rc1	0-0
 12.	Rxc2	e4
 13.	Nxe4	Bb6
 14.	Rc1	Be6

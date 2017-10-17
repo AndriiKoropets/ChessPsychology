@@ -31,8 +31,9 @@ public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
-    private final static String PATH_TO_FILE = "src/main/resources/parties/14.txt";
-    //14, 19 are processed properly
+    private final static String PATH_TO_FILE = "src/main/resources/parties/21.txt";
+    //2, 3, 4, 8, 9, 11, 14, 15, 16, 19 are processed properly
+    //1, 5, 6, 7, 10, 12, 13, 17, 18, 20(WRONG WRITTEN), 21 are not processed properly
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     public static final Board BOARD = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");

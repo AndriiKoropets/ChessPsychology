@@ -12,7 +12,7 @@
 12.	fxe3	Qxe3+
 13.	Kd1	Qb6
 14.	Qf4	Nh6
-15.	Ng5	O-O
+15.	Ng5	0-0
 16.	g4	Rad8
 17.	h4	d4
 18.	Na4	Qb5

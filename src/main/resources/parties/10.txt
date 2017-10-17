@@ -9,7 +9,7 @@
 8.	h3	Bf6
 9.	Qb3	Qe7
 10.	Nbd2	h6
-11.	O-O-O	b5
+11.	0-0-0	b5
 12.	Bd3	a5
 13.	Rhe1	Nc5
 14.	Bxc5	Qxc5
@@ -18,7 +18,7 @@
 17.	Bxc4	a4
 18.	Qc3	Ne7
 19.	Ne1	Qa7
-20.	Nd3	O-O
+20.	Nd3	0-0
 21.	f3	Rfb8
 22.	Bxe6	fxe6
 23.	Nc4	Qc7

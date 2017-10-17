@@ -9,11 +9,11 @@
 9.	Qb3	c6
 10.	Bxd5	cxd5
 11.	Qxd5	b6
-12.	Qxa8	O-O
+12.	Qxa8	0-0
 13.	Qe4	Qc7
 14.	Qc2	Qd8
 15.	Ne2	Bb7
-16.	O-O	d6
+16.	0-0	d6
 17.	f3	Qd7
 18.	e4	Qh3
 19.	Qc7	Ba6

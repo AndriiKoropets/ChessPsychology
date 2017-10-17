@@ -3,8 +3,8 @@
 3.	Ne5	d6
 4.	Nc4	Nf6
 5.	Nc3	Be7
-6.	Be2	O-O
-7.	O-O	d5
+6.	Be2	0-0
+7.	0-0	d5
 8.	d4	dxc4
 9.	Bxc4	Nc6
 10.	Qe2	Bg4

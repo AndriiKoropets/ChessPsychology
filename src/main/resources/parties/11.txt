@@ -8,7 +8,7 @@
 8.	Nxd4	exd4
 9.	d3	c6
 10.	Bd2	Bd6
-11.	O-O	O-O
+11.	0-0	0-0
 12.	f4	f5
 13.	Bf3	Be6
 14.	Re1	Re8

@@ -4,7 +4,7 @@
 4.	Nf3	Bb4
 5.	Bf4	Bxc3+
 6.	bxc3	Ne7
-7.	Bd3	O-O
+7.	Bd3	0-0
 8.	e5	Bb7
 9.	Bxh7+	Kxh7
 10.	Ng5+	Kg8

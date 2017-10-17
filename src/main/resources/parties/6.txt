@@ -7,5 +7,5 @@
 7.	Bg5	exf3
 8.	exf6	Rg8
 9.	fxg7+	Ke8
-10.	O-O-O	Bxg7
+10.	0-0-0	Bxg7
 11.	Bb5	Bxc3
