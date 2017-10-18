@@ -172,7 +172,7 @@ public class ProcessingUtils {
         }
         if (!candidates.isEmpty()){
             if (candidates.size() > 1){
-                figure = choseExactFigure();
+                figure = choseExactFigure(candidates);
             }else {
                 figure = (Figure) candidates.get(0);
             }
@@ -186,10 +186,10 @@ public class ProcessingUtils {
         return figureToField;
     }
 
-    private static Figure choseFigureWhichAttack(List<Observer> list, Class clazz){
+    private static Figure choseFigureWhichAttack(List<Observer> targets, Class clazz){
         if (clazz == Pawn.class){
             char verticalPawn = mainTurn.charAt(0);
-            for (Object currentFigure : list){
+            for (Object currentFigure : targets){
                 if (((Figure) currentFigure).getField().getY() == Field.getInvertedHorizontal().get(verticalPawn)){
                     return (Figure) currentFigure;
                 }
@@ -199,20 +199,20 @@ public class ProcessingUtils {
             System.out.println("SecondPosition = " + secondPosition);
             int integer = Character.getNumericValue(secondPosition);
             System.out.println("integer = " + integer);
-            chose(integer, secondPosition);
+            return chose(integer, secondPosition, targets);
         }
         return null;
     }
 
-    private static Figure choseExactFigure(){
+    private static Figure choseExactFigure(List<Observer> targets){
         char secondPosition = mainTurn.charAt(1);
         int integer = Character.getNumericValue(secondPosition);
-        return chose(integer, secondPosition);
+        return chose(integer, secondPosition, targets);
     }
 
-    private static Figure chose(int integer, char secondPosition){
-        System.out.println("candidates = " + candidates);
-        for (Observer observer : candidates){
+    private static Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne){
+        System.out.println("candidates = " + candidatesForBeingTheOne);
+        for (Observer observer : candidatesForBeingTheOne){
             if (integer > Board.SIZE){
                 System.out.println("Passed = " + integer);
                 if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){

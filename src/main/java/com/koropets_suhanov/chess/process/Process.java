@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.process;
 
 import com.koropets_suhanov.chess.model.Observer;
+import com.koropets_suhanov.chess.process.pojo.FinalResult;
 import com.koropets_suhanov.chess.process.pojo.Parameter;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import com.koropets_suhanov.chess.model.Board;
@@ -33,8 +34,8 @@ public class Process {
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
     private final static String PATH_TO_FILE = "src/main/resources/parties/1.txt";
-    //2, 3, 4, 5, 8, 9, 11, 14, 15, 16, 19, 20 21 are processed properly
-    //Two figures could eat at the same time the same enemy: 1, 10, 12, 17
+    //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
+    //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
     //Transformation : 6, 7, 13, 18,
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     public static final Board BOARD = Board.getInstance();
@@ -43,8 +44,8 @@ public class Process {
     private static Parameter whiteEstimationWholeParty;
     private static Parameter blackEstimationWholeParty;
 
-    static Parameter fullWhiteEstimation;
-    static Parameter fullBlackEstimation;
+    static FinalResult fullWhiteEstimation;
+    static FinalResult fullBlackEstimation;
 
     public static void main(String[] args){
         process();
@@ -54,8 +55,8 @@ public class Process {
         LOG.info("Process is starting");
         whiteEstimationWholeParty = new Parameter.Builder().build();
         blackEstimationWholeParty = new Parameter.Builder().build();
-        fullWhiteEstimation = new Parameter.Builder().build();
-        fullBlackEstimation = new Parameter.Builder().build();
+        fullWhiteEstimation = new FinalResult.Builder().build();
+        fullBlackEstimation = new FinalResult.Builder().build();
         printAllBoard();
         File file = null;
         try{
@@ -95,7 +96,7 @@ public class Process {
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
-                    printAllBoard();
+//                    printAllBoard();
 //                    currentStateOfAllFigures();
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
@@ -185,16 +186,16 @@ public class Process {
         return null;
     }
 
-    private static Parameter countFullEstimation(Parameter parameter, Color color){
-        Parameter globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
-        return new Parameter.Builder().first(globalEstimation.getFirstAttackEnemy() + parameter.getFirstAttackEnemy())
-                .second(globalEstimation.getSecondBeUnderAttack() + parameter.getSecondBeUnderAttack())
-                .third(globalEstimation.getThirdWithdrawAttackOnEnemy() + parameter.getThirdWithdrawAttackOnEnemy())
-                .fourth(globalEstimation.getFourthWithdrawAttackOnMe() + parameter.getFourthWithdrawAttackOnMe())
-                .fifth(globalEstimation.getFifthDontTakeAChanceToAttack() + parameter.getFifthDontTakeAChanceToAttack())
-                .sixth(globalEstimation.getSixthDontTakeAChanceToBeUnderAttack() + parameter.getSixthDontTakeAChanceToBeUnderAttack())
-                .seventh(globalEstimation.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy())
-                .eighth(globalEstimation.getEighthDontTakeAChanceToWithdrawAttackOnMe() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe())
+    private static FinalResult countFullEstimation(Parameter parameter, Color color){
+        FinalResult globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
+        return new FinalResult.Builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
+                .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())
+                .third(globalEstimation.getThird() + parameter.getThirdWithdrawAttackOnEnemy())
+                .fourth(globalEstimation.getFourth() + parameter.getFourthWithdrawAttackOnMe())
+                .fifth(globalEstimation.getFifth() + parameter.getFifthDontTakeAChanceToAttack()._1)
+                .sixth(globalEstimation.getSixth() + parameter.getSixthDontTakeAChanceToBeUnderAttack()._1)
+                .seventh(globalEstimation.getSeventh() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy()._1)
+                .eighth(globalEstimation.getEighth() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe()._1)
                 .build();
     }
 }

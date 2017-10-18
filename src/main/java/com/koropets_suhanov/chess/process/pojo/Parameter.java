@@ -1,5 +1,11 @@
 package com.koropets_suhanov.chess.process.pojo;
 
+import com.koropets_suhanov.chess.model.Field;
+import com.koropets_suhanov.chess.model.Figure;
+import scala.Tuple2;
+
+import java.util.List;
+
 /**
  * @author AndriiKoropets
  */
@@ -9,15 +15,17 @@ public class Parameter {
     private int secondBeUnderAttack;
     private int thirdWithdrawAttackOnEnemy;
     private int fourthWithdrawAttackOnMe;
-    private int fifthDontTakeAChanceToAttack;
-    private int sixthDontTakeAChanceToBeUnderAttack;
-    private int seventhDontTakeAChanceToWithdrawAttackOnEnemy;
-    private int eighthDontTakeAChanceToWithdrawAttackOnMe;
+    private Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthDontTakeAChanceToAttack;
+    private Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthDontTakeAChanceToBeUnderAttack;
+    private Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhDontTakeAChanceToWithdrawAttackOnEnemy;
+    private Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthDontTakeAChanceToWithdrawAttackOnMe;
 
 
     private Parameter(int firstAttackEnemy, int secondBeUnderAttack, int thirdWithdrawAttackOnEnemy,
-                     int fourthWithdrawAttackOnMe, int fifthDontTakeAChanceToAttack, int sixthDontTakeAChanceToBeUnderAttack,
-                     int seventhDontTakeAChanceToWithdrawAttackOnEnemy, int eighthDontTakeAChanceToWithdrawAttackOnMe) {
+                     int fourthWithdrawAttackOnMe, Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthDontTakeAChanceToAttack,
+                      Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthDontTakeAChanceToBeUnderAttack,
+                      Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhDontTakeAChanceToWithdrawAttackOnEnemy,
+                      Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthDontTakeAChanceToWithdrawAttackOnMe) {
         this.firstAttackEnemy = firstAttackEnemy;
         this.secondBeUnderAttack = secondBeUnderAttack;
         this.thirdWithdrawAttackOnEnemy = thirdWithdrawAttackOnEnemy;
@@ -32,64 +40,32 @@ public class Parameter {
         return firstAttackEnemy;
     }
 
-    public void setFirstAttackEnemy(int firstAttackEnemy) {
-        this.firstAttackEnemy = firstAttackEnemy;
-    }
-
     public int getSecondBeUnderAttack() {
         return secondBeUnderAttack;
-    }
-
-    public void setSecondBeUnderAttack(int secondBeUnderAttack) {
-        this.secondBeUnderAttack = secondBeUnderAttack;
     }
 
     public int getThirdWithdrawAttackOnEnemy() {
         return thirdWithdrawAttackOnEnemy;
     }
 
-    public void setThirdWithdrawAttackOnEnemy(int thirdWithdrawAttackOnEnemy) {
-        this.thirdWithdrawAttackOnEnemy = thirdWithdrawAttackOnEnemy;
-    }
-
     public int getFourthWithdrawAttackOnMe() {
         return fourthWithdrawAttackOnMe;
     }
 
-    public void setFourthWithdrawAttackOnMe(int fourthWithdrawAttackOnMe) {
-        this.fourthWithdrawAttackOnMe = fourthWithdrawAttackOnMe;
-    }
-
-    public int getFifthDontTakeAChanceToAttack() {
+    public Tuple2<Integer, List<Tuple2<Figure, Field>>> getFifthDontTakeAChanceToAttack() {
         return fifthDontTakeAChanceToAttack;
     }
 
-    public void setFifthDontTakeAChanceToAttack(int fifthDontTakeAChanceToAttack) {
-        this.fifthDontTakeAChanceToAttack = fifthDontTakeAChanceToAttack;
-    }
-
-    public int getSixthDontTakeAChanceToBeUnderAttack() {
+    public Tuple2<Integer, List<Tuple2<Figure, Field>>> getSixthDontTakeAChanceToBeUnderAttack() {
         return sixthDontTakeAChanceToBeUnderAttack;
     }
 
-    public void setSixthDontTakeAChanceToBeUnderAttack(int sixthDontTakeAChanceToBeUnderAttack) {
-        this.sixthDontTakeAChanceToBeUnderAttack = sixthDontTakeAChanceToBeUnderAttack;
-    }
-
-    public int getSeventhDontTakeAChanceToWithdrawAttackOnEnemy() {
+    public Tuple2<Integer, List<Tuple2<Figure, Field>>> getSeventhDontTakeAChanceToWithdrawAttackOnEnemy() {
         return seventhDontTakeAChanceToWithdrawAttackOnEnemy;
     }
 
-    public void setSeventhDontTakeAChanceToWithdrawAttackOnEnemy(int seventhDontTakeAChanceToWithdrawAttackOnEnemy) {
-        this.seventhDontTakeAChanceToWithdrawAttackOnEnemy = seventhDontTakeAChanceToWithdrawAttackOnEnemy;
-    }
-
-    public int getEighthDontTakeAChanceToWithdrawAttackOnMe() {
+    public Tuple2<Integer, List<Tuple2<Figure, Field>>> getEighthDontTakeAChanceToWithdrawAttackOnMe() {
         return eighthDontTakeAChanceToWithdrawAttackOnMe;
-    }
-
-    public void setEighthDontTakeAChanceToWithdrawAttackOnMe(int eighthDontTakeAChanceToWithdrawAttackOnMe) {
-        this.eighthDontTakeAChanceToWithdrawAttackOnMe = eighthDontTakeAChanceToWithdrawAttackOnMe;
     }
 
     @Override
@@ -112,10 +88,10 @@ public class Parameter {
         private int second;
         private int third;
         private int fourth;
-        private int fifth;
-        private int sixth;
-        private int seventh;
-        private int eighth;
+        private Tuple2<Integer, List<Tuple2<Figure, Field>>> fifth;
+        private Tuple2<Integer, List<Tuple2<Figure, Field>>> sixth;
+        private Tuple2<Integer, List<Tuple2<Figure, Field>>> seventh;
+        private Tuple2<Integer, List<Tuple2<Figure, Field>>> eighth;
 
         public Builder first(final int first){
             this.first = first;
@@ -137,22 +113,22 @@ public class Parameter {
             return this;
         }
 
-        public Builder fifth(final int fifth){
+        public Builder fifth(final Tuple2<Integer, List<Tuple2<Figure, Field>>> fifth){
             this.fifth = fifth;
             return this;
         }
 
-        public Builder sixth(final int sixth){
+        public Builder sixth(final Tuple2<Integer, List<Tuple2<Figure, Field>>> sixth){
             this.sixth = sixth;
             return this;
         }
 
-        public Builder seventh(final int seventh){
+        public Builder seventh(final Tuple2<Integer, List<Tuple2<Figure, Field>>> seventh){
             this.seventh = seventh;
             return this;
         }
 
-        public Builder eighth(final int eighth){
+        public Builder eighth(final Tuple2<Integer, List<Tuple2<Figure, Field>>> eighth){
             this.eighth = eighth;
             return this;
         }

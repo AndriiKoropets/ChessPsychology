@@ -3,6 +3,7 @@ package com.koropets_suhanov.chess.process;
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Figure;
+import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Board;
 
 import java.util.HashSet;
@@ -30,20 +31,28 @@ public class EstimatePosition {
         int thirdParam = estimateThirdParameter();
         int fourthParam = estimateFourthParameter();
         List<Tuple2<Turn, AntiParameter>> turnToAntiParameter = estimateAntiParameter(turn, possibleTurns);
-        int fifthParam = estimateFifthParameter(turnToAntiParameter)._2 - firstParam;
-        int sixthParam = estimateSixthParameter(turnToAntiParameter)._2 - secondParam;
-        int seventhParam = estimateSeventhParameter(turnToAntiParameter)._2 - thirdParam;
-        int eighthParam = estimateEightParameter(turnToAntiParameter)._2 - fourthParam;
+        Tuple2<Turn, Integer> estimatedFifthParameter = estimateFifthParameter(turnToAntiParameter);
+        Tuple2<Turn, Integer> estimatedSixthParameter = estimateSixthParameter(turnToAntiParameter);
+        Tuple2<Turn, Integer> estimatedSeventhParameter = estimateSeventhParameter(turnToAntiParameter);
+        Tuple2<Turn, Integer> estimatedEighthParameter = estimateEightParameter(turnToAntiParameter);
+//        int fifthParam = estimateFifthParameter(turnToAntiParameter)._2 - firstParam;
+//        int sixthParam = estimateSixthParameter(turnToAntiParameter)._2 - secondParam;
+//        int seventhParam = estimateSeventhParameter(turnToAntiParameter)._2 - thirdParam;
+//        int eighthParam = estimateEightParameter(turnToAntiParameter)._2 - fourthParam;
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthParamToInvolvedFigures = new Tuple2<>(estimatedFifthParameter._2 - firstParam, estimatedFifthParameter._1.getFigures());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthParamToInvolvedFigures = new Tuple2<>(estimatedSixthParameter._2 - secondParam, estimatedSixthParameter._1.getFigures());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhParamToInvolvedFigures = new Tuple2<>(estimatedSeventhParameter._2 - thirdParam, estimatedSeventhParameter._1.getFigures());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthParamToInvolvedFigures = new Tuple2<>(estimatedEighthParameter._2 - fourthParam, estimatedEighthParameter._1.getFigures());
         ProcessingUtils.makeTurn(turn);
         return new Parameter.Builder()
                 .first(firstParam)
                 .second(secondParam)
                 .third(thirdParam)
                 .fourth(fourthParam)
-                .fifth(fifthParam)
-                .sixth(sixthParam)
-                .seventh(seventhParam)
-                .eighth(eighthParam)
+                .fifth(fifthParamToInvolvedFigures)
+                .sixth(sixthParamToInvolvedFigures)
+                .seventh(seventhParamToInvolvedFigures)
+                .eighth(eighthParamToInvolvedFigures)
                 .build();
     }
 
