@@ -25,8 +25,9 @@ public class Pawn extends Figure {
     public void possibleTurns() {
         if (this.getColor() == Color.WHITE){
             Field firstPossibleTurn = new Field(this.getField().getX() - 1, this.getField().getY());
-            Field secondPossibleTurn = new Field(this.getField().getX() - 2, this.getField().getY());
             if (this.getField().getX() == 6){
+
+                Field secondPossibleTurn = new Field(this.getField().getX() - 2, this.getField().getY());
                 if (!firstPossibleTurn.isTaken()){
                     this.getPossibleFieldsToMove().add(firstPossibleTurn);
                 }else {
@@ -42,8 +43,8 @@ public class Pawn extends Figure {
             }
         }else {
             Field firstPossibleTurn = new Field(this.getField().getX() + 1, this.getField().getY());
-            Field secondPossibleTurn = new Field(this.getField().getX() + 2, this.getField().getY());
             if (this.getField().getX() == 1){
+                Field secondPossibleTurn = new Field(this.getField().getX() + 2, this.getField().getY());
                 if (!firstPossibleTurn.isTaken()){
                     this.getPossibleFieldsToMove().add(firstPossibleTurn);
                 }else {

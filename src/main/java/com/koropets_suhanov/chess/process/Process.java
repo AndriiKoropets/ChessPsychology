@@ -31,9 +31,11 @@ public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
-    private final static String PATH_TO_FILE = "src/main/resources/parties/21.txt";
-    //2, 3, 4, 8, 9, 11, 14, 15, 16, 19 are processed properly
-    //1, 5, 6, 7, 10, 12, 13, 17, 18, 20(WRONG WRITTEN), 21 are not processed properly
+//    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/1.txt";
+    //2, 3, 4, 5, 8, 9, 11, 14, 15, 16, 19, 20 21 are processed properly
+    //Two figures could eat at the same time the same enemy: 1, 10, 12, 17
+    //Transformation : 6, 7, 13, 18,
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
     public static final Board BOARD = Board.getInstance();
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
@@ -135,7 +137,7 @@ public class Process {
         System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
-    public static void printAllBoard(){
+    private static void printAllBoard(){
         System.out.println();
         int counter = 1;
         for (int i = 0; i < Board.SIZE; i++){

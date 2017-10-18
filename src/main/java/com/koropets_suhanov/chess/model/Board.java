@@ -1,6 +1,5 @@
 package com.koropets_suhanov.chess.model;
 
-import com.koropets_suhanov.chess.process.Process;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import org.slf4j.Logger;
@@ -242,7 +241,7 @@ public class Board implements Subject{
         if (isUndoing){
             Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
             if (figureToResurrect != null){
-                Process.printAllBoard();
+//                Process.printAllBoard();
                 register(figureToResurrect);
             }
         }

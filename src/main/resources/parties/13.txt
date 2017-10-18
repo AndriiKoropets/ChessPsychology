@@ -20,7 +20,7 @@
 20.	b3	d3
 21.	c4	Qb8
 22.	Nc5	Qb6
-23.	Nxd3?	Rxd3+
+23.	Nxd3	Rxd3+
 24.	Kc2	Rfd8
 25.	Rh2	R8d4
 26.	Qh1	Qa5

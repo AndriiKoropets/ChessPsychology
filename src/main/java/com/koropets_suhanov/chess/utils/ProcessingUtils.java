@@ -149,9 +149,11 @@ public class ProcessingUtils {
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer curFigure : figures){
             if (eating){
+                System.out.println("Class = "  + clazz + " isWhite = " + isWhite + " eating = " + eating);
                 if (((Figure) curFigure).getPreyField().contains(field)){
                     targets.add(curFigure);
                     targetedFigure = Board.getFieldToFigure().get(field);
+                    System.out.println("targeted figure = " + targetedFigure);
                 }
             }else {
                 if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)){
@@ -160,8 +162,10 @@ public class ProcessingUtils {
             }
         }
         if (!targets.isEmpty()){
+            System.out.println("targets = " + targets);
             if (targets.size() == 1){
                 figure = (Figure)targets.get(0);
+                System.out.println("Figure = " + figure);
             }else{
                 figure = choseFigureWhichAttack(targets, clazz);
             }
@@ -192,7 +196,9 @@ public class ProcessingUtils {
             }
         }else {
             char secondPosition = mainTurn.charAt(1);
+            System.out.println("SecondPosition = " + secondPosition);
             int integer = Character.getNumericValue(secondPosition);
+            System.out.println("integer = " + integer);
             chose(integer, secondPosition);
         }
         return null;
@@ -205,8 +211,10 @@ public class ProcessingUtils {
     }
 
     private static Figure chose(int integer, char secondPosition){
+        System.out.println("candidates = " + candidates);
         for (Observer observer : candidates){
             if (integer > Board.SIZE){
+                System.out.println("Passed = " + integer);
                 if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){
                     return (Figure) observer;
                 }
