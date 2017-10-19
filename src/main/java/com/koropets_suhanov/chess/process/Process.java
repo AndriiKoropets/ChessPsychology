@@ -31,9 +31,9 @@ import java.util.Set;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/testParty.txt";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
-    private final static String PATH_TO_FILE = "src/main/resources/parties/1.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/1.txt";
     //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
     //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
     //Transformation : 6, 7, 13, 18,
@@ -75,25 +75,31 @@ public class Process {
                     Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
                     System.out.println("White turn = " + whiteTurn);
                     whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
+                    printAllPossibleTurns(whitePossibleTurns);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
+                    Board.setCurrentTurn(whiteTurn);
                     ProcessingUtils.makeTurn(whiteTurn);
-                    System.out.println("After turn = " + whiteTurn);
+//                    System.out.println("After turn = " + whiteTurn);
                     printAllBoard();
 //                    currentStateOfAllFigures();
                     whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
+
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
                         Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
                         System.out.println("Black turn = " + blackTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
+                        printAllPossibleTurns(blackPossibleTurns);
+                        Board.setCurrentTurn(blackTurn);
                         ProcessingUtils.makeTurn(blackTurn);
-                        System.out.println("After turn = " + blackTurn);
+                        printAllBoard();
+//                        System.out.println("After turn = " + blackTurn);
                         System.out.println("Figures = " + Board.getFigures());
                         System.out.println("White figures = " + Board.getFigures(Color.WHITE));
                         System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
-                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
-                        printAllBoard();
+//                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
                         blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
+
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
 //                    printAllBoard();
@@ -104,6 +110,7 @@ public class Process {
                 System.out.println("White figures = " + Board.getFigures(Color.WHITE));
                 System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
             }
+            printAllBoard();
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
 //            System.out.println("Black estimation = " + blackEstimationWholeParty);
             System.out.println("Full estimation");
@@ -125,6 +132,13 @@ public class Process {
         for (Observer observer : Board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
+        }
+    }
+
+    private static void printAllPossibleTurns(Set<Turn> allPossibleTurns){
+        System.out.println("Size = " + allPossibleTurns.size());
+        for (Turn possibleTurn : allPossibleTurns){
+            System.out.println("Turn = " + possibleTurn.getFigureToDestinationField());
         }
     }
 

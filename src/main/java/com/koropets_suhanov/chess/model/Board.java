@@ -28,7 +28,8 @@ public class Board implements Subject{
     private static final Set<Field> takenFields = new LinkedHashSet<Field>();
     private static final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
     private Field field;
-    private Turn previousTurn;
+    private static Turn previousTurn;
+    private static Turn currentTurn;
     private volatile static Board uniqueInstance;
 
     private Board(){
@@ -174,13 +175,17 @@ public class Board implements Subject{
         return fieldToFigure;
     }
 
-    public Turn getPreviousTurn() {
+    public static Turn getPreviousTurn() {
         return previousTurn;
     }
 
-    public void setPreviousTurn(Turn previousTurn){
-        //TODO  add the logic for setting previous turn
-        this.previousTurn = previousTurn;
+    public static Turn getCurrentTurn(){
+        return currentTurn;
+    }
+
+    public static void setCurrentTurn(Turn currentTurn) {
+        previousTurn = currentTurn;
+        Board.currentTurn = currentTurn;
     }
 
     public void notify(Observer figure) {
@@ -222,8 +227,9 @@ public class Board implements Subject{
         takenFields.remove(((Figure)figure).getField());
     }
 
-    public void setNewCoordinates(Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing){
-//        Figure replacedFigure = null;
+    public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing){
+//        previousTurn = currentTurn;
+//        currentTurn = turn;
         if (eatenFigure != null){
             removeFigure(eatenFigure);
         }

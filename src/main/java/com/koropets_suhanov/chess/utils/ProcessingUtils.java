@@ -353,7 +353,7 @@ public class ProcessingUtils {
         getAffectedFields(turn);
         setTurnForUndoing(turn);
         for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
-            Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, turn.getTargetedFigure(), false);
+            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false);
         }
         makePullAdditionalAlliesAndEnemies();
     }
@@ -366,7 +366,7 @@ public class ProcessingUtils {
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
         for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
-            Process.BOARD.setNewCoordinates(tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
+            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
         }
         ProcessingUtils.eatenFigureToResurrection = null;
         makePullAdditionalAlliesAndEnemies();
