@@ -141,12 +141,14 @@ public class Pawn extends Figure {
                     if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
                         this.getWhoCouldBeEaten().add(leftEnemy);
+                        this.getPreyField().add(leftField);
                     }
                     Field rightField = new Field(3, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
                     if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
                         this.getWhoCouldBeEaten().add(rightEnemy);
+                        this.getPreyField().add(rightField);
                     }
                 }
             }else {
@@ -160,6 +162,7 @@ public class Pawn extends Figure {
                     if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
                         this.getWhoCouldBeEaten().add(leftEnemy);
+                        this.getPreyField().add(leftField);
                     }
                     Field rightField = new Field(4, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
@@ -171,6 +174,7 @@ public class Pawn extends Figure {
                     if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
                         this.getWhoCouldBeEaten().add(rightEnemy);
+                        this.getPreyField().add(rightField);
                     }
                     System.out.println(this + " " + this.getWhoCouldBeEaten());
                 }
