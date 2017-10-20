@@ -121,33 +121,9 @@ public class Field {
         return false;
     }
 
-    //TODO Should be placed in Board class.
-//    public Set fieldsAreUnderInfluence(Color color){
-//        Set  figures = new LinkedHashSet();
-//        if (color == Color.BLACK){
-//            figures = Board.getBlackFigures();
-//        }else {
-//            figures = Board.getWhiteFigures();
-//        }
-//        for (Object figure : figures){
-//            for (Object field : ((Figure)figure).getAttackedFields()){
-//                if (this.equals(field)){
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
-    //TODO refactor this method. Should be placed in Board class.
-//    public Figure getFigureByField(){
-//        for(Observer figure : Board.getFigures()){
-//            if(((Figure)figure).getField().getX() == this.getX() && ((Figure) figure).getField().getY() == this.getY()){
-//                return (Figure) figure;
-//            }
-//        }
-//        return null;
-//    }
+    public int distance(Field comparedField){
+        return Math.abs(this.getX() - comparedField.getX()) + Math.abs(this.getY() - comparedField.getY());
+    }
 
     @Override
     public boolean equals(Object o) {

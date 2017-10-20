@@ -1,8 +1,5 @@
 package com.koropets_suhanov.chess.model;
 
-
-import com.koropets_suhanov.chess.process.Process;
-
 import java.util.Set;
 
 import static com.koropets_suhanov.chess.model.Field.isValidField;
@@ -14,7 +11,7 @@ public class Pawn extends Figure {
 
     private final static int PAWN_WEIGHT = 1;
     private final static int POINT = 1;
-    private int numberOfMadeTurns;
+    private boolean enPassant;
 
     public Pawn(Field field, Color color) {
         super(field, color);
@@ -85,6 +82,7 @@ public class Pawn extends Figure {
     public void attackedFields() {
         int left;
         int right;
+        enPassant = false;
         if (this.getColor() == Color.WHITE){
             left = this.getField().getX() - 1;
             right = this.getField().getY() - 1;
@@ -130,6 +128,10 @@ public class Pawn extends Figure {
         });
     }
 
+    public boolean getEnPassant(){
+        return enPassant;
+    }
+
     private void enPassant(){
         if (Board.getPreviousTurn() != null && Board.getPreviousTurn().getFigureToDestinationField().size() == 1
                 && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.getClass() == this.getClass()
@@ -142,6 +144,7 @@ public class Pawn extends Figure {
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
                         this.getWhoCouldBeEaten().add(leftEnemy);
                         this.getPreyField().add(leftField);
+                        enPassant = true;
                     }
                     Field rightField = new Field(3, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
@@ -149,6 +152,7 @@ public class Pawn extends Figure {
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
                         this.getWhoCouldBeEaten().add(rightEnemy);
                         this.getPreyField().add(rightField);
+                        enPassant = true;
                     }
                 }
             }else {
@@ -163,6 +167,7 @@ public class Pawn extends Figure {
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
                         this.getWhoCouldBeEaten().add(leftEnemy);
                         this.getPreyField().add(leftField);
+                        enPassant = true;
                     }
                     Field rightField = new Field(4, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
@@ -175,6 +180,7 @@ public class Pawn extends Figure {
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
                         this.getWhoCouldBeEaten().add(rightEnemy);
                         this.getPreyField().add(rightField);
+                        enPassant = true;
                     }
                     System.out.println(this + " " + this.getWhoCouldBeEaten());
                 }

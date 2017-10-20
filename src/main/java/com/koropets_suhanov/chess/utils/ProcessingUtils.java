@@ -149,11 +149,16 @@ public class ProcessingUtils {
         List<Figure> figures = isWhite ? Board.getFiguresByClass(clazz, Color.WHITE) : Board.getFiguresByClass(clazz, Color.BLACK);
         for (Observer curFigure : figures){
             if (eating){
-                System.out.println("Class = "  + clazz + " isWhite = " + isWhite + " eating = " + eating);
-                if (((Figure) curFigure).getPreyField().contains(field)){
-                    targets.add(curFigure);
-                    targetedFigure = Board.getFieldToFigure().get(field);
-                    System.out.println("targeted figure = " + targetedFigure);
+                if (clazz == Pawn.class && curFigure.getClass() == Pawn.class && ((Pawn) curFigure).getEnPassant()){
+                    Pawn pawn = (Pawn) curFigure;
+                    //TODO write logic for enPassant.
+                }else {
+                    System.out.println("Class = "  + clazz + " isWhite = " + isWhite + " eating = " + eating);
+                    if (((Figure) curFigure).getPreyField().contains(field)){
+                        targets.add(curFigure);
+                        targetedFigure = Board.getFieldToFigure().get(field);
+                        System.out.println("targeted figure = " + targetedFigure);
+                    }
                 }
             }else {
                 if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)){
