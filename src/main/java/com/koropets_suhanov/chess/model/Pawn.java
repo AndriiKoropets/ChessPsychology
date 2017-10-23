@@ -12,6 +12,8 @@ public class Pawn extends Figure {
     private final static int PAWN_WEIGHT = 1;
     private final static int POINT = 1;
     private boolean enPassant;
+    private Field enPassantField;
+    private Figure enPassantEnemy;
 
     public Pawn(Field field, Color color) {
         super(field, color);
@@ -83,6 +85,8 @@ public class Pawn extends Figure {
         int left;
         int right;
         enPassant = false;
+        enPassantField = null;
+        enPassantEnemy = null;
         if (this.getColor() == Color.WHITE){
             left = this.getField().getX() - 1;
             right = this.getField().getY() - 1;
@@ -132,6 +136,14 @@ public class Pawn extends Figure {
         return enPassant;
     }
 
+    public Field getEnPassantField(){
+        return enPassantField;
+    }
+
+    public Figure getEnPassantEnemy(){
+        return enPassantEnemy;
+    }
+
     private void enPassant(){
         if (Board.getPreviousTurn() != null && Board.getPreviousTurn().getFigureToDestinationField().size() == 1
                 && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.getClass() == this.getClass()
@@ -142,17 +154,13 @@ public class Pawn extends Figure {
                     Figure leftEnemy = Board.getFieldToFigure().get(leftField);
                     if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
-                        this.getWhoCouldBeEaten().add(leftEnemy);
-                        this.getPreyField().add(leftField);
-                        enPassant = true;
+                        initializeEnPassant(leftField, leftEnemy, Color.WHITE);
                     }
                     Field rightField = new Field(3, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
                     if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
-                        this.getWhoCouldBeEaten().add(rightEnemy);
-                        this.getPreyField().add(rightField);
-                        enPassant = true;
+                        initializeEnPassant(rightField, rightEnemy, Color.WHITE);
                     }
                 }
             }else {
@@ -165,27 +173,30 @@ public class Pawn extends Figure {
                     System.out.println("Previous turn = " + Board.getPreviousTurn());
                     if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(leftEnemy)){
-                        this.getWhoCouldBeEaten().add(leftEnemy);
-                        this.getPreyField().add(leftField);
-                        enPassant = true;
+                        initializeEnPassant(leftField, leftEnemy, Color.BLACK);
                     }
                     Field rightField = new Field(4, this.getField().getY() + 1);
                     Figure rightEnemy = Board.getFieldToFigure().get(rightField);
-
                     System.out.println("Pawn = " + this);
                     System.out.println("Right field = " + rightField);
                     System.out.println("Right enemy = " + rightEnemy);
                     System.out.println("Previous turn = " + Board.getPreviousTurn());
                     if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
-                        this.getWhoCouldBeEaten().add(rightEnemy);
-                        this.getPreyField().add(rightField);
-                        enPassant = true;
+                        initializeEnPassant(rightField, rightEnemy, Color.BLACK);
                     }
                     System.out.println(this + " " + this.getWhoCouldBeEaten());
                 }
             }
         }
+    }
+
+    private void initializeEnPassant(Field enemyField, Figure enemy, Color color){
+        this.getWhoCouldBeEaten().add(enemy);
+        this.getPreyField().add(enemyField);
+        enPassant = true;
+        enPassantField = (color == Color.WHITE) ? new Field(enemyField.getX() - 1, enemyField.getY())
+                : new Field(enemyField.getX() + 1, enemyField.getY());
     }
 
     @Override

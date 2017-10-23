@@ -151,13 +151,16 @@ public class ProcessingUtils {
             if (eating){
                 if (clazz == Pawn.class && curFigure.getClass() == Pawn.class && ((Pawn) curFigure).getEnPassant()){
                     Pawn pawn = (Pawn) curFigure;
-                    //TODO write logic for enPassant.
+                    if (pawn.getEnPassantField().equals(field)){
+                        targets.add(pawn);
+                        targetedFigure = pawn.getEnPassantEnemy();
+                    }
                 }else {
                     System.out.println("Class = "  + clazz + " isWhite = " + isWhite + " eating = " + eating);
                     if (((Figure) curFigure).getPreyField().contains(field)){
                         targets.add(curFigure);
                         targetedFigure = Board.getFieldToFigure().get(field);
-                        System.out.println("targeted figure = " + targetedFigure);
+//                        System.out.println("targeted figure = " + targetedFigure);
                     }
                 }
             }else {
