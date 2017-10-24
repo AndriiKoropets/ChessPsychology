@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author AndriiKoropets
@@ -127,6 +128,10 @@ public class Board implements Subject{
         List<Figure> figures = new ArrayList<>();
         observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
         return figures;
+    }
+
+    public static King getKing(Color color){
+        return (King) getFigures(color).stream().filter(f -> f.getClass() == King.class).collect(Collectors.toList()).get(0);
     }
 
     public static List<Observer> getFigures(Color color){

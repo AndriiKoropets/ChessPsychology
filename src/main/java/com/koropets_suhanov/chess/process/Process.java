@@ -31,9 +31,9 @@ import java.util.Set;
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
-    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/1.txt";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/7.txt";
     //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
     //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
     //Transformation : 6, 7, 13, 18,
@@ -72,7 +72,7 @@ public class Process {
                     int numberOfTurn = Integer.valueOf(matcher.group(1));
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
-                    Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, true, numberOfTurn);
+                    Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, Color.WHITE, numberOfTurn);
                     System.out.println("White turn = " + whiteTurn);
                     whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
                     printAllPossibleTurns(whitePossibleTurns);
@@ -86,7 +86,7 @@ public class Process {
 
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
-                        Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, false, numberOfTurn);
+                        Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, Color.BLACK, numberOfTurn);
                         System.out.println("Black turn = " + blackTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
                         printAllPossibleTurns(blackPossibleTurns);

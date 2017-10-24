@@ -53,7 +53,7 @@ public class Game {
 
     private void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
-        King king = (King) Board.getFiguresByClass(King.class, color).get(0);
+        King king = Board.getKing(color);
         List<Observer> allies = Board.getFigures(color);
 
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
@@ -61,7 +61,7 @@ public class Game {
             for (Figure enemy : king.getWhoCouldBeEaten()){
                 if (enemy.getAlliesProtectMe().size() == 0){
                     kingTuple2.add(new Tuple2<>(king, enemy.getField()));
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingTuple2, null, "", true, enemy, numberOfTurn));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(kingTuple2, null, "", true, false, enemy, numberOfTurn));
                 }
             }
             Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
@@ -176,14 +176,14 @@ public class Game {
                         Board.getFieldToFigure().get(f8) == null && Board.getFieldToFigure().get(g8) == null){
                     castlingTuple.add(new Tuple2<>(king, g8));
                     castlingTuple.add(new Tuple2<>(rock, f8));
-                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, null, numberOfTurn);
+                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, false, null, numberOfTurn);
                 }
             }else{
                 if (!Board.getFieldsUnderBlackInfluence().contains(f1) && !Board.getFieldsUnderBlackInfluence().contains(g1) &&
                         Board.getFieldToFigure().get(f1) == null && Board.getFieldToFigure().get(g1) == null){
                     castlingTuple.add(new Tuple2<>(king, g1));
                     castlingTuple.add(new Tuple2<>(rock, f1));
-                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, null, numberOfTurn);
+                    shortCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.shortCastling, false, false, null, numberOfTurn);
                 }
             }
         }
@@ -200,7 +200,7 @@ public class Game {
                         Board.getFieldToFigure().get(c8) == null && Board.getFieldToFigure().get(d8) == null){
                     castlingTuple.add(new Tuple2<>(king, c8));
                     castlingTuple.add(new Tuple2<>(rock, d8));
-                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, null, numberOfTurn);
+                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, false, null, numberOfTurn);
                 }
             }else {
                 if (!Board.getFieldsUnderBlackInfluence().contains(b1) && !Board.getFieldsUnderBlackInfluence().contains(c1) &&
@@ -208,7 +208,7 @@ public class Game {
                         Board.getFieldToFigure().get(c1) == null && Board.getFieldToFigure().get(d1) == null){
                     castlingTuple.add(new Tuple2<>(king, c1));
                     castlingTuple.add(new Tuple2<>(rock, d1));
-                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, null, numberOfTurn);
+                    longCastling = ProcessingUtils.createTurn(castlingTuple, null, ProcessingUtils.longCastling, false, false, null, numberOfTurn);
                 }
             }
         }
