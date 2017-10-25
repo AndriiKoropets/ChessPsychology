@@ -170,14 +170,20 @@ public class Game {
         alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
             ((Figure)f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)){
+                    if (f.getClass() == Pawn.class && ((Pawn)f).isOnThePreultimateLine()){
+                        for (String writtenStypeTurn : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
+                            List<Tuple2<Figure, Field>> covering = new ArrayList<>();
+                            covering.add(new Tuple2<>((Figure)f, k));
+                            coveringTurns.add(ProcessingUtils.createTurn(covering, ProcessingUtils.createFigure(k, writtenStypeTurn, ((Figure)f).getColor()),
+                                    "", false, true, null, numberOfTurn));
+                        }
+                    }
                     List<Tuple2<Figure, Field>> covering = new ArrayList<>();
                     covering.add(new Tuple2<>((Figure)f, k));
                     coveringTurns.add(ProcessingUtils.createTurn(covering, null, "", false, false, null, numberOfTurn));
                 }
             });
         });
-
-        //TODO case when transformation can cover a king
     }
 
     private List<Turn> castling(Color color){
