@@ -57,7 +57,7 @@ public class ProcessingUtils {
     private static final FrequentFigure whiteFrequent = new FrequentFigure();
     private static final FrequentFigure blackFrequent = new FrequentFigure();
     private static final String PLUS = "+";
-    private static final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
+    public static final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
     private static List<Tuple2<Figure, Field>> tuplesFigureToField;
     private static Figure figureBornFromTransformation;
     private static String figureInWrittenStyleToBorn;
@@ -296,11 +296,11 @@ public class ProcessingUtils {
         return false;
     }
 
-    public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureToReborn,
+    public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureFromTransformation,
                                   String writtenStyle, boolean isEating, boolean transformation,
                                   Figure targetedFigure, int numberOfTurn){
         return new Turn.Builder().figureToDestinationField(figureToField)
-                .figureToReborn(figureToReborn)
+                .figureFromTransformation(figureFromTransformation)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
                 .transformation(transformation)

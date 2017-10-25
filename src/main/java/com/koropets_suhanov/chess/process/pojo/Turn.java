@@ -107,7 +107,7 @@ public class Turn {
             return this;
         }
 
-        public Builder figureToReborn(final Figure figureFromTransformation){
+        public Builder figureFromTransformation(final Figure figureFromTransformation){
             this.figureFromTransformation = figureFromTransformation;
             return this;
         }

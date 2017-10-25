@@ -8,6 +8,7 @@ import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.model.Queen;
+import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.pojo.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
@@ -41,6 +42,8 @@ public class Game {
     public static final Field a8 = new Field(0, 0);
     public static final Field h8 = new Field(0, 7);
     public static final Field e8 = new Field(0, 4);
+    public static final int LINE_H = 0;
+    public static final int LINE_A = 7;
     private Set<Turn> possibleTurnsAndEating = new LinkedHashSet<Turn>();
     private int numberOfTurn;
 
@@ -54,7 +57,7 @@ public class Game {
     private void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
         King king = Board.getKing(color);
-        List<Observer> allies = Board.getFigures(color);
+        List<Observer> allies = Board.getFigures(color).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
 
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
             List<Tuple2<Figure, Field>> kingTuple2 = new ArrayList<>();
@@ -66,10 +69,24 @@ public class Game {
             }
             Figure whoAttackKing = king.getEnemiesAttackMe().iterator().next();
             for (Observer observer : allies){
-                if (((Figure)observer).getWhoCouldBeEaten().contains(whoAttackKing)){
+                Figure ally = (Figure) observer;
+                if (whoAttackKing.getClass() == Pawn.class && ally.getClass() == Pawn.class){
+                    Pawn pawnAlly = (Pawn) ally;
+                    if (enPassantCanSaveKing(pawnAlly, whoAttackKing)){
+                        List<Tuple2<Figure, Field>> alienToTargetField = new ArrayList<>();
+                        alienToTargetField.add(new Tuple2<>(pawnAlly, pawnAlly.getEnPassantField()));
+                        possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, null, "", true, false, whoAttackKing, numberOfTurn));
+                    }
+                }else if ((color == Color.WHITE && whoAttackKing.getField().getX() == LINE_H) || (color == Color.BLACK && whoAttackKing.getField().getX() == LINE_A)){
+                    Pawn pawnAlly = (Pawn) ally;
+                    if (pawnReachesLastLineCanSaveKing(pawnAlly, whoAttackKing)){
+                        possibleTurnsAndEating.addAll(setTransformationFields(pawnAlly, whoAttackKing, color, true));
+
+                    }
+                }else if (ally.getWhoCouldBeEaten().contains(whoAttackKing)){
                     List<Tuple2<Figure, Field>> alienToTargetField = new ArrayList<>();
-                    alienToTargetField.add(new Tuple2<>(((Figure)observer), whoAttackKing.getField()));
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, null, "", true, whoAttackKing, numberOfTurn));
+                    alienToTargetField.add(new Tuple2<>(ally, whoAttackKing.getField()));
+                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(alienToTargetField, null, "", true, false, whoAttackKing, numberOfTurn));
                 }
             }
             peacefulTurn(king);
@@ -96,12 +113,21 @@ public class Game {
         }
 
         if (!king.isUnderAttack()){
-            for (Observer figure : allies){
-                peacefulTurn((Figure) figure);
-                for (Figure attackedFigure : ((Figure) figure).getWhoCouldBeEaten()){
-                    List<Tuple2<Figure, Field>> figureFieldTuple = new ArrayList<>();
-                    figureFieldTuple.add(new Tuple2<Figure, Field>((Figure)figure, attackedFigure.getField()));
-                    possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldTuple, null, "", true, attackedFigure, numberOfTurn));
+            for (Observer observer : allies){
+                Figure ally = (Figure) observer;
+                if (ally.getClass() == Pawn.class && ((Pawn)ally).isEnPassant()){
+                    possibleTurnsAndEating.addAll(turnsInCaseEnPassant((Pawn) ally));
+
+                }else if(ally.getClass() == Pawn.class && ((Pawn)ally).isOnThePreultimateLine()){
+                    possibleTurnsAndEating.addAll(turnsInCaseTransformation(ally, color));
+
+                }else{
+                    peacefulTurn(ally);
+                    for (Figure attackedFigure : ally.getWhoCouldBeEaten()){
+                        List<Tuple2<Figure, Field>> figureFieldTuple = new ArrayList<>();
+                        figureFieldTuple.add(new Tuple2<Figure, Field>(ally, attackedFigure.getField()));
+                        possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureFieldTuple, null, "", true, false,  attackedFigure, numberOfTurn));
+                    }
                 }
             }
             possibleTurnsAndEating.addAll(castling(color));
@@ -112,7 +138,7 @@ public class Game {
         for (Field field : figure.getPossibleFieldsToMove()){
             List<Tuple2<Figure, Field>> figureToFieldTuple = new ArrayList<>();
             figureToFieldTuple.add(new Tuple2<>(figure, field));
-            possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureToFieldTuple, null, "", false, null, numberOfTurn));
+            possibleTurnsAndEating.add(ProcessingUtils.createTurn(figureToFieldTuple, null, "", false, false, null, numberOfTurn));
         }
     }
 
@@ -146,10 +172,12 @@ public class Game {
                 if (fieldsBetween.contains(k)){
                     List<Tuple2<Figure, Field>> covering = new ArrayList<>();
                     covering.add(new Tuple2<>((Figure)f, k));
-                    coveringTurns.add(ProcessingUtils.createTurn(covering, null, "", false, null, numberOfTurn));
+                    coveringTurns.add(ProcessingUtils.createTurn(covering, null, "", false, false, null, numberOfTurn));
                 }
             });
         });
+
+        //TODO case when transformation can cover a king
     }
 
     private List<Turn> castling(Color color){
@@ -213,5 +241,73 @@ public class Game {
             }
         }
         return longCastling;
+    }
+
+    private boolean enPassantCanSaveKing(Pawn pawnAlly, Figure pawnEnemy){
+        return pawnAlly.isEnPassant() && pawnAlly.getEnPassantEnemy().equals(pawnEnemy);
+    }
+
+    private boolean pawnReachesLastLineCanSaveKing(Pawn pawnAlly, Figure enemy){
+        return pawnAlly.isOnThePreultimateLine() && pawnAlly.getWhoCouldBeEaten().contains(enemy);
+    }
+
+    private Set<Turn> turnsInCaseEnPassant(Pawn ally){
+        Set<Turn> possibleTurns = new HashSet<>();
+        Figure enPassantEnemy = ally.getEnPassantEnemy();
+        for (Field field : ally.getPossibleFieldsToMove()){
+            List<Tuple2<Figure, Field>> figureToFieldTupleList = new ArrayList<>();
+            figureToFieldTupleList.add(new Tuple2<>(ally, field));
+            possibleTurns.add(ProcessingUtils.createTurn(figureToFieldTupleList, null, "",
+                    false, false, null, numberOfTurn));
+
+        }
+        for (Figure enemy : ally.getWhoCouldBeEaten()){
+            if (!enemy.equals(enPassantEnemy)){
+                List<Tuple2<Figure, Field>> figureToFieldTupleList = new ArrayList<>();
+                figureToFieldTupleList.add(new Tuple2<>(ally, enemy.getField()));
+                possibleTurns.add(ProcessingUtils.createTurn(figureToFieldTupleList, null, "",
+                        true, false, enemy, numberOfTurn));
+            }
+        }
+        List<Tuple2<Figure, Field>> figureToFieldList = new ArrayList<>();
+        figureToFieldList.add(new Tuple2<>(ally, ally.getEnPassantField()));
+        possibleTurns.add(ProcessingUtils.createTurn(figureToFieldList, null, "", true,
+                false, ally.getEnPassantEnemy(), numberOfTurn));
+        return possibleTurns;
+    }
+
+    private Set<Turn> turnsInCaseTransformation(Figure ally, Color color){
+        Set<Turn> possibleTurns = new HashSet<>();
+        for (Field possibleFieldToMove : ally.getPreyField()){
+            for (String writtenStyle: ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
+                List<Tuple2<Figure, Field>> figureToFieldTupleList = new ArrayList<>();
+                figureToFieldTupleList.add(new Tuple2<>(ally, possibleFieldToMove));
+                possibleTurns.add(ProcessingUtils.createTurn(figureToFieldTupleList, ProcessingUtils.createFigure(possibleFieldToMove, writtenStyle, color),
+                        "", false, true, null, numberOfTurn));
+
+            }
+        }
+        for (Figure enemy : ally.getWhoCouldBeEaten()){
+            for (String writtenStyle : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
+                List<Tuple2<Figure, Field>> figureToFieldTupleList = new ArrayList<>();
+                figureToFieldTupleList.add(new Tuple2<>(ally, enemy.getField()));
+                possibleTurns.add(ProcessingUtils.createTurn(figureToFieldTupleList, ProcessingUtils.createFigure(enemy.getField(), writtenStyle, color),
+                        "", true, true, enemy, numberOfTurn));
+
+            }
+        }
+        return possibleTurns;
+    }
+
+    private Set<Turn> setTransformationFields(Pawn pawn, Figure enemy, Color color, boolean eating){
+        Set<Turn> transformationSet = new HashSet<>();
+        for (String writtenStyleOfFigure : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
+            List<Tuple2<Figure, Field>> allyToFieldList = new ArrayList<>();
+            allyToFieldList.add(new Tuple2<Figure, Field>(pawn, enemy.getField()));
+            Turn newTransformationTurn = ProcessingUtils.createTurn(allyToFieldList, ProcessingUtils.createFigure(enemy.getField(), writtenStyleOfFigure, color),
+                    "", eating, true, enemy, numberOfTurn);
+            transformationSet.add(newTransformationTurn);
+        }
+        return transformationSet;
     }
 }
