@@ -232,7 +232,7 @@ public class Board implements Subject{
         takenFields.remove(((Figure)figure).getField());
     }
 
-    public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing){
+    public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing, boolean enPassant){
 //        previousTurn = currentTurn;
 //        currentTurn = turn;
         if (eatenFigure != null){
@@ -255,6 +255,9 @@ public class Board implements Subject{
 //                Process.printAllBoard();
                 register(figureToResurrect);
             }
+        }
+        if (enPassant){
+            //TODO implement the logic for enPassant
         }
     }
 

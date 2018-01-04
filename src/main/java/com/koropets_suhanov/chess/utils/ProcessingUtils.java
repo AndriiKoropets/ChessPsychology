@@ -117,7 +117,7 @@ public class ProcessingUtils {
                 figureToField.add(new Tuple2<>(blackKing, blackKingShortCastling));
                 figureToField.add(new Tuple2<>(blackRock_H, blackRockShortCastling));
             }
-            return createTurn(figureToField, null, writtenStyle, false, false, null, number);
+            return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
         }
         if (longCastling.equals(writtenStyle)){
             List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
@@ -132,22 +132,23 @@ public class ProcessingUtils {
                 figureToField.add(new Tuple2<>(blackKing, blackKingLongCastling));
                 figureToField.add(new Tuple2<>(blackRock_A, blackRockLongCastling));
             }
-            return createTurn(figureToField, null, writtenStyle, false, false, null, number);
+            return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
         }
         char firstCharacter = writtenStyle.charAt(0);
         switch (firstCharacter){
             case 'R' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Rock.class, color, true, false) : fetchFigureToTargetField(Rock.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'N' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Knight.class, color, true, false) : fetchFigureToTargetField(Knight.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'B' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Bishop.class, color, true, false) : fetchFigureToTargetField(Bishop.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'Q' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Queen.class, color, true, false) : fetchFigureToTargetField(Queen.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, color, true, false) : fetchFigureToTargetField(King.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, targetedFigure, number);
+                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, color, true, transformation) : fetchFigureToTargetField(Pawn.class, color, false, transformation);
-                        return createTurn(figureToField, null, writtenStyle, isEating, transformation, targetedFigure, number);
+                        return isEnPassantScenario(figureToField) ? createTurn(figureToField, null, writtenStyle, isEating, transformation, true, targetedFigure, number) :
+                                createTurn(figureToField, null, writtenStyle, isEating, transformation, false, targetedFigure, number);
         }
     }
 
@@ -297,13 +298,14 @@ public class ProcessingUtils {
     }
 
     public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureFromTransformation,
-                                  String writtenStyle, boolean isEating, boolean transformation,
+                                  String writtenStyle, boolean isEating, boolean transformation, boolean enPassant,
                                   Figure targetedFigure, int numberOfTurn){
         return new Turn.Builder().figureToDestinationField(figureToField)
                 .figureFromTransformation(figureFromTransformation)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
                 .transformation(transformation)
+                .enPassant(enPassant)
                 .targetedFigure(targetedFigure)
                 .numberOfTurn(numberOfTurn)
                 .build();
@@ -415,7 +417,7 @@ public class ProcessingUtils {
         getAffectedFields(turn);
         setTurnForUndoing(turn);
         for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
-            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false);
+            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
         }
         makePullAdditionalAlliesAndEnemies();
     }
@@ -428,7 +430,7 @@ public class ProcessingUtils {
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
         for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
-            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true);
+            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true, turn.isEnPassant());
         }
         ProcessingUtils.eatenFigureToResurrection = null;
         makePullAdditionalAlliesAndEnemies();
@@ -515,6 +517,10 @@ public class ProcessingUtils {
                 (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
                         && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY())))
                         && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
+    }
+
+    private static boolean isEnPassantScenario(List<Tuple2<Figure, Field>> figureToField){
+        return true;
     }
 
     public static boolean isEmpty(Set<?> set){

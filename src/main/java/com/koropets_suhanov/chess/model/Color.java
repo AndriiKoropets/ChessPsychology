@@ -5,12 +5,15 @@ package com.koropets_suhanov.chess.model;
  */
 public enum Color{
 
-    WHITE("WHITE"),
-    BLACK("BLACK");
+    WHITE,
+    BLACK
 
-    private String color;
-
-    Color(String color) {
-        this.color = color;
-    }
+//    WHITE("WHITE"),
+//    BLACK("BLACK");
+//
+//    private String color;
+//
+//    Color(String color) {
+//        this.color = color;
+//    }
 }

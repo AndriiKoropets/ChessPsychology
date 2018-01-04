@@ -18,13 +18,15 @@ public class Turn {
     private Figure targetedFigure;
     private String writtenStyle;
     private int numberOfTurn;
+    private boolean enPassant;
 
     private Turn(List<Tuple2<Figure, Field>> figureToDestinationField, Figure figureToReborn, boolean eating,
-                 boolean transformation, Figure targetedFigure, String turn, int numberOfTurn) {
+                 boolean transformation, boolean enPassant, Figure targetedFigure, String turn, int numberOfTurn) {
         this.figureToDestinationField = figureToDestinationField;
         this.figureFromTransformation = figureToReborn;
         this.eating = eating;
         this.transformation = transformation;
+        this.enPassant = enPassant;
         this.targetedFigure = targetedFigure;
         this.writtenStyle = turn;
         this.numberOfTurn = numberOfTurn;
@@ -48,6 +50,10 @@ public class Turn {
 
     public boolean isTransformation(){
         return transformation;
+    }
+
+    public boolean isEnPassant() {
+        return enPassant;
     }
 
     public Figure getTargetedFigure() {
@@ -87,6 +93,7 @@ public class Turn {
                 "figureFromTransformation=" + figureFromTransformation +
                 ", eating=" + eating +
                 ", transformation = " + transformation +
+                ", enPassant = " + enPassant +
                 ", targetedFigure=" + targetedFigure +
                 ", writtenStyle='" + writtenStyle + '\'' +
                 ", numberOfTurn=" + numberOfTurn +
@@ -98,6 +105,7 @@ public class Turn {
         private Figure figureFromTransformation;
         private boolean eating;
         private boolean transformation;
+        private boolean enPassant;
         private Figure targetedFigure;
         private String writtenStyle;
         private int numberOfTurn;
@@ -122,6 +130,11 @@ public class Turn {
             return this;
         }
 
+        public Builder enPassant(final boolean enPassant){
+            this.enPassant = enPassant;
+            return this;
+        }
+
         public Builder targetedFigure(final Figure eatenFigure){
             this.targetedFigure = eatenFigure;
             return this;
@@ -138,7 +151,7 @@ public class Turn {
         }
 
         public Turn build(){
-            return new Turn(figureToDestinationField, figureFromTransformation, eating, transformation,
+            return new Turn(figureToDestinationField, figureFromTransformation, eating, transformation, enPassant,
                     targetedFigure, writtenStyle, numberOfTurn);
         }
     }
