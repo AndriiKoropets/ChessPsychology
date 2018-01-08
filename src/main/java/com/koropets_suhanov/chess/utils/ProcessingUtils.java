@@ -407,7 +407,7 @@ public class ProcessingUtils {
 
     private static void getAffectedFields(Turn turn){
         affectedFields = new HashSet<>();
-        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             affectedFields.add(tuple2._1.getField());
             affectedFields.add(tuple2._2);
         }
@@ -416,7 +416,7 @@ public class ProcessingUtils {
     public static void makeTurn(Turn turn){
         getAffectedFields(turn);
         setTurnForUndoing(turn);
-        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
         }
         makePullAdditionalAlliesAndEnemies();
@@ -429,7 +429,7 @@ public class ProcessingUtils {
                 .writtenStyle("")
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
-        for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigures()){
+        for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigureToDestinationField()){
             Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true, turn.isEnPassant());
         }
         ProcessingUtils.eatenFigureToResurrection = null;
@@ -439,7 +439,7 @@ public class ProcessingUtils {
     private static void setTurnForUndoing(Turn turn){
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
-        for (Tuple2<Figure, Field> tuple2 : turn.getFigures()){
+        for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             tuplesFigureToField.add(new Tuple2<>(tuple2._1, tuple2._1.getField()));
         }
         if (turn.isEating()){
@@ -448,7 +448,7 @@ public class ProcessingUtils {
 
 
             }else {
-                Figure tempFigure = Board.getFieldToFigure().get(turn.getFigures().get(0)._2);
+                Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
                 System.out.println("temp figure = " + tempFigure);
                 eatenFigureToResurrection = tempFigure.createNewFigure();
 //            System.out.println("Eaten figure = " + eatenFigureToResurrection);

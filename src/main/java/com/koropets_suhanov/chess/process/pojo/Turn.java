@@ -2,13 +2,18 @@ package com.koropets_suhanov.chess.process.pojo;
 
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.Builder;
 import scala.Tuple2;
 
 import java.util.List;
 
-/**
- * @author AndriiKoropets
- */
+@Getter
+@Builder
+@ToString
+@EqualsAndHashCode
 public class Turn {
 
     private List<Tuple2<Figure, Field>> figureToDestinationField;
@@ -30,74 +35,6 @@ public class Turn {
         this.targetedFigure = targetedFigure;
         this.writtenStyle = turn;
         this.numberOfTurn = numberOfTurn;
-    }
-
-    public List<Tuple2<Figure, Field>> getFigureToDestinationField() {
-        return figureToDestinationField;
-    }
-
-    public String getWrittenStyle() {
-        return writtenStyle;
-    }
-
-    public Figure getFigureFromTransformation(){
-        return figureFromTransformation;
-    }
-
-    public boolean isEating(){
-        return eating;
-    }
-
-    public boolean isTransformation(){
-        return transformation;
-    }
-
-    public boolean isEnPassant() {
-        return enPassant;
-    }
-
-    public Figure getTargetedFigure() {
-        return targetedFigure;
-    }
-
-    public List<Tuple2<Figure, Field>> getFigures() {
-        return figureToDestinationField;
-    }
-
-    public int getNumberOfTurn() {
-        return numberOfTurn;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-
-        Turn otherTurn = (Turn) o;
-
-        if (this.getNumberOfTurn() != otherTurn.getNumberOfTurn()) return false;
-        return this.getFigureToDestinationField().equals(otherTurn.getFigureToDestinationField());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = figureToDestinationField.hashCode();
-        result = 31 * result + numberOfTurn;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Turn{" +
-                "figureToDestinationField=" + figureToDestinationField +
-                "figureFromTransformation=" + figureFromTransformation +
-                ", eating=" + eating +
-                ", transformation = " + transformation +
-                ", enPassant = " + enPassant +
-                ", targetedFigure=" + targetedFigure +
-                ", writtenStyle='" + writtenStyle + '\'' +
-                ", numberOfTurn=" + numberOfTurn +
-                '}';
     }
 
     public static class Builder{

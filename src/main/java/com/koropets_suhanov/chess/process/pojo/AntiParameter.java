@@ -1,5 +1,10 @@
 package com.koropets_suhanov.chess.process.pojo;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class AntiParameter {
 
     private int fifthParam;
@@ -12,32 +17,6 @@ public class AntiParameter {
         this.sixthParam = sixthParam;
         this.seventhParam = seventhParam;
         this.eighthParam = eighthParam;
-    }
-
-    public int getFifthParam() {
-        return fifthParam;
-    }
-
-    public int getSixthParam() {
-        return sixthParam;
-    }
-
-    public int getSeventhParam() {
-        return seventhParam;
-    }
-
-    public int getEighthParam() {
-        return eighthParam;
-    }
-
-    @Override
-    public String toString() {
-        return "AntiParameter{" +
-                "fifthParam=" + fifthParam +
-                ", sixthParam=" + sixthParam +
-                ", seventhParam=" + seventhParam +
-                ", eighthParam=" + eighthParam +
-                '}';
     }
 
     public static final class Builder{

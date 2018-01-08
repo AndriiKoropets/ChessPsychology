@@ -35,10 +35,10 @@ public class EstimatePosition {
         Tuple2<Turn, Integer> estimatedSixthParameter = estimateSixthParameter(turnToAntiParameter);
         Tuple2<Turn, Integer> estimatedSeventhParameter = estimateSeventhParameter(turnToAntiParameter);
         Tuple2<Turn, Integer> estimatedEighthParameter = estimateEightParameter(turnToAntiParameter);
-        Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthParamToInvolvedFigures = new Tuple2<>(estimatedFifthParameter._2 - firstParam, estimatedFifthParameter._1.getFigures());
-        Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthParamToInvolvedFigures = new Tuple2<>(estimatedSixthParameter._2 - secondParam, estimatedSixthParameter._1.getFigures());
-        Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhParamToInvolvedFigures = new Tuple2<>(estimatedSeventhParameter._2 - thirdParam, estimatedSeventhParameter._1.getFigures());
-        Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthParamToInvolvedFigures = new Tuple2<>(estimatedEighthParameter._2 - fourthParam, estimatedEighthParameter._1.getFigures());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthParamToInvolvedFigures = new Tuple2<>(estimatedFifthParameter._2 - firstParam, estimatedFifthParameter._1.getFigureToDestinationField());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthParamToInvolvedFigures = new Tuple2<>(estimatedSixthParameter._2 - secondParam, estimatedSixthParameter._1.getFigureToDestinationField());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhParamToInvolvedFigures = new Tuple2<>(estimatedSeventhParameter._2 - thirdParam, estimatedSeventhParameter._1.getFigureToDestinationField());
+        Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthParamToInvolvedFigures = new Tuple2<>(estimatedEighthParameter._2 - fourthParam, estimatedEighthParameter._1.getFigureToDestinationField());
         ProcessingUtils.makeTurn(turn);
         return new Parameter.Builder()
                 .first(firstParam)
