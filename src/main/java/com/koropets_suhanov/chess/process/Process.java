@@ -25,9 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Set;
 
-/**
- * @author AndriiKoropets
- */
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
@@ -53,10 +50,10 @@ public class Process {
 
     private static void process(){
         LOG.info("Process is starting");
-        whiteEstimationWholeParty = new Parameter.Builder().build();
-        blackEstimationWholeParty = new Parameter.Builder().build();
-        fullWhiteEstimation = new FinalResult.Builder().build();
-        fullBlackEstimation = new FinalResult.Builder().build();
+        whiteEstimationWholeParty = Parameter.builder().build();
+        blackEstimationWholeParty = Parameter.builder().build();
+        fullWhiteEstimation = FinalResult.builder().build();
+        fullBlackEstimation = FinalResult.builder().build();
         printAllBoard();
         File file = null;
         try{
@@ -202,7 +199,7 @@ public class Process {
 
     private static FinalResult countFullEstimation(Parameter parameter, Color color){
         FinalResult globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
-        return new FinalResult.Builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
+        return FinalResult.builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
                 .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())
                 .third(globalEstimation.getThird() + parameter.getThirdWithdrawAttackOnEnemy())
                 .fourth(globalEstimation.getFourth() + parameter.getFourthWithdrawAttackOnMe())

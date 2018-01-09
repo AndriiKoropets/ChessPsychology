@@ -300,7 +300,7 @@ public class ProcessingUtils {
     public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureFromTransformation,
                                   String writtenStyle, boolean isEating, boolean transformation, boolean enPassant,
                                   Figure targetedFigure, int numberOfTurn){
-        return new Turn.Builder().figureToDestinationField(figureToField)
+        return Turn.builder().figureToDestinationField(figureToField)
                 .figureFromTransformation(figureFromTransformation)
                 .writtenStyle(writtenStyle)
                 .eating(isEating)
@@ -423,7 +423,7 @@ public class ProcessingUtils {
     }
 
     public static void undoTurn(Turn turn){
-        Turn undoTurn = new Turn.Builder()
+        Turn undoTurn = Turn.builder()
                 .figureToDestinationField(tuplesFigureToField)
                 .eating(false)
                 .writtenStyle("")

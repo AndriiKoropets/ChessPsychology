@@ -1,10 +1,15 @@
 package com.koropets_suhanov.chess.process.pojo;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.experimental.Builder;
 
 @Getter
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class AntiParameter {
 
     private int fifthParam;
@@ -12,42 +17,4 @@ public class AntiParameter {
     private int seventhParam;
     private int eighthParam;
 
-    private AntiParameter(int fifthParam, int sixthParam, int seventhParam, int eighthParam){
-        this.fifthParam = fifthParam;
-        this.sixthParam = sixthParam;
-        this.seventhParam = seventhParam;
-        this.eighthParam = eighthParam;
-    }
-
-    public static final class Builder{
-
-        private int fifth;
-        private int sixth;
-        private int seventh;
-        private int eighth;
-
-        public Builder fifth(final int fifth){
-            this.fifth = fifth;
-            return this;
-        }
-
-        public Builder sixth(final int sixth){
-            this.sixth = sixth;
-            return this;
-        }
-
-        public Builder seventh(final int seventh){
-            this.seventh = seventh;
-            return this;
-        }
-
-        public Builder eighth(final int eighth){
-            this.eighth = eighth;
-            return this;
-        }
-
-        public AntiParameter build(){
-            return new AntiParameter(fifth, sixth, seventh, eighth);
-        }
-    }
 }

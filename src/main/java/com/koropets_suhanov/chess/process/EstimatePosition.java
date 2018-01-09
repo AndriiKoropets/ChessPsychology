@@ -17,9 +17,6 @@ import com.koropets_suhanov.chess.process.pojo.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import scala.Tuple2;
 
-/**
- * @author AndriiKoropets
- */
 public class EstimatePosition {
 
     private static Color whoseTurn;
@@ -40,15 +37,15 @@ public class EstimatePosition {
         Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhParamToInvolvedFigures = new Tuple2<>(estimatedSeventhParameter._2 - thirdParam, estimatedSeventhParameter._1.getFigureToDestinationField());
         Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthParamToInvolvedFigures = new Tuple2<>(estimatedEighthParameter._2 - fourthParam, estimatedEighthParameter._1.getFigureToDestinationField());
         ProcessingUtils.makeTurn(turn);
-        return new Parameter.Builder()
-                .first(firstParam)
-                .second(secondParam)
-                .third(thirdParam)
-                .fourth(fourthParam)
-                .fifth(fifthParamToInvolvedFigures)
-                .sixth(sixthParamToInvolvedFigures)
-                .seventh(seventhParamToInvolvedFigures)
-                .eighth(eighthParamToInvolvedFigures)
+        return Parameter.builder()
+                .firstAttackEnemy(firstParam)
+                .secondBeUnderAttack(secondParam)
+                .thirdWithdrawAttackOnEnemy(thirdParam)
+                .fourthWithdrawAttackOnMe(fourthParam)
+                .fifthDontTakeAChanceToAttack(fifthParamToInvolvedFigures)
+                .sixthDontTakeAChanceToBeUnderAttack(sixthParamToInvolvedFigures)
+                .seventhDontTakeAChanceToWithdrawAttackOnEnemy(seventhParamToInvolvedFigures)
+                .eighthDontTakeAChanceToWithdrawAttackOnMe(eighthParamToInvolvedFigures)
                 .build();
     }
 
@@ -122,11 +119,11 @@ public class EstimatePosition {
         for (Turn posTurn : possibleTurns){
             if (!possibleTurns.equals(turn)){
                 ProcessingUtils.makeTurn(posTurn);
-                AntiParameter antiParameter = new AntiParameter.Builder()
-                        .fifth(estimateFirstParameter())
-                        .sixth(estimateSecondParameter())
-                        .seventh(estimateThirdParameter())
-                        .eighth(estimateFourthParameter())
+                AntiParameter antiParameter = AntiParameter.builder()
+                        .fifthParam(estimateFirstParameter())
+                        .sixthParam(estimateSecondParameter())
+                        .seventhParam(estimateThirdParameter())
+                        .eighthParam(estimateFourthParameter())
                         .build();
                 turnAntiParameterMap.add(new Tuple2<>(posTurn, antiParameter));
                 ProcessingUtils.undoTurn(posTurn);
