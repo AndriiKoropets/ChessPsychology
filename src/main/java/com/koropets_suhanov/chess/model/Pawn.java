@@ -214,7 +214,7 @@ public class Pawn extends Figure {
                 : new Field(enemyField.getX() + 1, enemyField.getY());
     }
 
-    public boolean isOnThePreultimateLine(){
+    public boolean isOnThePenultimateLine(){
         return  (this.getColor() == Color.BLACK && this.getField().getX() == 6)
                 || (this.getColor() == Color.WHITE && this.getField().getX() == 1);
     }
