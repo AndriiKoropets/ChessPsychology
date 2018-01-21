@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
 /**
  * @author AndriiKoropets
  */
+@Slf4j
 public class Field {
 
     private int x;
@@ -18,7 +22,9 @@ public class Field {
     private static final Map<Integer, Integer> vertical = new LinkedHashMap<Integer, Integer>();
     private static final Map<Character, Integer> invertedHorizontal = new LinkedHashMap<Character, Integer>();
     private static final Map<Integer, Integer> invertedVertical = new LinkedHashMap<Integer, Integer>();
-    private static final Logger LOG = LoggerFactory.getLogger(Field.class);
+
+    @Autowired
+    private Board board;
 
     static {
         invertedVertical.put(8, 0);
@@ -68,16 +74,15 @@ public class Field {
         if (isValidField(x, y)){
             this.x = x;
             this.y = y;
-            LOG.debug("Created field with such points: x = {}, y = {}", x, y);
+            log.trace("Created field with such points: x = {}, y = {}", x, y);
         }else {
-            RuntimeException runtimeException = new RuntimeException("Invalid points for field, x = " + x + ", y = " + y);
-            LOG.error("Field was not created due to invalid points, x = {}, y = {}", x, y,runtimeException);
-            throw runtimeException;
+            log.error("Failed to created a field due to invalid points, x = {}, y = {}", x, y);
+            throw new RuntimeException("Invalid points for field, x = " + x + ", y = " + y);
         }
     }
 
     public static boolean isValidField(int x, int y){
-        return x >= 0 && x < Board.SIZE && y >= 0 && y < Board.SIZE;
+        return x >= 0 && x < SIZE && y >= 0 && y < SIZE;
     }
 
     public int getX() {
@@ -105,12 +110,12 @@ public class Field {
     }
 
     public boolean isTaken(){
-        return Board.getTakenFields().contains(this);
+        return board.getTakenFields().contains(this);
     }
 
     //TODO refactor this method. Should be placed in Board class.
     public boolean isUnderInfluence(Color color){
-        List<Observer> figures = Board.getFigures(color);
+        List<Observer> figures = board.getFigures(color);
         for (Object figure : figures){
             for (Object field : ((Figure)figure).getAttackedFields()){
                 if (this.equals(field)){

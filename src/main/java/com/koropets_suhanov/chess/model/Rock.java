@@ -3,6 +3,7 @@ package com.koropets_suhanov.chess.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 /**
  * @author AndriiKoropets
  */
@@ -27,7 +28,7 @@ public class Rock extends Figure {
 
     @Override
     public void possibleTurns() {
-        for (int i = this.getField().getX() + 1; i < Board.SIZE; i++){
+        for (int i = this.getField().getX() + 1; i < SIZE; i++){
             Field field = new Field(i, this.getField().getY());
             if (checkingFieldForTaken(field)){
                 break;
@@ -43,7 +44,7 @@ public class Rock extends Figure {
                 this.getFieldsUnderMyInfluence().add(field);
             }
         }
-        for (int j = this.getField().getY() + 1; j < Board.SIZE; j++){
+        for (int j = this.getField().getY() + 1; j < SIZE; j++){
             Field field = new Field(this.getField().getX(), j);
             if (checkingFieldForTaken(field)){
                 break;
@@ -89,8 +90,8 @@ public class Rock extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < Board.SIZE; i++){
-            for (int j = 0; j < Board.SIZE; j++){
+        for (int i = 0; i < SIZE; i++){
+            for (int j = 0; j < SIZE; j++){
                 if (i == this.getField().getX() || j == this.getField().getY()){
                     if (i == this.getField().getX() && j == this.getField().getY()){
                         continue;

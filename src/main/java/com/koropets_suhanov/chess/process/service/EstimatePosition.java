@@ -1,4 +1,4 @@
-package com.koropets_suhanov.chess.process;
+package com.koropets_suhanov.chess.process.service;
 
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.model.Observer;
@@ -11,17 +11,23 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
-import com.koropets_suhanov.chess.process.pojo.AntiParameter;
-import com.koropets_suhanov.chess.process.pojo.Parameter;
-import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.process.dto.AntiParameter;
+import com.koropets_suhanov.chess.process.dto.Parameter;
+import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
+@Service
 public class EstimatePosition {
 
     private static Color whoseTurn;
 
-    static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
+    @Autowired
+    private Board board;
+
+    Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
         whoseTurn = side;
         int firstParam = estimateFirstParameter();
         int secondParam = estimateSecondParameter();
@@ -49,7 +55,7 @@ public class EstimatePosition {
                 .build();
     }
 
-    private static Tuple2<Turn, Integer> estimateEightParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
+    private Tuple2<Turn, Integer> estimateEightParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
         for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
@@ -65,7 +71,7 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateSeventhParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
+    private Tuple2<Turn, Integer> estimateSeventhParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
         for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
@@ -81,7 +87,7 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateSixthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
+    private Tuple2<Turn, Integer> estimateSixthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
         for (Tuple2<Turn, AntiParameter> curTuple2 : turnAntiParameterMap){
@@ -97,7 +103,7 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static Tuple2<Turn, Integer> estimateFifthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
+    private Tuple2<Turn, Integer> estimateFifthParameter(final List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap) {
         int max = 0;
         Turn turnOfTheMaxParam = null;
         for (Tuple2<Turn, AntiParameter> curTuple : turnAntiParameterMap){
@@ -113,7 +119,7 @@ public class EstimatePosition {
         return new Tuple2<>(turnOfTheMaxParam, max);
     }
 
-    private static List<Tuple2<Turn, AntiParameter>> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
+    private List<Tuple2<Turn, AntiParameter>> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns){
         ProcessingUtils.undoTurn(turn);
         List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap = new ArrayList<>();
         for (Turn posTurn : possibleTurns){
@@ -132,27 +138,27 @@ public class EstimatePosition {
         return turnAntiParameterMap;
     }
 
-    private static int estimateFourthParameter() {
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+    private int estimateFourthParameter() {
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? board.getFigures(Color.BLACK) : board.getFigures(Color.WHITE);
         return calculateWithdrawingAttackAndBeUnderAttack(enemies);
     }
 
-    private static int estimateThirdParameter() {
-        List<Observer> alliesObservers = Board.getFigures(whoseTurn);
+    private int estimateThirdParameter() {
+        List<Observer> alliesObservers = board.getFigures(whoseTurn);
         return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
     }
 
-    private static int estimateSecondParameter(){
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+    private int estimateSecondParameter(){
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? board.getFigures(Color.BLACK) : board.getFigures(Color.WHITE);
         return calculateAttackAndBeUnderAttack(enemies);
     }
 
-    private static int estimateFirstParameter(){
-        List<Observer> chosenFigures = Board.getFigures(whoseTurn);
+    private int estimateFirstParameter(){
+        List<Observer> chosenFigures = board.getFigures(whoseTurn);
         return calculateAttackAndBeUnderAttack(chosenFigures);
     }
 
-    private static int calculateAttackAndBeUnderAttack(List<Observer> figures){
+    private int calculateAttackAndBeUnderAttack(List<Observer> figures){
         int param = 0;
         Set<Figure> chosenFigures = new HashSet<>();
         figures.forEach(o -> {
@@ -172,7 +178,7 @@ public class EstimatePosition {
         return param;
     }
 
-    private static int calculateWithdrawingAttackAndBeUnderAttack(List<Observer> figures){
+    private int calculateWithdrawingAttackAndBeUnderAttack(List<Observer> figures){
         int param = 0;
         Set<Figure> chosenFigures = new HashSet<>();
         figures.forEach(o -> {
@@ -190,7 +196,7 @@ public class EstimatePosition {
         return param;
     }
 
-    private static boolean isPreysBecameBigger(Set<Figure> previousPreys, Set<Figure> curPreys){
+    private boolean isPreysBecameBigger(Set<Figure> previousPreys, Set<Figure> curPreys){
         for (Figure curPrey : curPreys){
             if (!previousPreys.contains(curPrey)){
                 return true;
@@ -199,7 +205,7 @@ public class EstimatePosition {
         return false;
     }
 
-    private static boolean isPreysBecameSmaller(Set<Figure> previousPreys, Set<Figure> curPreys){
+    private boolean isPreysBecameSmaller(Set<Figure> previousPreys, Set<Figure> curPreys){
         for (Figure prevPrey : previousPreys){
             if (!curPreys.contains(prevPrey)) {
                 return true;

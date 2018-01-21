@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
 import static java.lang.Math.abs;
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
 import java.util.Set;
 /**
@@ -47,8 +48,8 @@ public class Knight extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < Board.SIZE; i++){
-            for (int j = 0; j < Board.SIZE; j++){
+        for (int i = 0; i < SIZE; i++){
+            for (int j = 0; j < SIZE; j++){
                 if (abs(this.getField().getX() - i) + abs(this.getField().getY() - j) == 3){
                     if (this.getField().getX()== i || this.getField().getY() == j){
                         continue;

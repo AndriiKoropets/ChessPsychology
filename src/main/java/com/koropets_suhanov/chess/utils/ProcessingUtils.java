@@ -11,11 +11,12 @@ import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.process.Game;
-import com.koropets_suhanov.chess.process.Process;
-import com.koropets_suhanov.chess.process.pojo.Turn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.koropets_suhanov.chess.process.service.Game;
+import com.koropets_suhanov.chess.process.service.Process;
+import com.koropets_suhanov.chess.process.dto.Turn;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import scala.Tuple2;
 
 import java.util.List;
@@ -27,43 +28,66 @@ import java.util.HashSet;
 import java.util.Arrays;
 
 import static java.lang.Math.abs;
+import static com.koropets_suhanov.chess.process.constants.Constants.longCastling;
+import static com.koropets_suhanov.chess.process.constants.Constants.shortCastling;
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
 /**
  * @author AndriiKoropets
  */
+@UtilityClass
+@Slf4j
 public class ProcessingUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProcessingUtils.class);
-    private static List<Observer> candidates;
-    private static String mainTurn;
-    private static Field field;
-    private static int number;
-    private static Set<Field> affectedFields;
-    private static List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
-    private static Figure figure;
-    private static boolean isEating;
-    private static boolean transformation;
-    private static Figure targetedFigure;
-    public static final String shortCastling = "0-0";
-    public static final String longCastling = "0-0-0";
-    private static final Field whiteKingShortCastling = new Field(7, 6);
-    private static final Field whiteKingLongCastling = new Field(7, 2);
-    private static final Field blackKingShortCastling = new Field(0, 6);
-    private static final Field blackKingLongCastling = new Field(0, 2);
-    private static final Field whiteRockShortCastling = new Field(7, 5);
-    private static final Field whiteRockLongCastling = new Field(7, 3);
-    private static final Field blackRockShortCastling = new Field(0, 5);
-    private static final Field blackRockLongCastling = new Field(0, 3);
-    private static final FrequentFigure whiteFrequent = new FrequentFigure();
-    private static final FrequentFigure blackFrequent = new FrequentFigure();
-    private static final String PLUS = "+";
-    public static final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
-    private static List<Tuple2<Figure, Field>> tuplesFigureToField;
-    private static Figure figureBornFromTransformation;
-    private static String figureInWrittenStyleToBorn;
-    public static Figure eatenFigureToResurrection;
 
-    public static Turn getActualTurn(final String turnWrittenStyle, final Color color, int numberOfTurn){
+    public final Field f1 = new Field(7, 5);
+    public final Field g1 = new Field(7, 6);
+    public final Field b1 = new Field(7, 1);
+    public final Field c1 = new Field(7, 2);
+    public final Field d1 = new Field(7, 3);
+    public final Field f8 = new Field(0, 5);
+    public final Field g8 = new Field(0, 6);
+    public final Field b8 = new Field(0, 1);
+    public final Field c8 = new Field(0, 2);
+    public final Field d8 = new Field(0, 3);
+    public final Field a1 = new Field(7, 0);
+    public final Field h1 = new Field(7, 7);
+    public final Field e1 = new Field(7, 4);
+    public final Field a8 = new Field(0, 0);
+    public final Field h8 = new Field(0, 7);
+    public final Field e8 = new Field(0, 4);
+
+    private List<Observer> candidates;
+    private String mainTurn;
+    private Field field;
+    private int number;
+    private Set<Field> affectedFields;
+    private List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
+    private Figure figure;
+    private boolean isEating;
+    private boolean transformation;
+    private Figure targetedFigure;
+    private final Field whiteKingShortCastling = new Field(7, 6);
+    private final Field whiteKingLongCastling = new Field(7, 2);
+    private final Field blackKingShortCastling = new Field(0, 6);
+    private final Field blackKingLongCastling = new Field(0, 2);
+    private final Field whiteRockShortCastling = new Field(7, 5);
+    private final Field whiteRockLongCastling = new Field(7, 3);
+    private final Field blackRockShortCastling = new Field(0, 5);
+    private final Field blackRockLongCastling = new Field(0, 3);
+    private final FrequentFigure whiteFrequent = new FrequentFigure();
+    private final FrequentFigure blackFrequent = new FrequentFigure();
+    private final String PLUS = "+";
+    public final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
+    private List<Tuple2<Figure, Field>> tuplesFigureToField;
+    private Figure figureBornFromTransformation;
+    private String figureInWrittenStyleToBorn;
+    public Figure eatenFigureToResurrection;
+
+    @Autowired
+    private Board board;
+
+    public Turn getActualTurn(final String turnWrittenStyle, final Color color, int numberOfTurn){
         candidates = new ArrayList<>();
         mainTurn = turnWrittenStyle;
         number = numberOfTurn;
@@ -71,12 +95,12 @@ public class ProcessingUtils {
         return setTurn(turnWrittenStyle, color);
     }
 
-    public static Turn getPossibleTurn(){
+    public Turn getPossibleTurn(){
         //TODO implement logic for possible turns which was not made in party
         return null;
     }
 
-    public static Tuple2<FrequentFigure, FrequentFigure> countFrequent(boolean isWhite, String writtenTurn){
+    public Tuple2<FrequentFigure, FrequentFigure> countFrequent(boolean isWhite, String writtenTurn){
         FrequentFigure frequent = isWhite ? whiteFrequent : blackFrequent;
         char figure = writtenTurn.charAt(0);
         switch (figure){
@@ -91,7 +115,7 @@ public class ProcessingUtils {
         return new Tuple2<>(whiteFrequent, blackFrequent);
     }
 
-    private static void initialize(){
+    private void initialize(){
         candidates.clear();
         figureToField.clear();
         figure = null;
@@ -102,18 +126,18 @@ public class ProcessingUtils {
         transformation = whetherWrittenTurnIsTransformation();
     }
 
-    private static Turn setTurn(final String writtenStyle, final Color color){
+    private Turn setTurn(final String writtenStyle, final Color color){
         initialize();
         if (shortCastling.equals(writtenStyle)){
             List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
             if (color == Color.WHITE){
-                Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
-                Figure whiteRock_H = Board.getFieldToFigure().get(Game.h1);
+                Figure whiteKing = board.getFieldToFigure().get(e1);
+                Figure whiteRock_H = board.getFieldToFigure().get(h1);
                 figureToField.add(new Tuple2<>(whiteKing, whiteKingShortCastling));
                 figureToField.add(new Tuple2<>(whiteRock_H, whiteRockShortCastling));
             }else {
-                Figure blackKing = Board.getFieldToFigure().get(Game.e8);
-                Figure blackRock_H = Board.getFieldToFigure().get(Game.h8);
+                Figure blackKing = board.getFieldToFigure().get(e8);
+                Figure blackRock_H = board.getFieldToFigure().get(h8);
                 figureToField.add(new Tuple2<>(blackKing, blackKingShortCastling));
                 figureToField.add(new Tuple2<>(blackRock_H, blackRockShortCastling));
             }
@@ -122,13 +146,13 @@ public class ProcessingUtils {
         if (longCastling.equals(writtenStyle)){
             List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
             if (color == Color.WHITE){
-                Figure whiteKing = Board.getFieldToFigure().get(Game.e1);
-                Figure whiteRock_A = Board.getFieldToFigure().get(Game.a1);
+                Figure whiteKing = board.getFieldToFigure().get(e1);
+                Figure whiteRock_A = board.getFieldToFigure().get(a1);
                 figureToField.add(new Tuple2<>(whiteKing, whiteKingLongCastling));
                 figureToField.add(new Tuple2<>(whiteRock_A, whiteRockLongCastling));
             }else {
-                Figure blackKing = Board.getFieldToFigure().get(Game.e8);
-                Figure blackRock_A = Board.getFieldToFigure().get(Game.a8);
+                Figure blackKing = board.getFieldToFigure().get(e8);
+                Figure blackRock_A = board.getFieldToFigure().get(a8);
                 figureToField.add(new Tuple2<>(blackKing, blackKingLongCastling));
                 figureToField.add(new Tuple2<>(blackRock_A, blackRockLongCastling));
             }
@@ -152,17 +176,17 @@ public class ProcessingUtils {
         }
     }
 
-    private static List<Tuple2<Figure, Field>> fetchFigureToTargetField(Class clazz, Color color, boolean eating, boolean transformation){
+    private List<Tuple2<Figure, Field>> fetchFigureToTargetField(Class clazz, Color color, boolean eating, boolean transformation){
         isEating = eating;
         List<Observer> targets = new ArrayList<Observer>();
-        List<Figure> figures = Board.getFiguresByClass(clazz, color);
+        List<Figure> figures = board.getFiguresByClass(clazz, color);
         for (Observer curFigure : figures){
             if (eating){
                 if (transformation && clazz == Pawn.class){
                     Pawn pawn = (Pawn) curFigure;
                     if (pawn.getPreyField().contains(field)){
                         targets.add(curFigure);
-                        targetedFigure = Board.getFieldToFigure().get(field);
+                        targetedFigure = board.getFieldToFigure().get(field);
                         figureBornFromTransformation = createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
                     }
                 }
@@ -180,7 +204,7 @@ public class ProcessingUtils {
                     System.out.println("Class = "  + clazz + " color = " + color + " eating = " + eating);
                     if (((Figure) curFigure).getPreyField().contains(field)){
                         targets.add(curFigure);
-                        targetedFigure = Board.getFieldToFigure().get(field);
+                        targetedFigure = board.getFieldToFigure().get(field);
 //                        System.out.println("targeted figure = " + targetedFigure);
                     }
                 }
@@ -222,7 +246,7 @@ public class ProcessingUtils {
         return figureToField;
     }
 
-    private static Figure choseFigureWhichAttack(List<Observer> targets, Class clazz){
+    private Figure choseFigureWhichAttack(List<Observer> targets, Class clazz){
         if (clazz == Pawn.class){
             char verticalPawn = mainTurn.charAt(0);
             for (Object currentFigure : targets){
@@ -240,16 +264,16 @@ public class ProcessingUtils {
         return null;
     }
 
-    private static Figure choseExactFigure(List<Observer> targets){
+    private Figure choseExactFigure(List<Observer> targets){
         char secondPosition = mainTurn.charAt(1);
         int integer = Character.getNumericValue(secondPosition);
         return chose(integer, secondPosition, targets);
     }
 
-    private static Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne){
+    private Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne){
         System.out.println("candidates = " + candidatesForBeingTheOne);
         for (Observer observer : candidatesForBeingTheOne){
-            if (integer > Board.SIZE){
+            if (integer > SIZE){
                 System.out.println("Passed = " + integer);
                 if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)){
                     return (Figure) observer;
@@ -263,7 +287,7 @@ public class ProcessingUtils {
         throw new RuntimeException("Could not choose exact figure. Turn must be wrong written. Turn = " + mainTurn);
     }
 
-    private static Field parseTargetField(String turn){
+    private Field parseTargetField(String turn){
         int x;
         int y;
         if (!turn.equalsIgnoreCase(shortCastling) && !turn.equalsIgnoreCase(longCastling)){
@@ -276,12 +300,12 @@ public class ProcessingUtils {
             }
             return new Field(x,y);
         }else {
-            LOG.debug("Target field is null. Castling");
+            log.debug("Target field is null. Castling");
             return null;
         }
     }
 
-    private static boolean whetherWrittenTurnIsTransformation(){
+    private boolean whetherWrittenTurnIsTransformation(){
         int lengthOfTheWrittenTurn = mainTurn.length();
         if (mainTurn.contains(PLUS)){
             char previousBeforeTheLast = mainTurn.charAt(lengthOfTheWrittenTurn - 2);
@@ -297,7 +321,7 @@ public class ProcessingUtils {
         return false;
     }
 
-    public static Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureFromTransformation,
+    public Turn createTurn(List<Tuple2<Figure, Field>> figureToField, Figure figureFromTransformation,
                                   String writtenStyle, boolean isEating, boolean transformation, boolean enPassant,
                                   Figure targetedFigure, int numberOfTurn){
         return Turn.builder().figureToDestinationField(figureToField)
@@ -311,7 +335,7 @@ public class ProcessingUtils {
                 .build();
     }
 
-    public static Figure createFigure(Field field, String writtenStyleOfTheFigure, Color color){
+    public Figure createFigure(Field field, String writtenStyleOfTheFigure, Color color){
         switch (writtenStyleOfTheFigure){
             case "Q" : return new Queen(field, color);
             case "B" : return new Bishop(field, color);
@@ -321,7 +345,7 @@ public class ProcessingUtils {
         }
     }
 
-    public static Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition){
+    public Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition){
         Set<Field> fieldsBetween = new HashSet<>();
         if (king.getField().getX() == rockPosition.getX()){
             if (king.getField().getX() > rockPosition.getX()){
@@ -348,7 +372,7 @@ public class ProcessingUtils {
         return fieldsBetween;
     }
 
-    public static Set<Field> fieldsBetweenBishopAndKing(final King king, final Field bishopPosition){
+    public Set<Field> fieldsBetweenBishopAndKing(final King king, final Field bishopPosition){
         Set<Field> fieldsBetween =  new HashSet<>();
         if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()){
             int yPosition = king.getField().getY() - 1;
@@ -382,7 +406,7 @@ public class ProcessingUtils {
         return fieldsBetween;
     }
 
-    public static Set<Field> fieldsBetweenQueenAndKing(final King king, final Field queenPosition){
+    public Set<Field> fieldsBetweenQueenAndKing(final King king, final Field queenPosition){
         Set<Field> fieldsBetweenQueenAndKing = new HashSet<>();
         if (king.getField().getX() == queenPosition.getX() || king.getField().getY() == queenPosition.getY()){
             fieldsBetweenQueenAndKing.addAll(fieldsBetweenRockAndKing(king, queenPosition));
@@ -392,9 +416,9 @@ public class ProcessingUtils {
         return fieldsBetweenQueenAndKing;
     }
 
-    public static Set<Figure> getAffectedFigures(Color color){
+    public Set<Figure> getAffectedFigures(Color color){
         Set<Figure> acceptedFigures = new HashSet<>();
-        List<Observer> observers = Board.getFigures(color);
+        List<Observer> observers = board.getFigures(color);
         affectedFields.forEach(f -> {
             observers.forEach(o -> {
                 if (((Figure)o).getAttackedFields().contains(f)){
@@ -405,7 +429,7 @@ public class ProcessingUtils {
         return acceptedFigures;
     }
 
-    private static void getAffectedFields(Turn turn){
+    private void getAffectedFields(Turn turn){
         affectedFields = new HashSet<>();
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             affectedFields.add(tuple2._1.getField());
@@ -413,16 +437,16 @@ public class ProcessingUtils {
         }
     }
 
-    public static void makeTurn(Turn turn){
+    public void makeTurn(Turn turn){
         getAffectedFields(turn);
         setTurnForUndoing(turn);
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
-            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
+            board.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
         }
         makePullAdditionalAlliesAndEnemies();
     }
 
-    public static void undoTurn(Turn turn){
+    public void undoTurn(Turn turn){
         Turn undoTurn = Turn.builder()
                 .figureToDestinationField(tuplesFigureToField)
                 .eating(false)
@@ -430,13 +454,13 @@ public class ProcessingUtils {
                 .numberOfTurn(turn.getNumberOfTurn())
                 .build();
         for (Tuple2<Figure, Field> tuple2 : undoTurn.getFigureToDestinationField()){
-            Process.BOARD.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true, turn.isEnPassant());
+            board.setNewCoordinates(turn, tuple2._1, tuple2._2, undoTurn.getTargetedFigure(), true, turn.isEnPassant());
         }
         ProcessingUtils.eatenFigureToResurrection = null;
         makePullAdditionalAlliesAndEnemies();
     }
 
-    private static void setTurnForUndoing(Turn turn){
+    private void setTurnForUndoing(Turn turn){
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
@@ -448,7 +472,7 @@ public class ProcessingUtils {
 
 
             }else {
-                Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
+                Figure tempFigure = board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
                 System.out.println("temp figure = " + tempFigure);
                 eatenFigureToResurrection = tempFigure.createNewFigure();
 //            System.out.println("Eaten figure = " + eatenFigureToResurrection);
@@ -457,15 +481,15 @@ public class ProcessingUtils {
         figureBornFromTransformation = turn.getFigureFromTransformation();
     }
 
-    private static void makePullAdditionalAlliesAndEnemies(){
+    private void makePullAdditionalAlliesAndEnemies(){
         Map<Figure, Set<Figure>> figureToChosenAllies = new HashMap<>();
-        Board.getFigures().forEach(f -> {
+        board.getFigures().forEach(f -> {
             Set<Figure> chosenAllies = ((Figure)f).pullAdditionalAlliesAndEnemies();
             if (!isEmpty(chosenAllies)){
                 figureToChosenAllies.put((Figure)f, chosenAllies);
             }
         });
-        for (int i = 0; i < Board.SIZE; i++){
+        for (int i = 0; i < SIZE; i++){
             for (Figure curFigure : figureToChosenAllies.keySet()){
                 for (Figure ally : figureToChosenAllies.get(curFigure)){
                     if (ally != null){
@@ -476,7 +500,7 @@ public class ProcessingUtils {
         }
     }
 
-    private static void doUpdate(Figure curFigure, Figure ally){
+    private void doUpdate(Figure curFigure, Figure ally){
         for (Figure undefendedAlly : ally.getAlliesIProtect()){
             updateProtectionOfUndefendedAllies(curFigure, ally, undefendedAlly);
         }
@@ -485,7 +509,7 @@ public class ProcessingUtils {
         }
     }
 
-    private static void updateWhoCouldBeEaten(Figure curFigure, Figure ally, Figure prey){
+    private void updateWhoCouldBeEaten(Figure curFigure, Figure ally, Figure prey){
         if (!curFigure.getWhoCouldBeEaten().contains(prey) && ally.getWhoCouldBeEaten().contains(prey)
                 && curFigure.getAttackedFields().contains(prey.getField()) && isOnTheSameLine(curFigure, ally, prey)){
             curFigure.getWhoCouldBeEaten().add(prey);
@@ -493,7 +517,7 @@ public class ProcessingUtils {
         }
     }
 
-    private static void updateProtectionOfUndefendedAllies(Figure curFigure, Figure ally, Figure undefendedAlly){
+    private void updateProtectionOfUndefendedAllies(Figure curFigure, Figure ally, Figure undefendedAlly){
         if (!curFigure.getAlliesIProtect().contains(undefendedAlly) && ally.getAlliesIProtect().contains(undefendedAlly)
                 && curFigure.getAttackedFields().contains(undefendedAlly.getField()) && isOnTheSameLine(curFigure, ally, undefendedAlly)
                 && !curFigure.equals(undefendedAlly) && !ally.equals(undefendedAlly)){
@@ -502,7 +526,7 @@ public class ProcessingUtils {
         }
     }
 
-    private static boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3){
+    private boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3){
         if (f1.getClass() == Bishop.class || f2.getClass() == Bishop.class  || f3.getClass() == Bishop.class){
             return (abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
                     && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY()))
@@ -519,11 +543,11 @@ public class ProcessingUtils {
                         && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
     }
 
-    private static boolean isEnPassantScenario(List<Tuple2<Figure, Field>> figureToField){
+    private boolean isEnPassantScenario(List<Tuple2<Figure, Field>> figureToField){
         return true;
     }
 
-    public static boolean isEmpty(Set<?> set){
+    public boolean isEmpty(Set<?> set){
         return set == null || set.isEmpty();
     }
 }

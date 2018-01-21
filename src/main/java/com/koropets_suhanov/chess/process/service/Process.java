@@ -1,8 +1,8 @@
-package com.koropets_suhanov.chess.process;
+package com.koropets_suhanov.chess.process.service;
 
 import com.koropets_suhanov.chess.model.Observer;
-import com.koropets_suhanov.chess.process.pojo.FinalResult;
-import com.koropets_suhanov.chess.process.pojo.Parameter;
+import com.koropets_suhanov.chess.process.dto.FinalResult;
+import com.koropets_suhanov.chess.process.dto.Parameter;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Color;
@@ -14,9 +14,11 @@ import com.koropets_suhanov.chess.model.Knight;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.King;
-import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.process.dto.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Set;
 
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+
+@Service
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
@@ -35,21 +40,27 @@ public class Process {
     //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
     //Transformation : 6, 7, 13, 18,
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
-    public static final Board BOARD = Board.getInstance();
+
+    @Autowired
+    public Board board;
+    @Autowired
+    private Game game;
+    @Autowired
+    private EstimatePosition estimatePosition;
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
-    private static Game game = new Game();
     private static Parameter whiteEstimationWholeParty;
     private static Parameter blackEstimationWholeParty;
 
     static FinalResult fullWhiteEstimation;
     static FinalResult fullBlackEstimation;
 
-    public static void main(String[] args){
-        process();
-    }
+//    public static void main(String[] args){
+//        process();
+//    }
 
-    private static void process(){
+    public void process(){
         LOG.info("Process is starting");
+        System.out.println("Process started");
         whiteEstimationWholeParty = Parameter.builder().build();
         blackEstimationWholeParty = Parameter.builder().build();
         fullWhiteEstimation = FinalResult.builder().build();
@@ -74,12 +85,12 @@ public class Process {
                     whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
                     printAllPossibleTurns(whitePossibleTurns);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
-                    Board.setCurrentTurn(whiteTurn);
+                    board.setCurrentTurn(whiteTurn);
                     ProcessingUtils.makeTurn(whiteTurn);
 //                    System.out.println("After turn = " + whiteTurn);
                     printAllBoard();
 //                    currentStateOfAllFigures();
-                    whiteEstimationWholeParty = EstimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
+                    whiteEstimationWholeParty = estimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
 
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
                     if (writtenBlackTurn != null){
@@ -87,15 +98,15 @@ public class Process {
                         System.out.println("Black turn = " + blackTurn);
                         blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
                         printAllPossibleTurns(blackPossibleTurns);
-                        Board.setCurrentTurn(blackTurn);
+                        board.setCurrentTurn(blackTurn);
                         ProcessingUtils.makeTurn(blackTurn);
                         printAllBoard();
 //                        System.out.println("After turn = " + blackTurn);
-                        System.out.println("Figures = " + Board.getFigures());
-                        System.out.println("White figures = " + Board.getFigures(Color.WHITE));
-                        System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
+                        System.out.println("Figures = " + board.getFigures());
+                        System.out.println("White figures = " + board.getFigures(Color.WHITE));
+                        System.out.println("Black figures = " + board.getFigures(Color.BLACK));
 //                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
-                        blackEstimationWholeParty = EstimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
+                        blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
 
                         fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
                     }
@@ -104,8 +115,8 @@ public class Process {
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
-                System.out.println("White figures = " + Board.getFigures(Color.WHITE));
-                System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
+                System.out.println("White figures = " + board.getFigures(Color.WHITE));
+                System.out.println("Black figures = " + board.getFigures(Color.BLACK));
             }
             printAllBoard();
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
@@ -119,27 +130,27 @@ public class Process {
         }
     }
 
-    private static void currentStateOfAllFigures(){
+    private void currentStateOfAllFigures(){
         System.out.println("White figures");
-        for (Observer observer : Board.getFigures(Color.WHITE)){
+        for (Observer observer : board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
         System.out.println("Black figures");
-        for (Observer observer : Board.getFigures(Color.BLACK)){
+        for (Observer observer : board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
     }
 
-    private static void printAllPossibleTurns(Set<Turn> allPossibleTurns){
+    private void printAllPossibleTurns(Set<Turn> allPossibleTurns){
         System.out.println("Size = " + allPossibleTurns.size());
         for (Turn possibleTurn : allPossibleTurns){
             System.out.println("Turn = " + possibleTurn.getFigureToDestinationField());
         }
     }
 
-    private static void printInfoAboutFigure(Figure currentFigure){
+    private void printInfoAboutFigure(Figure currentFigure){
         System.out.println(currentFigure);
 //        System.out.println("Possible fields to move = " + currentFigure.getPossibleFieldsToMove());
         System.out.println("Who could be eaten previous state = " + currentFigure.getWhoCouldBeEatenPreviousState());
@@ -149,24 +160,24 @@ public class Process {
         System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
-    private static void printAllBoard(){
+    private void printAllBoard(){
         System.out.println();
         int counter = 1;
-        for (int i = 0; i < Board.SIZE; i++){
+        for (int i = 0; i < SIZE; i++){
             System.out.print(Field.getVertical().get(i) + "  ");
-            for (int j = 0; j < Board.SIZE; j++){
+            for (int j = 0; j < SIZE; j++){
                 Field currentPoint = new Field(i, j);
                 if (currentPoint.isTaken()){
-                    System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
+                    System.out.print(" " + printFigure(board.getFieldToFigure().get(currentPoint)) + " ");
                 }else {
                     System.out.print("   ");
                 }
             }
-            if (counter == Board.SIZE){
+            if (counter == SIZE){
                 System.out.println();
                 System.out.println();
                 System.out.print("    ");
-                for (int k = 0; k < Board.SIZE; k++){
+                for (int k = 0; k < SIZE; k++){
                     System.out.print(Field.getHorizontal().get(k) + "  ");
                 }
             }
@@ -175,7 +186,7 @@ public class Process {
         }
     }
 
-    private static String printFigure(Figure figure){
+    private String printFigure(Figure figure){
         if (figure.getClass() == Pawn.class){
             return figure.getColor() == Color.WHITE ? "P" : "p";
         }
@@ -197,7 +208,7 @@ public class Process {
         return null;
     }
 
-    private static FinalResult countFullEstimation(Parameter parameter, Color color){
+    private FinalResult countFullEstimation(Parameter parameter, Color color){
         FinalResult globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
         return FinalResult.builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
                 .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())

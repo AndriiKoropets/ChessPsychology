@@ -1,17 +1,20 @@
 package com.koropets_suhanov.chess.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Set;
 
 import static java.lang.Math.abs;
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-/**
- * @author AndriiKoropets
- */
 public class King extends Figure {
 
     private boolean opportunityToCastling = true;
     private static final int KING_WEIGHT = Integer.MAX_VALUE;
     private static final int POINT = 5;
+
+    @Autowired
+    private Board board;
 
     public King(Field field, Color color) {
         super(field, color);
@@ -20,10 +23,10 @@ public class King extends Figure {
 
     @Override
     public void possibleTurns(){
-        Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
-                : Board.getFieldsUnderBlackInfluence();
+        Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? board.getFieldsUnderWhiteInfluence()
+                : board.getFieldsUnderBlackInfluence();
         this.getAttackedFields().forEach(f -> {
-            Figure figure = Board.getFieldToFigure().get(f);
+            Figure figure = board.getFieldToFigure().get(f);
             if (!enemyInfluence.contains(f)){
                 if (figure != null){
                     if (this.getColor() == figure.getColor()){
@@ -71,15 +74,15 @@ public class King extends Figure {
     }
 
     public boolean isUnderAttack(){
-        Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
-                : Board.getFieldsUnderWhiteInfluence();
+        Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? board.getFieldsUnderBlackInfluence()
+                : board.getFieldsUnderWhiteInfluence();
         return enemyInfluence.contains(this.getField());
     }
 
     @Override
     protected void attackedFields() {
-        for (int  i = 0; i < Board.SIZE; i++){
-            for (int j = 0; j < Board.SIZE; j++){
+        for (int  i = 0; i < SIZE; i++){
+            for (int j = 0; j < SIZE; j++){
                 if ((abs(this.getField().getX() - i) <= 1) && (abs(this.getField().getY() - j) <= 1)) {
                     if (this.getField().getX() == i && this.getField().getY() == j){
                         continue;

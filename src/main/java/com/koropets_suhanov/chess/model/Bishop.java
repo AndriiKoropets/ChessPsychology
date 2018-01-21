@@ -5,6 +5,8 @@ import static java.lang.Math.abs;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+
 /**
  * @author AndriiKoropets
  */
@@ -20,8 +22,8 @@ public class Bishop extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < Board.SIZE; i++){
-            for (int j = 0; j < Board.SIZE; j++){
+        for (int i = 0; i < SIZE; i++){
+            for (int j = 0; j < SIZE; j++){
                 if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j) && abs(this.getField().getY() - j) != 0){
                     this.getAttackedFields().add(new Field(i, j));
                 }
@@ -31,10 +33,10 @@ public class Bishop extends Figure {
 
     @Override
     public void possibleTurns() {
-        for (int i = this.getField().getX() + 1; i < Board.SIZE; i++){
+        for (int i = this.getField().getX() + 1; i < SIZE; i++){
             boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < Board.SIZE; j++){
-                if (i < Board.SIZE && j < Board.SIZE &&  abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
+            for (int j = this.getField().getY() + 1; j < SIZE; j++){
+                if (i < SIZE && j < SIZE &&  abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
                     Field field = new Field(i, j);
                     if (checkingFieldForTaken(field)){
                         flag = true;
@@ -48,10 +50,10 @@ public class Bishop extends Figure {
                 break;
             }
         }
-        for (int i = this.getField().getX() + 1; i < Board.SIZE; i++){
+        for (int i = this.getField().getX() + 1; i < SIZE; i++){
             boolean flag = false;
             for (int j = this.getField().getY() - 1; j >= 0; j--){
-                if (i < Board.SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
+                if (i < SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
                     Field field = new Field(i,j);
                     if (checkingFieldForTaken(field)){
                         flag = true;
@@ -67,7 +69,7 @@ public class Bishop extends Figure {
         }
         for (int i = this.getField().getX() - 1; i >= 0; i--){
             boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < Board.SIZE; j++){
+            for (int j = this.getField().getY() + 1; j < SIZE; j++){
                 if (i >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
                     Field field = new Field(i,j);
                     if (checkingFieldForTaken(field)){

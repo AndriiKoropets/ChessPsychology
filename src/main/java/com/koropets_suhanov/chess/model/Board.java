@@ -1,10 +1,11 @@
 package com.koropets_suhanov.chess.model;
 
-import com.koropets_suhanov.chess.process.pojo.Turn;
+import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Set;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,27 +14,30 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+
 /**
  * @author AndriiKoropets
  */
+@Component
+@Slf4j
 public class Board implements Subject{
 
-    public final static byte SIZE = 8;
-    private static final Logger LOG = LoggerFactory.getLogger(Board.class);
-    private static List<Observer> figures = new ArrayList<>();
-    private static List<Observer> whiteFigures = new ArrayList<Observer>();
-    private static List<Observer> blackFigures = new ArrayList<>();
-    private static Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<Field>();
-    private static Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<Field>();
-    private static List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
-    private static final Set<Field> takenFields = new LinkedHashSet<Field>();
-    private static final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
+    private  List<Observer> figures = new ArrayList<>();
+    private  List<Observer> whiteFigures = new ArrayList<Observer>();
+    private  List<Observer> blackFigures = new ArrayList<>();
+    private  Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<Field>();
+    private  Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<Field>();
+    private  List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
+    private  final Set<Field> takenFields = new LinkedHashSet<Field>();
+    private  final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
     private Field field;
-    private static Turn previousTurn;
-    private static Turn currentTurn;
-    private volatile static Board uniqueInstance;
+    private  Turn previousTurn;
+    private  Turn currentTurn;
+    private int turnNumber;
 
-    private Board(){
+    @PostConstruct
+    public void init(){
         //Putting white figures on the board
         Figure whitePawnA = new Pawn(new Field(6,0), Color.WHITE);
         Figure whitePawnB = new Pawn(new Field(6,1), Color.WHITE);
@@ -110,31 +114,24 @@ public class Board implements Subject{
         blackFigures.forEach(black -> fieldsUnderBlackInfluence.addAll(((Figure) black).getFieldsUnderMyInfluence()));
     }
 
-    public static Board getInstance(){
-        if (uniqueInstance == null){
-            uniqueInstance = new Board();
-        }
-        return uniqueInstance;
-    }
-
-    public static List<Figure> getFiguresByClass(Class clazz){
+    public List<Figure> getFiguresByClass(Class clazz){
         List<Figure> returnedFigures = new ArrayList<Figure>();
         figures.stream().filter(f -> f.getClass() == clazz).forEach(f -> returnedFigures.add((Figure) f));
         return returnedFigures;
     }
 
-    public static List<Figure> getFiguresByClass(Class clazz, Color color){
+    public List<Figure> getFiguresByClass(Class clazz, Color color){
         List<Observer> observers = getFigures(color);
         List<Figure> figures = new ArrayList<>();
         observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
         return figures;
     }
 
-    public static King getKing(Color color){
+    public King getKing(Color color){
         return (King) getFigures(color).stream().filter(f -> f.getClass() == King.class).collect(Collectors.toList()).get(0);
     }
 
-    public static List<Observer> getFigures(Color color){
+    public List<Observer> getFigures(Color color){
         return color == Color.WHITE ? whiteFigures : blackFigures;
     }
 
@@ -156,41 +153,46 @@ public class Board implements Subject{
         blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(((Figure)b).getFieldsUnderMyInfluence()));
     }
 
-    public static boolean isFieldValid(Field field){
+    public boolean isFieldValid(Field field){
         return field.getX() >= 0 && field.getX() < SIZE && field.getY() >= 0 && field.getY() < SIZE;
     }
 
-    public static List<Turn> getPossibleTurnsAndKillings() {
+    public List<Turn> getPossibleTurnsAndKillings() {
         return possibleTurnsAndKillings;
     }
 
-    public static List<Observer> getFigures() {
+    public List<Observer> getFigures() {
         return figures;
     }
 
-    public static Set<Field> getFieldsUnderWhiteInfluence() {
+    public Set<Field> getFieldsUnderWhiteInfluence() {
         return fieldsUnderWhiteInfluence;
     }
 
-    public static Set<Field> getFieldsUnderBlackInfluence() {
+    public Set<Field> getFieldsUnderBlackInfluence() {
         return fieldsUnderBlackInfluence;
     }
 
-    public static Map<Field, Figure> getFieldToFigure(){
+    public Map<Field, Figure> getFieldToFigure(){
         return fieldToFigure;
     }
 
-    public static Turn getPreviousTurn() {
+    public Turn getPreviousTurn() {
         return previousTurn;
     }
 
-    public static Turn getCurrentTurn(){
+    public Turn getCurrentTurn(){
         return currentTurn;
     }
 
-    public static void setCurrentTurn(Turn currentTurn) {
-        previousTurn = currentTurn;
-        Board.currentTurn = currentTurn;
+    public int getTurnNumber(){
+        return turnNumber;
+    }
+
+    public void setCurrentTurn(Turn currentTurn) {
+        this.previousTurn = this.currentTurn;
+        this.currentTurn = currentTurn;
+        turnNumber = currentTurn.getNumberOfTurn();
     }
 
     public void notify(Observer figure) {
@@ -261,7 +263,7 @@ public class Board implements Subject{
         }
     }
 
-    public static Set<Field> getTakenFields() {
+    public Set<Field> getTakenFields() {
         return takenFields;
     }
 

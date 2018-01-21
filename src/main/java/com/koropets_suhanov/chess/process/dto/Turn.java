@@ -1,4 +1,4 @@
-package com.koropets_suhanov.chess.process.pojo;
+package com.koropets_suhanov.chess.process.dto;
 
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.AccessLevel;
-import lombok.experimental.Builder;
+import lombok.Builder;
 import scala.Tuple2;
 
 import java.util.List;

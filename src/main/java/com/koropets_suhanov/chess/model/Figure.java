@@ -1,5 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -7,6 +10,7 @@ import java.util.Set;
 /**
  * @author AndriiKoroepts
  */
+@Repository
 public abstract class Figure implements Observer {
 
     private Field field;
@@ -26,6 +30,9 @@ public abstract class Figure implements Observer {
     public abstract int getPoint();
     public abstract Set<Figure> pullAdditionalAlliesAndEnemies();
     public abstract Figure createNewFigure();
+
+    @Autowired
+    private Board board;
 
     public Figure(){}
 
@@ -132,7 +139,7 @@ public abstract class Figure implements Observer {
         if (!field.isTaken()){
             this.getPossibleFieldsToMove().add(field);
         }else {
-            Figure tempFigure = Board.getFieldToFigure().get(field);
+            Figure tempFigure = board.getFieldToFigure().get(field);
             if (tempFigure != null){
                 if (tempFigure.getColor() == this.getColor()){
                     tempFigure.addAllyProtectMe(this);
