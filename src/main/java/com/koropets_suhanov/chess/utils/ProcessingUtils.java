@@ -84,8 +84,7 @@ public class ProcessingUtils {
     private String figureInWrittenStyleToBorn;
     public Figure eatenFigureToResurrection;
 
-    @Autowired
-    private Board board;
+    private Board board = Board.getInstance();
 
     public Turn getActualTurn(final String turnWrittenStyle, final Color color, int numberOfTurn){
         candidates = new ArrayList<>();

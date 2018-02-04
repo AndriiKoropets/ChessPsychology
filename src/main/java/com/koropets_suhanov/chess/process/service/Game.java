@@ -12,8 +12,6 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
 import java.util.Set;
@@ -25,31 +23,29 @@ import java.util.stream.Collectors;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.*;
 
-@Service
 public class Game {
 
-    private Set<Turn> possibleTurnsAndEating = new LinkedHashSet<Turn>();
-    private int numberOfTurn;
+    private static Set<Turn> possibleTurnsAndEating = new LinkedHashSet<Turn>();
+    private static int numberOfTurn;
 
-    public final Field f1 = new Field(7, 5);
-    public final Field g1 = new Field(7, 6);
-    public final Field b1 = new Field(7, 1);
-    public final Field c1 = new Field(7, 2);
-    public final Field d1 = new Field(7, 3);
-    public final Field f8 = new Field(0, 5);
-    public final Field g8 = new Field(0, 6);
-    public final Field b8 = new Field(0, 1);
-    public final Field c8 = new Field(0, 2);
-    public final Field d8 = new Field(0, 3);
-    public final Field a1 = new Field(7, 0);
-    public final Field h1 = new Field(7, 7);
-    public final Field e1 = new Field(7, 4);
-    public final Field a8 = new Field(0, 0);
-    public final Field h8 = new Field(0, 7);
-    public final Field e8 = new Field(0, 4);
+    public static final Field f1 = new Field(7, 5);
+    public static final Field g1 = new Field(7, 6);
+    public static final Field b1 = new Field(7, 1);
+    public static final Field c1 = new Field(7, 2);
+    public static final Field d1 = new Field(7, 3);
+    public static final Field f8 = new Field(0, 5);
+    public static final Field g8 = new Field(0, 6);
+    public static final Field b8 = new Field(0, 1);
+    public static final Field c8 = new Field(0, 2);
+    public static final Field d8 = new Field(0, 3);
+    public static final Field a1 = new Field(7, 0);
+    public static final Field h1 = new Field(7, 7);
+    public static final Field e1 = new Field(7, 4);
+    public static final Field a8 = new Field(0, 0);
+    public static final Field h8 = new Field(0, 7);
+    public static final Field e8 = new Field(0, 4);
 
-    @Autowired
-    private Board board;
+    private static Board board = Board.getInstance();
 
     public Set<Turn> getPossibleTurnsAndEatings(Color color, int numberOfTurn) {
         this.numberOfTurn = numberOfTurn;
@@ -58,7 +54,7 @@ public class Game {
         return possibleTurnsAndEating;
     }
 
-    private void setPossibleTurnsAndEating(Color color){
+    private static void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
         King king = board.getKing(color);
         List<Observer> allies = board.getFigures(color).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
@@ -138,7 +134,7 @@ public class Game {
         }
     }
 
-    private void peacefulTurn(Figure figure){
+    private static void peacefulTurn(Figure figure){
         for (Field field : figure.getPossibleFieldsToMove()){
             List<Tuple2<Figure, Field>> figureToFieldTuple = new ArrayList<>();
             figureToFieldTuple.add(new Tuple2<>(figure, field));
@@ -146,7 +142,7 @@ public class Game {
         }
     }
 
-    private Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
+    private static Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
         Set<Turn> coveringTurns = new HashSet<>();
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
         List<Observer> alienFigures = board.getFigures(king.getColor());
@@ -154,7 +150,7 @@ public class Game {
         return coveringTurns;
     }
 
-    private Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
+    private static Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
         Set<Turn> coveringTurns = new HashSet<>();
         List<Observer> alienFigures = board.getFigures(king.getColor());
@@ -162,7 +158,7 @@ public class Game {
         return coveringTurns;
     }
 
-    private Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
+    private static Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenQueenAndKing(king, queen.getField());
         Set<Turn> coveringTurns = new HashSet<>();
         List<Observer> alienFigures = board.getFigures(king.getColor());
@@ -170,7 +166,7 @@ public class Game {
         return coveringTurns;
     }
 
-    private void setCoveringTurns(final List<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
+    private static void setCoveringTurns(final List<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween){
         alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f ->{
             ((Figure)f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)){
@@ -190,7 +186,7 @@ public class Game {
         });
     }
 
-    private List<Turn> castling(Color color){
+    private static List<Turn> castling(Color color){
         List<Turn> castlings = new ArrayList<>();
         List<Figure> rocks = board.getFiguresByClass(Rock.class, color);
         King king = (King) board.getFiguresByClass(King.class, color).get(0);
@@ -205,7 +201,7 @@ public class Game {
         return castlings;
     }
 
-    private Turn shortCastling(Rock rock, King king, Color color){
+    private static Turn shortCastling(Rock rock, King king, Color color){
         Turn shortCastlingTurn = null;
         List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
@@ -228,7 +224,7 @@ public class Game {
         return shortCastlingTurn;
     }
 
-    private Turn longCastling(Rock rock, King king, Color color){
+    private static Turn longCastling(Rock rock, King king, Color color){
         Turn longCastlingTurn = null;
         List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
@@ -253,15 +249,15 @@ public class Game {
         return longCastlingTurn;
     }
 
-    private boolean enPassantCanSaveKing(Pawn pawnAlly, Figure pawnEnemy){
+    private static boolean enPassantCanSaveKing(Pawn pawnAlly, Figure pawnEnemy){
         return pawnAlly.isEnPassant() && pawnAlly.getEnPassantEnemy().equals(pawnEnemy);
     }
 
-    private boolean pawnReachesLastLineCanSaveKing(Pawn pawnAlly, Figure enemy){
+    private static boolean pawnReachesLastLineCanSaveKing(Pawn pawnAlly, Figure enemy){
         return pawnAlly.isOnThePenultimateLine() && pawnAlly.getWhoCouldBeEaten().contains(enemy);
     }
 
-    private Set<Turn> turnsInCaseEnPassant(Pawn ally){
+    private static Set<Turn> turnsInCaseEnPassant(Pawn ally){
         Set<Turn> possibleTurns = new HashSet<>();
         Figure enPassantEnemy = ally.getEnPassantEnemy();
         for (Field field : ally.getPossibleFieldsToMove()){
@@ -288,7 +284,7 @@ public class Game {
         return possibleTurns;
     }
 
-    private Set<Turn> turnsInCaseTransformation(Figure ally, Color color){
+    private static Set<Turn> turnsInCaseTransformation(Figure ally, Color color){
         Set<Turn> possibleTurns = new HashSet<>();
         for (Field possibleFieldToMove : ally.getPreyField()){
             for (String writtenStyle: ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
@@ -311,7 +307,7 @@ public class Game {
         return possibleTurns;
     }
 
-    private Set<Turn> setTransformationFields(Pawn pawn, Figure enemy, Color color, boolean eating){
+    private static Set<Turn> setTransformationFields(Pawn pawn, Figure enemy, Color color, boolean eating){
         Set<Turn> transformationSet = new HashSet<>();
         for (String writtenStyleOfFigure : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
             List<Tuple2<Figure, Field>> allyToFieldList = new ArrayList<>();

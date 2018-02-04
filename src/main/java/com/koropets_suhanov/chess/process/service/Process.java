@@ -29,7 +29,6 @@ import java.util.Set;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-@Service
 public class Process {
 
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
@@ -41,12 +40,11 @@ public class Process {
     //Transformation : 6, 7, 13, 18,
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
-    @Autowired
-    public Board board;
-    @Autowired
-    private Game game;
-    @Autowired
-    private EstimatePosition estimatePosition;
+    public static Board board = Board.getInstance();
+    private static Game game;
+    private static EstimatePosition estimatePosition;
+
+
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
     private static Parameter whiteEstimationWholeParty;
     private static Parameter blackEstimationWholeParty;
@@ -58,13 +56,14 @@ public class Process {
 //        process();
 //    }
 
-    public void process(){
+    public static void main(String[] args){
         LOG.info("Process is starting");
         System.out.println("Process started");
         whiteEstimationWholeParty = Parameter.builder().build();
         blackEstimationWholeParty = Parameter.builder().build();
         fullWhiteEstimation = FinalResult.builder().build();
         fullBlackEstimation = FinalResult.builder().build();
+        System.out.println("Board = " + board);
         printAllBoard();
         File file = null;
         try{
@@ -130,7 +129,7 @@ public class Process {
         }
     }
 
-    private void currentStateOfAllFigures(){
+    private static void currentStateOfAllFigures(){
         System.out.println("White figures");
         for (Observer observer : board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
@@ -143,14 +142,14 @@ public class Process {
         }
     }
 
-    private void printAllPossibleTurns(Set<Turn> allPossibleTurns){
+    private static void printAllPossibleTurns(Set<Turn> allPossibleTurns){
         System.out.println("Size = " + allPossibleTurns.size());
         for (Turn possibleTurn : allPossibleTurns){
             System.out.println("Turn = " + possibleTurn.getFigureToDestinationField());
         }
     }
 
-    private void printInfoAboutFigure(Figure currentFigure){
+    private static void printInfoAboutFigure(Figure currentFigure){
         System.out.println(currentFigure);
 //        System.out.println("Possible fields to move = " + currentFigure.getPossibleFieldsToMove());
         System.out.println("Who could be eaten previous state = " + currentFigure.getWhoCouldBeEatenPreviousState());
@@ -160,7 +159,7 @@ public class Process {
         System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
-    private void printAllBoard(){
+    private static void printAllBoard(){
         System.out.println();
         int counter = 1;
         for (int i = 0; i < SIZE; i++){
@@ -186,7 +185,7 @@ public class Process {
         }
     }
 
-    private String printFigure(Figure figure){
+    private static String printFigure(Figure figure){
         if (figure.getClass() == Pawn.class){
             return figure.getColor() == Color.WHITE ? "P" : "p";
         }
@@ -208,7 +207,7 @@ public class Process {
         return null;
     }
 
-    private FinalResult countFullEstimation(Parameter parameter, Color color){
+    private static FinalResult countFullEstimation(Parameter parameter, Color color){
         FinalResult globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
         return FinalResult.builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
                 .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())

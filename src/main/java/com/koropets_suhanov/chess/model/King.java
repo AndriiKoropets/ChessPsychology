@@ -13,8 +13,8 @@ public class King extends Figure {
     private static final int KING_WEIGHT = Integer.MAX_VALUE;
     private static final int POINT = 5;
 
-    @Autowired
-    private Board board;
+//    @Autowired
+//    private Board board;
 
     public King(Field field, Color color) {
         super(field, color);
@@ -23,10 +23,10 @@ public class King extends Figure {
 
     @Override
     public void possibleTurns(){
-        Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? board.getFieldsUnderWhiteInfluence()
-                : board.getFieldsUnderBlackInfluence();
+        Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
+                : Board.getFieldsUnderBlackInfluence();
         this.getAttackedFields().forEach(f -> {
-            Figure figure = board.getFieldToFigure().get(f);
+            Figure figure = Board.getFieldToFigure().get(f);
             if (!enemyInfluence.contains(f)){
                 if (figure != null){
                     if (this.getColor() == figure.getColor()){
@@ -74,8 +74,8 @@ public class King extends Figure {
     }
 
     public boolean isUnderAttack(){
-        Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? board.getFieldsUnderBlackInfluence()
-                : board.getFieldsUnderWhiteInfluence();
+        Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
+                : Board.getFieldsUnderWhiteInfluence();
         return enemyInfluence.contains(this.getField());
     }
 

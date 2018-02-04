@@ -23,9 +23,6 @@ public class Field {
     private static final Map<Character, Integer> invertedHorizontal = new LinkedHashMap<Character, Integer>();
     private static final Map<Integer, Integer> invertedVertical = new LinkedHashMap<Integer, Integer>();
 
-    @Autowired
-    private Board board;
-
     static {
         invertedVertical.put(8, 0);
         invertedVertical.put(7, 1);
@@ -110,12 +107,12 @@ public class Field {
     }
 
     public boolean isTaken(){
-        return board.getTakenFields().contains(this);
+        return Board.getTakenFields().contains(this);
     }
 
     //TODO refactor this method. Should be placed in Board class.
     public boolean isUnderInfluence(Color color){
-        List<Observer> figures = board.getFigures(color);
+        List<Observer> figures = Board.getFigures(color);
         for (Object figure : figures){
             for (Object field : ((Figure)figure).getAttackedFields()){
                 if (this.equals(field)){
