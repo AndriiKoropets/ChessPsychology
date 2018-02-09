@@ -45,8 +45,6 @@ public class Game {
     public static final Field h8 = new Field(0, 7);
     public static final Field e8 = new Field(0, 4);
 
-    private static Board board = Board.getInstance();
-
     public Set<Turn> getPossibleTurnsAndEatings(Color color, int numberOfTurn) {
         this.numberOfTurn = numberOfTurn;
         setPossibleTurnsAndEating(color);
@@ -56,8 +54,8 @@ public class Game {
 
     private static void setPossibleTurnsAndEating(Color color){
         possibleTurnsAndEating.clear();
-        King king = board.getKing(color);
-        List<Observer> allies = board.getFigures(color).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
+        King king = Board.getKing(color);
+        List<Observer> allies = Board.getFigures(color).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
 
         if (king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1){
             List<Tuple2<Figure, Field>> kingTuple2 = new ArrayList<>();
@@ -145,7 +143,7 @@ public class Game {
     private static Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock){
         Set<Turn> coveringTurns = new HashSet<>();
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
-        List<Observer> alienFigures = board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -153,7 +151,7 @@ public class Game {
     private static Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        List<Observer> alienFigures = board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -161,7 +159,7 @@ public class Game {
     private static Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen){
         Set<Field> fieldsBetween = ProcessingUtils.fieldsBetweenQueenAndKing(king, queen.getField());
         Set<Turn> coveringTurns = new HashSet<>();
-        List<Observer> alienFigures = board.getFigures(king.getColor());
+        List<Observer> alienFigures = Board.getFigures(king.getColor());
         setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
         return coveringTurns;
     }
@@ -188,8 +186,8 @@ public class Game {
 
     private static List<Turn> castling(Color color){
         List<Turn> castlings = new ArrayList<>();
-        List<Figure> rocks = board.getFiguresByClass(Rock.class, color);
-        King king = (King) board.getFiguresByClass(King.class, color).get(0);
+        List<Figure> rocks = Board.getFiguresByClass(Rock.class, color);
+        King king = (King) Board.getFiguresByClass(King.class, color).get(0);
         for (Figure rock : rocks){
             if ((color == Color.BLACK && rock.getField().equals(h8)) || (color == Color.WHITE && rock.getField().equals(h1))){
                 castlings.add(shortCastling((Rock)rock, king, color));
@@ -206,15 +204,15 @@ public class Game {
         List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
             if (color == Color.BLACK){
-                if (!board.getFieldsUnderWhiteInfluence().contains(f8) && !board.getFieldsUnderWhiteInfluence().contains(g8) &&
-                        board.getFieldToFigure().get(f8) == null && board.getFieldToFigure().get(g8) == null){
+                if (!Board.getFieldsUnderWhiteInfluence().contains(f8) && !Board.getFieldsUnderWhiteInfluence().contains(g8) &&
+                        Board.getFieldToFigure().get(f8) == null && Board.getFieldToFigure().get(g8) == null){
                     castlingTuple.add(new Tuple2<>(king, g8));
                     castlingTuple.add(new Tuple2<>(rock, f8));
                     shortCastlingTurn = ProcessingUtils.createTurn(castlingTuple, null, shortCastling, false, false, false, null, numberOfTurn);
                 }
             }else{
-                if (!board.getFieldsUnderBlackInfluence().contains(f1) && !board.getFieldsUnderBlackInfluence().contains(g1) &&
-                        board.getFieldToFigure().get(f1) == null && board.getFieldToFigure().get(g1) == null){
+                if (!Board.getFieldsUnderBlackInfluence().contains(f1) && !Board.getFieldsUnderBlackInfluence().contains(g1) &&
+                        Board.getFieldToFigure().get(f1) == null && Board.getFieldToFigure().get(g1) == null){
                     castlingTuple.add(new Tuple2<>(king, g1));
                     castlingTuple.add(new Tuple2<>(rock, f1));
                     shortCastlingTurn = ProcessingUtils.createTurn(castlingTuple, null, shortCastling, false, false, false, null, numberOfTurn);
@@ -229,17 +227,17 @@ public class Game {
         List<Tuple2<Figure, Field>> castlingTuple = new ArrayList<>();
         if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()){
             if (color == Color.BLACK){
-                if (!board.getFieldsUnderWhiteInfluence().contains(b8) && !board.getFieldsUnderWhiteInfluence().contains(c8) &&
-                        !board.getFieldsUnderWhiteInfluence().contains(d8) && board.getFieldToFigure().get(b8) == null &&
-                        board.getFieldToFigure().get(c8) == null && board.getFieldToFigure().get(d8) == null){
+                if (!Board.getFieldsUnderWhiteInfluence().contains(b8) && !Board.getFieldsUnderWhiteInfluence().contains(c8) &&
+                        !Board.getFieldsUnderWhiteInfluence().contains(d8) && Board.getFieldToFigure().get(b8) == null &&
+                        Board.getFieldToFigure().get(c8) == null && Board.getFieldToFigure().get(d8) == null){
                     castlingTuple.add(new Tuple2<>(king, c8));
                     castlingTuple.add(new Tuple2<>(rock, d8));
                     longCastlingTurn = ProcessingUtils.createTurn(castlingTuple, null, longCastling, false, false, false,  null, numberOfTurn);
                 }
             }else {
-                if (!board.getFieldsUnderBlackInfluence().contains(b1) && !board.getFieldsUnderBlackInfluence().contains(c1) &&
-                        !board.getFieldsUnderBlackInfluence().contains(d1) && board.getFieldToFigure().get(b1) == null &&
-                        board.getFieldToFigure().get(c1) == null && board.getFieldToFigure().get(d1) == null){
+                if (!Board.getFieldsUnderBlackInfluence().contains(b1) && !Board.getFieldsUnderBlackInfluence().contains(c1) &&
+                        !Board.getFieldsUnderBlackInfluence().contains(d1) && Board.getFieldToFigure().get(b1) == null &&
+                        Board.getFieldToFigure().get(c1) == null && Board.getFieldToFigure().get(d1) == null){
                     castlingTuple.add(new Tuple2<>(king, c1));
                     castlingTuple.add(new Tuple2<>(rock, d1));
                     longCastlingTurn = ProcessingUtils.createTurn(castlingTuple, null, longCastling, false, false, false, null, numberOfTurn);

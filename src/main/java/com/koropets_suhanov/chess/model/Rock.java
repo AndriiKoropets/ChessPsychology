@@ -4,9 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
-/**
- * @author AndriiKoropets
- */
+
 public class Rock extends Figure {
 
     private final static double ROCK_WEIGHT = 4.5;

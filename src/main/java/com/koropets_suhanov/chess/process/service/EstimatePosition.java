@@ -21,8 +21,6 @@ public class EstimatePosition {
 
     private static Color whoseTurn;
 
-    private static Board board = Board.getInstance();
-
     static Parameter estimate(Turn turn, Set<Turn> possibleTurns, Color side){
         whoseTurn = side;
         int firstParam = estimateFirstParameter();
@@ -135,22 +133,22 @@ public class EstimatePosition {
     }
 
     private static int estimateFourthParameter() {
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? board.getFigures(Color.BLACK) : board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
         return calculateWithdrawingAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateThirdParameter() {
-        List<Observer> alliesObservers = board.getFigures(whoseTurn);
+        List<Observer> alliesObservers = Board.getFigures(whoseTurn);
         return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
     }
 
     private static int estimateSecondParameter(){
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? board.getFigures(Color.BLACK) : board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
         return calculateAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateFirstParameter(){
-        List<Observer> chosenFigures = board.getFigures(whoseTurn);
+        List<Observer> chosenFigures = Board.getFigures(whoseTurn);
         return calculateAttackAndBeUnderAttack(chosenFigures);
     }
 

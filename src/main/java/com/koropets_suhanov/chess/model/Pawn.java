@@ -1,14 +1,9 @@
 package com.koropets_suhanov.chess.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Set;
 
 import static com.koropets_suhanov.chess.model.Field.isValidField;
 
-/**
- * @author AndriiKoropets
- */
 public class Pawn extends Figure {
 
     private final static int PAWN_WEIGHT = 1;

@@ -4,9 +4,7 @@ import static java.lang.Math.abs;
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
 import java.util.Set;
-/**
- * @author AndriiKoropets
- */
+
 public class Knight extends Figure {
 
     private final static int KNIGHT_WEIGHT = 3;

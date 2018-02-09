@@ -1,7 +1,5 @@
 package com.koropets_suhanov.chess.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Set;
 
 import static java.lang.Math.abs;

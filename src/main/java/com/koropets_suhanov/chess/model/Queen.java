@@ -6,9 +6,6 @@ import java.util.Set;
 import static java.lang.Math.abs;
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-/**
- * @author AndriiKoropets
- */
 public class Queen extends Figure {
 
     private final static int QUEEN_WEIGHT = 9;

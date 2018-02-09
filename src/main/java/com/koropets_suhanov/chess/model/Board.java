@@ -14,9 +14,6 @@ import java.util.stream.Collectors;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-/**
- * @author AndriiKoropets
- */
 @Slf4j
 public class Board implements Subject{
 
@@ -34,7 +31,6 @@ public class Board implements Subject{
     private static int turnNumber;
     private static Board instance;
 
-//    @PostConstruct
     private Board(){
         //Putting white figures on the board
         Figure whitePawnA = new Pawn(new Field(6,0), Color.WHITE);
@@ -110,11 +106,14 @@ public class Board implements Subject{
         figures.forEach(v -> ((Figure)v).possibleTurns());
         whiteFigures.forEach(white -> fieldsUnderWhiteInfluence.addAll(((Figure)white).getFieldsUnderMyInfluence()));
         blackFigures.forEach(black -> fieldsUnderBlackInfluence.addAll(((Figure) black).getFieldsUnderMyInfluence()));
+        System.out.println("WhiteFigures size = " + whiteFigures.size());
+        System.out.println("BlackFigures size = " + blackFigures.size());
     }
 
     public static Board getInstance(){
         if (instance == null){
-            return new Board();
+            instance = new Board();
+            return instance;
         }else {
             return instance;
         }
@@ -129,7 +128,11 @@ public class Board implements Subject{
     public static List<Figure> getFiguresByClass(Class clazz, Color color){
         List<Observer> observers = getFigures(color);
         List<Figure> figures = new ArrayList<>();
-        observers.stream().filter(f -> f.getClass() == clazz).forEach(observer -> figures.add((Figure) observer));
+        observers = observers.stream().filter(f -> f.getClass() == clazz).collect(Collectors.toList());
+        observers.forEach(observer -> figures.add((Figure) observer));
+        for (Figure observer : figures){
+            System.out.println(observer);
+        }
         return figures;
     }
 
@@ -195,7 +198,7 @@ public class Board implements Subject{
         return turnNumber;
     }
 
-    public void setCurrentTurn(Turn currentTurn) {
+    public  void setCurrentTurn(Turn currentTurn) {
         this.previousTurn = this.currentTurn;
         this.currentTurn = currentTurn;
         turnNumber = currentTurn.getNumberOfTurn();

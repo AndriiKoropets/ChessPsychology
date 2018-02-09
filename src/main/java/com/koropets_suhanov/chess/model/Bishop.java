@@ -7,9 +7,6 @@ import java.util.Set;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-/**
- * @author AndriiKoropets
- */
 public class Bishop extends Figure {
 
     private final static int BISHOP_WEIGHT = 3;

@@ -1,12 +1,11 @@
 package com.koropets_suhanov.chess.model;
 
+import lombok.Getter;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * @author AndriiKoroepts
- */
+@Getter
 public abstract class Figure implements Observer {
 
     private Field field;
@@ -72,52 +71,8 @@ public abstract class Figure implements Observer {
         possibleTurns();
     }
 
-    public Field getField(){
-        return this.field;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public Set<Figure> getWhoCouldBeEaten() {
-        return whoCouldBeEaten;
-    }
-
-    public Set<Field> getAttackedFields() {
-        return attackedFields;
-    }
-
-    public Set<Field> getFieldsUnderMyInfluence() {
-        return fieldsUnderMyInfluence;
-    }
-
     public void addEnemy(Figure figure){
         enemiesAttackMe.add(figure);
-    }
-
-    public Set<Figure> getEnemiesAttackMe() {
-        return enemiesAttackMe;
-    }
-
-    public Set<Figure> getAlliesProtectMe() {
-        return alliesProtectMe;
-    }
-
-    public Set<Figure> getAlliesIProtect(){
-        return alliesIProtect;
-    }
-
-    public Set<Field> getPossibleFieldsToMove() {
-        return possibleFieldsToMove;
-    }
-
-    public Set<Field> getPreyField() {
-        return preyField;
-    }
-
-    public Set<Figure> getWhoCouldBeEatenPreviousState(){
-        return whoCouldBeEatenPreviousState;
     }
 
     public void addAllyProtectMe(Figure figure){

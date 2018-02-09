@@ -6,14 +6,11 @@ import java.util.LinkedHashMap;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
-/**
- * @author AndriiKoropets
- */
 @Slf4j
+@Getter
 public class Field {
 
     private int x;

@@ -17,8 +17,6 @@ import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.process.dto.Turn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +38,7 @@ public class Process {
     //Transformation : 6, 7, 13, 18,
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
-    public static Board board = Board.getInstance();
-    private static Game game;
+    private static Game game = new Game();
     private static EstimatePosition estimatePosition;
 
 
@@ -51,6 +48,8 @@ public class Process {
 
     static FinalResult fullWhiteEstimation;
     static FinalResult fullBlackEstimation;
+
+    public static final Board board = Board.getInstance();
 
 //    public static void main(String[] args){
 //        process();
@@ -101,9 +100,9 @@ public class Process {
                         ProcessingUtils.makeTurn(blackTurn);
                         printAllBoard();
 //                        System.out.println("After turn = " + blackTurn);
-                        System.out.println("Figures = " + board.getFigures());
-                        System.out.println("White figures = " + board.getFigures(Color.WHITE));
-                        System.out.println("Black figures = " + board.getFigures(Color.BLACK));
+                        System.out.println("Figures = " + Board.getFigures());
+                        System.out.println("White figures = " + Board.getFigures(Color.WHITE));
+                        System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
 //                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
                         blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
 
@@ -114,8 +113,8 @@ public class Process {
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
-                System.out.println("White figures = " + board.getFigures(Color.WHITE));
-                System.out.println("Black figures = " + board.getFigures(Color.BLACK));
+                System.out.println("White figures = " + Board.getFigures(Color.WHITE));
+                System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
             }
             printAllBoard();
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
@@ -131,12 +130,12 @@ public class Process {
 
     private static void currentStateOfAllFigures(){
         System.out.println("White figures");
-        for (Observer observer : board.getFigures(Color.WHITE)){
+        for (Observer observer : Board.getFigures(Color.WHITE)){
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
         System.out.println("Black figures");
-        for (Observer observer : board.getFigures(Color.BLACK)){
+        for (Observer observer : Board.getFigures(Color.BLACK)){
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
@@ -167,7 +166,7 @@ public class Process {
             for (int j = 0; j < SIZE; j++){
                 Field currentPoint = new Field(i, j);
                 if (currentPoint.isTaken()){
-                    System.out.print(" " + printFigure(board.getFieldToFigure().get(currentPoint)) + " ");
+                    System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
                 }else {
                     System.out.print("   ");
                 }
