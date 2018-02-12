@@ -13,6 +13,7 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.process.service.Process;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import scala.Tuple2;
@@ -75,6 +76,7 @@ public class ProcessingUtils {
     private final String PLUS = "+";
     public final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
     private List<Tuple2<Figure, Field>> tuplesFigureToField;
+    @Getter
     private Figure figureBornFromTransformation;
     private String figureInWrittenStyleToBorn;
     public Figure eatenFigureToResurrection;

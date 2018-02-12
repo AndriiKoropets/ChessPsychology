@@ -270,6 +270,10 @@ public class Board implements Subject{
         if (enPassant){
             enPassantPrey = turn.getTargetedFigure();
         }
+        if (turn.isTransformation()){
+            removeFigure(turn.getFigureToDestinationField().get(0)._1);
+            register(ProcessingUtils.getFigureBornFromTransformation());
+        }
     }
 
     public static Set<Field> getTakenFields() {
