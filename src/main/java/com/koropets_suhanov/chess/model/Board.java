@@ -2,6 +2,8 @@ package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -25,6 +27,9 @@ public class Board implements Subject{
     private static  List<Turn> possibleTurnsAndKillings = new ArrayList<Turn>();
     private static  final Set<Field> takenFields = new LinkedHashSet<Field>();
     private static  final Map<Field, Figure> fieldToFigure = new HashMap<Field, Figure>();
+    @Getter
+    @Setter
+    private static Figure enPassantPrey;
     private static Field field;
     private static  Turn previousTurn;
     private static  Turn currentTurn;
@@ -130,9 +135,6 @@ public class Board implements Subject{
         List<Figure> figures = new ArrayList<>();
         observers = observers.stream().filter(f -> f.getClass() == clazz).collect(Collectors.toList());
         observers.forEach(observer -> figures.add((Figure) observer));
-        for (Figure observer : figures){
-            System.out.println(observer);
-        }
         return figures;
     }
 
@@ -198,10 +200,10 @@ public class Board implements Subject{
         return turnNumber;
     }
 
-    public  void setCurrentTurn(Turn currentTurn) {
+    public  void setCurrentTurn(Turn curTurn) {
         this.previousTurn = this.currentTurn;
-        this.currentTurn = currentTurn;
-        turnNumber = currentTurn.getNumberOfTurn();
+        this.currentTurn = curTurn;
+        turnNumber = curTurn.getNumberOfTurn();
     }
 
     public void notify(Observer figure) {
@@ -244,8 +246,6 @@ public class Board implements Subject{
     }
 
     public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, Figure eatenFigure, boolean isUndoing, boolean enPassant){
-//        previousTurn = currentTurn;
-//        currentTurn = turn;
         if (eatenFigure != null){
             removeFigure(eatenFigure);
         }
@@ -268,7 +268,7 @@ public class Board implements Subject{
             }
         }
         if (enPassant){
-            //TODO implement the logic for enPassant
+            enPassantPrey = turn.getTargetedFigure();
         }
     }
 

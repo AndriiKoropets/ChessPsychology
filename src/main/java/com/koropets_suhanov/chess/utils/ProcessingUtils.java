@@ -187,15 +187,16 @@ public class ProcessingUtils {
                 if (clazz == Pawn.class && ((Pawn) curFigure).isEnPassant()){
                     Pawn pawn = (Pawn) curFigure;
                     if (pawn.getEnPassantField().equals(field)){
+//                        System.out.println("Field = " + field);
                         targets.add(pawn);
                         targetedFigure = pawn.getEnPassantEnemy();
-                        System.out.println("Here... passed " + targetedFigure + " " + targets);
-                        System.out.println("who could be eaten = " + pawn.getWhoCouldBeEaten() + " aleis I protect = "
-                                + pawn.getAlliesIProtect() + " enemy fields = " + pawn.getPreyField() + " enPassant enemy = "
-                        + pawn.getEnPassantEnemy());
+//                        System.out.println("Here... passed " + targetedFigure + " " + targets);
+//                        System.out.println("who could be eaten = " + pawn.getWhoCouldBeEaten() + " aleis I protect = "
+//                                + pawn.getAlliesIProtect() + " enemy fields = " + pawn.getPreyField() + " enPassant enemy = "
+//                        + pawn.getEnPassantEnemy());
                     }
                 }else {
-                    System.out.println("Class = "  + clazz + " color = " + color + " eating = " + eating);
+//                    System.out.println("Class = "  + clazz + " color = " + color + " eating = " + eating);
                     if (((Figure) curFigure).getPreyField().contains(field)){
                         targets.add(curFigure);
                         targetedFigure = Board.getFieldToFigure().get(field);
@@ -433,6 +434,8 @@ public class ProcessingUtils {
 
     public void makeTurn(Turn turn){
         getAffectedFields(turn);
+//        System.out.println(affectedFields);
+//        System.out.println("Turn = " + turn);
         setTurnForUndoing(turn);
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             board.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
@@ -455,21 +458,25 @@ public class ProcessingUtils {
     }
 
     private void setTurnForUndoing(Turn turn){
+//        System.out.println("Turn = " + turn);
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             tuplesFigureToField.add(new Tuple2<>(tuple2._1, tuple2._1.getField()));
         }
         if (turn.isEating()){
-            if (turn.getFigureToDestinationField().size() == 1 && turn.getFigureToDestinationField().get(0)._1.getClass() == Pawn.class
+            if (turn.getFigureToDestinationField().size() == 1
+                    && turn.getFigureToDestinationField().get(0)._1.getClass() == Pawn.class
                     && ((Pawn) turn.getFigureToDestinationField().get(0)._1).isEnPassant()){
 
-
+                eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
             }else {
                 Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
-                System.out.println("temp figure = " + tempFigure);
-                eatenFigureToResurrection = tempFigure.createNewFigure();
-//            System.out.println("Eaten figure = " + eatenFigureToResurrection);
+                if (turn.isEnPassant()){
+                    eatenFigureToResurrection = Board.getEnPassantPrey();
+                }else {
+                    eatenFigureToResurrection = tempFigure.createNewFigure();
+                }
             }
         }
         figureBornFromTransformation = turn.getFigureFromTransformation();

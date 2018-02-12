@@ -189,17 +189,10 @@ public class Pawn extends Figure {
                         rightField = new Field(4, this.getField().getY() + 1);
                         rightEnemy = Board.getFieldToFigure().get(rightField);
                     }
-                    if (this.getColor() == Color.BLACK){
-                        System.out.println("Pawn = " + this);
-                        System.out.println("Right field = " + rightField);
-                        System.out.println("Right enemy = " + rightEnemy);
-                        System.out.println("Previous turn = " + Board.getPreviousTurn());
-                    }
                     if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class
                             && Board.getPreviousTurn().getFigureToDestinationField().get(0)._1.equals(rightEnemy)){
                         initializeEnPassant(rightField, rightEnemy, Color.BLACK);
                     }
-                    System.out.println(this + " " + this.getWhoCouldBeEaten());
                 }
             }
         }
