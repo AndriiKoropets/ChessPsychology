@@ -117,7 +117,7 @@ public class EstimatePosition {
         ProcessingUtils.undoTurn(turn);
         List<Tuple2<Turn, AntiParameter>> turnAntiParameterMap = new ArrayList<>();
         for (Turn posTurn : possibleTurns){
-            if (!possibleTurns.equals(turn)){
+            if (!posTurn.equals(turn)){
                 ProcessingUtils.makeTurn(posTurn);
                 AntiParameter antiParameter = AntiParameter.builder()
                         .fifthParam(estimateFirstParameter())
