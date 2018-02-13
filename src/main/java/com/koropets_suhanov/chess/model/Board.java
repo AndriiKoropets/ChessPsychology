@@ -256,12 +256,11 @@ public class Board implements Subject{
         System.out.println("isUndoing " + isUndoing);
         System.out.println("enPassant " + enPassant);
         System.out.println("isTransformation " + turn.isTransformation());
-        for (Observer f : figures){
-            System.out.println();
-        }
+//        for (Observer f : figures){
+//            System.out.println(f);
+//        }
         Process.printAllBoard();
         if (figures.contains(updatedFigure)){
-
             if (!turn.isTransformation()){
                 this.field = updatedField;
                 notify(updatedFigure);
@@ -270,7 +269,6 @@ public class Board implements Subject{
                     ((Figure)f).attackedFields();
                 });
             }else {
-                removeFigure(turn.getFigureToDestinationField().get(0)._1);
                 register(ProcessingUtils.getFigureBornFromTransformation());
             }
 
@@ -278,6 +276,10 @@ public class Board implements Subject{
             throw new RuntimeException("There is no such figure on the Board: " + updatedFigure);
         }
         if (isUndoing){
+            if (turn.isTransformation()){
+                Figure figureToDelete = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
+                removeFigure(figureToDelete);
+            }
             Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
             if (figureToResurrect != null){
 //                Process.printAllBoard();
@@ -287,6 +289,7 @@ public class Board implements Subject{
         if (enPassant){
             enPassantPrey = turn.getTargetedFigure();
         }
+        Process.printAllBoard();
     }
 
     public static Set<Field> getTakenFields() {

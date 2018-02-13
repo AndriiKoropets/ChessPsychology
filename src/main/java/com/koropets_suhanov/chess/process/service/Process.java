@@ -33,10 +33,11 @@ public class Process {
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantWhite.txt";
-    private final static String PATH_TO_FILE = "src/main/resources/parties/6.txt";
+    private final static String PATH_TO_FILE = "src/main/resources/parties/18.txt";
     //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
     //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
-    //Transformation : 6, 7, 13, 18,
+    //Transformation : 6, 7, 13, 18
+    //The party is wrong written 13
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
     private static Game game = new Game();
