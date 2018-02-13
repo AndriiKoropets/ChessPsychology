@@ -284,7 +284,7 @@ public class Game {
 
     private static Set<Turn> turnsInCaseTransformation(Figure ally, Color color){
         Set<Turn> possibleTurns = new HashSet<>();
-        for (Field possibleFieldToMove : ally.getPreyField()){
+        for (Field possibleFieldToMove : ally.getPossibleFieldsToMove()){
             for (String writtenStyle: ProcessingUtils.FIGURES_IN_WRITTEN_STYLE){
                 List<Tuple2<Figure, Field>> figureToFieldTupleList = new ArrayList<>();
                 figureToFieldTupleList.add(new Tuple2<>(ally, possibleFieldToMove));

@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.dto.Turn;
+import com.koropets_suhanov.chess.process.service.Process;
 import com.koropets_suhanov.chess.utils.ProcessingUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -249,16 +250,32 @@ public class Board implements Subject{
         if (eatenFigure != null){
             removeFigure(eatenFigure);
         }
+        System.out.println("updatedFigure " + updatedFigure);
+        System.out.println("updatedField " + updatedField);
+        System.out.println("eatenFigure " + eatenFigure);
+        System.out.println("isUndoing " + isUndoing);
+        System.out.println("enPassant " + enPassant);
+        System.out.println("isTransformation " + turn.isTransformation());
+        for (Observer f : figures){
+            System.out.println();
+        }
+        Process.printAllBoard();
         if (figures.contains(updatedFigure)){
 
-            this.field = updatedField;
-            notify(updatedFigure);
-            figures.forEach(f -> {
+            if (!turn.isTransformation()){
+                this.field = updatedField;
+                notify(updatedFigure);
+                figures.forEach(f -> {
                     ((Figure)f).possibleTurns();
                     ((Figure)f).attackedFields();
-            });
+                });
+            }else {
+                removeFigure(turn.getFigureToDestinationField().get(0)._1);
+                register(ProcessingUtils.getFigureBornFromTransformation());
+            }
+
         }else {
-            throw new RuntimeException("There is no such figure on the Board." + updatedFigure);
+            throw new RuntimeException("There is no such figure on the Board: " + updatedFigure);
         }
         if (isUndoing){
             Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
@@ -269,10 +286,6 @@ public class Board implements Subject{
         }
         if (enPassant){
             enPassantPrey = turn.getTargetedFigure();
-        }
-        if (turn.isTransformation()){
-            removeFigure(turn.getFigureToDestinationField().get(0)._1);
-            register(ProcessingUtils.getFigureBornFromTransformation());
         }
     }
 

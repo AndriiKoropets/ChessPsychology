@@ -338,8 +338,8 @@ public class ProcessingUtils {
             case "B" : return new Bishop(field, color);
             case "N" : return new Knight(field, color);
             case "R" : return new Rock(field, color);
-            default: return null;
         }
+        throw new RuntimeException("Could not choose figure. Turn must be wrong written.");
     }
 
     public Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition){
@@ -436,8 +436,8 @@ public class ProcessingUtils {
 
     public void makeTurn(Turn turn){
         getAffectedFields(turn);
-//        System.out.println(affectedFields);
-//        System.out.println("Turn = " + turn);
+        System.out.println(affectedFields);
+        System.out.println("Turn = " + turn);
         setTurnForUndoing(turn);
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
             board.setNewCoordinates(turn, tuple2._1, tuple2._2, turn.getTargetedFigure(), false, turn.isEnPassant());
@@ -460,7 +460,7 @@ public class ProcessingUtils {
     }
 
     private void setTurnForUndoing(Turn turn){
-//        System.out.println("Turn = " + turn);
+        System.out.println("Turn = " + turn);
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
         for (Tuple2<Figure, Field> tuple2 : turn.getFigureToDestinationField()){
