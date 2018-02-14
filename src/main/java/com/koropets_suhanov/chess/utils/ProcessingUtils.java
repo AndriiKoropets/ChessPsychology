@@ -91,11 +91,6 @@ public class ProcessingUtils {
         return setTurn(turnWrittenStyle, color);
     }
 
-    public Turn getPossibleTurn(){
-        //TODO implement logic for possible turns which was not made in party
-        return null;
-    }
-
     public Tuple2<FrequentFigure, FrequentFigure> countFrequent(boolean isWhite, String writtenTurn){
         FrequentFigure frequent = isWhite ? whiteFrequent : blackFrequent;
         char figure = writtenTurn.charAt(0);
@@ -118,7 +113,7 @@ public class ProcessingUtils {
         targetedFigure = null;
         isEating = false;
         figureBornFromTransformation = null;
-        figureInWrittenStyleToBorn = "";
+        figureInWrittenStyleToBorn = writtenFigureToBorn(mainTurn);
         transformation = whetherWrittenTurnIsTransformation();
     }
 
@@ -167,8 +162,8 @@ public class ProcessingUtils {
             case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, color, true, false) : fetchFigureToTargetField(King.class, color, false, false);
                         return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, color, true, transformation) : fetchFigureToTargetField(Pawn.class, color, false, transformation);
-                        return isEnPassantScenario(figureToField) ? createTurn(figureToField, null, writtenStyle, isEating, transformation, true, targetedFigure, number) :
-                                createTurn(figureToField, null, writtenStyle, isEating, transformation, false, targetedFigure, number);
+                        return isEnPassantScenario(figureToField) ? createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, true, targetedFigure, number) :
+                                createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, false, targetedFigure, number);
         }
     }
 
@@ -185,24 +180,25 @@ public class ProcessingUtils {
                         targetedFigure = Board.getFieldToFigure().get(field);
                         figureBornFromTransformation = createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
                     }
-                }
-                if (clazz == Pawn.class && ((Pawn) curFigure).isEnPassant()){
-                    Pawn pawn = (Pawn) curFigure;
-                    if (pawn.getEnPassantField().equals(field)){
+                }else {
+                    if (clazz == Pawn.class && ((Pawn) curFigure).isEnPassant()){
+                        Pawn pawn = (Pawn) curFigure;
+                        if (pawn.getEnPassantField().equals(field)){
 //                        System.out.println("Field = " + field);
-                        targets.add(pawn);
-                        targetedFigure = pawn.getEnPassantEnemy();
+                            targets.add(pawn);
+                            targetedFigure = pawn.getEnPassantEnemy();
 //                        System.out.println("Here... passed " + targetedFigure + " " + targets);
 //                        System.out.println("who could be eaten = " + pawn.getWhoCouldBeEaten() + " aleis I protect = "
 //                                + pawn.getAlliesIProtect() + " enemy fields = " + pawn.getPreyField() + " enPassant enemy = "
 //                        + pawn.getEnPassantEnemy());
-                    }
-                }else {
+                        }
+                    }else {
 //                    System.out.println("Class = "  + clazz + " color = " + color + " eating = " + eating);
-                    if (((Figure) curFigure).getPreyField().contains(field)){
-                        targets.add(curFigure);
-                        targetedFigure = Board.getFieldToFigure().get(field);
+                        if (((Figure) curFigure).getPreyField().contains(field)){
+                            targets.add(curFigure);
+                            targetedFigure = Board.getFieldToFigure().get(field);
 //                        System.out.println("targeted figure = " + targetedFigure);
+                        }
                     }
                 }
             }else {
@@ -212,9 +208,10 @@ public class ProcessingUtils {
                         candidates.add(pawn);
                         figureBornFromTransformation = createFigure(field, figureInWrittenStyleToBorn, color);
                     }
-                }
-                if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)){
-                    candidates.add(curFigure);
+                }else {
+                    if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)){
+                        candidates.add(curFigure);
+                    }
                 }
             }
         }
@@ -288,17 +285,35 @@ public class ProcessingUtils {
         int x;
         int y;
         if (!turn.equalsIgnoreCase(shortCastling) && !turn.equalsIgnoreCase(longCastling)){
-            if (turn.contains(PLUS)){
-                x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length()-2)));
-                y = Field.getInvertedHorizontal().get(turn.charAt(turn.length()-3));
+            if (!whetherWrittenTurnIsTransformation()){
+                if (turn.contains(PLUS)){
+                    x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length()-2)));
+                    y = Field.getInvertedHorizontal().get(turn.charAt(turn.length()-3));
+                }else {
+                    x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length()-1)));
+                    y = Field.getInvertedHorizontal().get(turn.charAt(turn.length()-2));
+                }
             }else {
-                x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length()-1)));
-                y = Field.getInvertedHorizontal().get(turn.charAt(turn.length()-2));
+                if (turn.contains(PLUS)){
+                    x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 3)));
+                    y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 4));
+                }else {
+                    x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 2)));
+                    y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 3));
+                }
             }
             return new Field(x,y);
         }else {
             log.debug("Target field is null. Castling");
             return null;
+        }
+    }
+
+    private String writtenFigureToBorn(String turn){
+        if (turn.contains(PLUS)){
+            return "" + turn.charAt(turn.length() - 2);
+        }else {
+            return "" + turn.charAt(turn.length() - 1);
         }
     }
 
@@ -339,7 +354,7 @@ public class ProcessingUtils {
             case "N" : return new Knight(field, color);
             case "R" : return new Rock(field, color);
         }
-        throw new RuntimeException("Could not choose figure. Turn must be wrong written.");
+        throw new RuntimeException("Could not choose figure. Turn must be wrong written." + mainTurn + " " + figureBornFromTransformation + " " + figureInWrittenStyleToBorn);
     }
 
     public Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition){

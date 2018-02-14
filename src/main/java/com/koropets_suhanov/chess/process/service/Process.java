@@ -15,8 +15,7 @@ import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.process.dto.Turn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,16 +26,16 @@ import java.util.Set;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
+@Slf4j
 public class Process {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Process.class);
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantWhite.txt";
     private final static String PATH_TO_FILE = "src/main/resources/parties/18.txt";
     //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
     //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
-    //Transformation : 6, 7, 13, 18
+    //Transformation : 6, 7, 18
     //The party is wrong written 13
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
@@ -58,7 +57,7 @@ public class Process {
 //    }
 
     public static void main(String[] args){
-        LOG.info("Process is starting");
+        log.info("Process is starting");
         System.out.println("Process started");
         whiteEstimationWholeParty = Parameter.builder().build();
         blackEstimationWholeParty = Parameter.builder().build();
@@ -125,7 +124,7 @@ public class Process {
             System.out.println("White = " + fullWhiteEstimation);
             System.out.println("Black = " + fullBlackEstimation);
         } catch (IOException e) {
-            LOG.info("File {} was not found", file);
+            log.info("File {} was not found", file);
             throw new RuntimeException();
         }
     }
