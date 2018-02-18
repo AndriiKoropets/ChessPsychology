@@ -80,6 +80,7 @@ public class ProcessingUtils {
     private Figure figureBornFromTransformation;
     private String figureInWrittenStyleToBorn;
     public Figure eatenFigureToResurrection;
+    private Figure pawnFromTransformation;
 
     private static Board board = Process.board;
 
@@ -489,12 +490,13 @@ public class ProcessingUtils {
                 eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
             }else {
                 Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
-                if (turn.isEnPassant()){
-                    eatenFigureToResurrection = Board.getEnPassantPrey();
-                }else {
+                if (!turn.isEnPassant()){
                     eatenFigureToResurrection = tempFigure.createNewFigure();
                 }
             }
+        }
+        if (turn.isTransformation()){
+            pawnFromTransformation = turn.getFigureToDestinationField().get(0)._1;
         }
         figureBornFromTransformation = turn.getFigureFromTransformation();
     }

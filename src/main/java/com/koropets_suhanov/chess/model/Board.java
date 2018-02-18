@@ -260,34 +260,57 @@ public class Board implements Subject{
 //            System.out.println(f);
 //        }
         Process.printAllBoard();
-        if (figures.contains(updatedFigure)){
-            if (!turn.isTransformation()){
-                this.field = updatedField;
-                notify(updatedFigure);
-                figures.forEach(f -> {
-                    ((Figure)f).possibleTurns();
-                    ((Figure)f).attackedFields();
-                });
-            }else {
-                register(ProcessingUtils.getFigureBornFromTransformation());
-            }
-
+        if (turn.isTransformation() && isUndoing){
+            Figure pawnToReborn = turn.getFigureToDestinationField().get(0)._1;
+            Figure transformatedFigureToRemove = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
+            this.field = updatedField;
+            removeFigure(transformatedFigureToRemove);
+            register(pawnToReborn);
+            notify(pawnToReborn);
+            figures.forEach(f -> {
+                ((Figure)f).possibleTurns();
+                ((Figure)f).attackedFields();
+            });
         }else {
-            throw new RuntimeException("There is no such figure on the Board: " + updatedFigure);
-        }
-        if (isUndoing){
-            if (turn.isTransformation()){
-                Figure figureToDelete = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
-                removeFigure(figureToDelete);
+            if (figures.contains(updatedFigure)){
+                if (!turn.isTransformation()){
+                    this.field = updatedField;
+                    notify(updatedFigure);
+                    figures.forEach(f -> {
+                        ((Figure)f).possibleTurns();
+                        ((Figure)f).attackedFields();
+                    });
+                }else {
+                    Figure newFigureForUpdate = ProcessingUtils.getFigureBornFromTransformation();
+                    register(newFigureForUpdate);
+                    removeFigure(turn.getFigureToDestinationField().get(0)._1);
+                    this.field = updatedField;
+                    notify(newFigureForUpdate);
+                    figures.forEach(f -> {
+                        ((Figure) f).possibleTurns();
+                        ((Figure) f).attackedFields();
+                    });
+                    Process.printAllBoard();
+                }
+
+            }else {
+                throw new RuntimeException("There is no such figure on the Board: " + updatedFigure);
             }
-            Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
-            if (figureToResurrect != null){
+            if (isUndoing){
+                if (turn.isTransformation()){
+                    register(turn.getFigureToDestinationField().get(0)._1);
+                    Figure figureToDelete = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0)._2);
+                    removeFigure(figureToDelete);
+                }
+                Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
+                if (figureToResurrect != null){
 //                Process.printAllBoard();
-                register(figureToResurrect);
+                    register(figureToResurrect);
+                }
             }
-        }
-        if (enPassant){
-            enPassantPrey = turn.getTargetedFigure();
+            if (enPassant){
+                enPassantPrey = turn.getTargetedFigure();
+            }
         }
         Process.printAllBoard();
     }
