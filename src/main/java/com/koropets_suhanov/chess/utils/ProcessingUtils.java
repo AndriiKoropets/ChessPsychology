@@ -88,6 +88,7 @@ public class ProcessingUtils {
         candidates = new ArrayList<>();
         mainTurn = turnWrittenStyle;
         number = numberOfTurn;
+        System.out.println(turnWrittenStyle);
         field = parseTargetField(turnWrittenStyle);
         return setTurn(turnWrittenStyle, color);
     }
