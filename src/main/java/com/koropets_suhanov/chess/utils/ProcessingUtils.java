@@ -63,16 +63,16 @@ public class ProcessingUtils {
     private boolean isEating;
     private boolean transformation;
     private Figure targetedFigure;
-    private final Field whiteKingShortCastling = new Field(7, 6);
-    private final Field whiteKingLongCastling = new Field(7, 2);
-    private final Field blackKingShortCastling = new Field(0, 6);
-    private final Field blackKingLongCastling = new Field(0, 2);
-    private final Field whiteRockShortCastling = new Field(7, 5);
-    private final Field whiteRockLongCastling = new Field(7, 3);
-    private final Field blackRockShortCastling = new Field(0, 5);
-    private final Field blackRockLongCastling = new Field(0, 3);
-    private final FrequentFigure whiteFrequent = new FrequentFigure();
-    private final FrequentFigure blackFrequent = new FrequentFigure();
+    private final Field WHITE_KING_SHORT_CASTLING = new Field(7, 6);
+    private final Field WHITE_KING_LONG_CASTLING = new Field(7, 2);
+    private final Field BLACK_KING_SHORT_CASTLING = new Field(0, 6);
+    private final Field BLACK_KING_LONG_CASTLING = new Field(0, 2);
+    private final Field WHITE_ROCK_SHORT_CASTLING = new Field(7, 5);
+    private final Field WHITE_ROCK_LONG_CASTLING = new Field(7, 3);
+    private final Field BLACK_ROCK_SHORT_CASTLING = new Field(0, 5);
+    private final Field BLACK_ROCK_LONG_CASTLING = new Field(0, 3);
+    private final FrequentFigure WHITE_FREQUENCY = new FrequentFigure();
+    private final FrequentFigure BLACK_FREQUENCY = new FrequentFigure();
     private final String PLUS = "+";
     public final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
     private List<Tuple2<Figure, Field>> tuplesFigureToField;
@@ -93,8 +93,8 @@ public class ProcessingUtils {
         return setTurn(turnWrittenStyle, color);
     }
 
-    public Tuple2<FrequentFigure, FrequentFigure> countFrequent(boolean isWhite, String writtenTurn){
-        FrequentFigure frequent = isWhite ? whiteFrequent : blackFrequent;
+    public Tuple2<FrequentFigure, FrequentFigure> countFrequency(boolean isWhite, String writtenTurn){
+        FrequentFigure frequent = isWhite ? WHITE_FREQUENCY : BLACK_FREQUENCY;
         char figure = writtenTurn.charAt(0);
         switch (figure){
             case 'R' :  frequent.updateRock();
@@ -105,7 +105,12 @@ public class ProcessingUtils {
             case '0' : frequent.updateKing();
             default: frequent.updatePawn();
         }
-        return new Tuple2<>(whiteFrequent, blackFrequent);
+        return new Tuple2<>(WHITE_FREQUENCY, BLACK_FREQUENCY);
+    }
+
+    private Turn setTurn(final String writtenStyle, final Color color){
+        initialize();
+        return isCastling(writtenStyle) ? setCastlingTurn(writtenStyle, color) : setNonCastlingTurn(writtenStyle, color);
     }
 
     private void initialize(){
@@ -119,53 +124,51 @@ public class ProcessingUtils {
         transformation = whetherWrittenTurnIsTransformation();
     }
 
-    private Turn setTurn(final String writtenStyle, final Color color){
-        initialize();
-        if (shortCastling.equals(writtenStyle)){
-            List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
-            if (color == Color.WHITE){
-                Figure whiteKing = Board.getFieldToFigure().get(e1);
-                Figure whiteRock_H = Board.getFieldToFigure().get(h1);
-                figureToField.add(new Tuple2<>(whiteKing, whiteKingShortCastling));
-                figureToField.add(new Tuple2<>(whiteRock_H, whiteRockShortCastling));
-            }else {
-                Figure blackKing = Board.getFieldToFigure().get(e8);
-                Figure blackRock_H = Board.getFieldToFigure().get(h8);
-                figureToField.add(new Tuple2<>(blackKing, blackKingShortCastling));
-                figureToField.add(new Tuple2<>(blackRock_H, blackRockShortCastling));
-            }
-            return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
-        }
-        if (longCastling.equals(writtenStyle)){
-            List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
-            if (color == Color.WHITE){
-                Figure whiteKing = Board.getFieldToFigure().get(e1);
-                Figure whiteRock_A = Board.getFieldToFigure().get(a1);
-                figureToField.add(new Tuple2<>(whiteKing, whiteKingLongCastling));
-                figureToField.add(new Tuple2<>(whiteRock_A, whiteRockLongCastling));
-            }else {
-                Figure blackKing = Board.getFieldToFigure().get(e8);
-                Figure blackRock_A = Board.getFieldToFigure().get(a8);
-                figureToField.add(new Tuple2<>(blackKing, blackKingLongCastling));
-                figureToField.add(new Tuple2<>(blackRock_A, blackRockLongCastling));
-            }
-            return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
-        }
+    private boolean isCastling(final String writtenStyle){
+        return shortCastling.equals(writtenStyle) || longCastling.equals(writtenStyle);
+    }
+
+    private Turn setCastlingTurn(final String writtenStyle, final Color color){
+        return shortCastling.equals(writtenStyle) ? shortCastlingTurn(writtenStyle, color) : longCastlingTurn(writtenStyle, color);
+    }
+
+    private Turn shortCastlingTurn(final String writtenStyle, final Color color){
+        List<Tuple2<Figure, Field>> figureToField = (color == Color.WHITE)
+                ? createFigureToFieldCastling(Board.getFieldToFigure().get(e1), Board.getFieldToFigure().get(h1), WHITE_KING_SHORT_CASTLING, WHITE_ROCK_SHORT_CASTLING)
+                : createFigureToFieldCastling(Board.getFieldToFigure().get(e8), Board.getFieldToFigure().get(h8), BLACK_KING_SHORT_CASTLING, BLACK_ROCK_SHORT_CASTLING);
+        return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
+    }
+
+    private Turn longCastlingTurn(final String writtenStyle, final Color color){
+        List<Tuple2<Figure, Field>> figureToField = (color == Color.WHITE)
+                ? createFigureToFieldCastling(Board.getFieldToFigure().get(e1), Board.getFieldToFigure().get(a1), WHITE_KING_LONG_CASTLING, WHITE_ROCK_LONG_CASTLING)
+                : createFigureToFieldCastling(Board.getFieldToFigure().get(e8), Board.getFieldToFigure().get(a8), BLACK_KING_LONG_CASTLING, BLACK_ROCK_LONG_CASTLING);
+        return createTurn(figureToField, null, writtenStyle, false, false, false, null, number);
+    }
+
+    private List<Tuple2<Figure, Field>> createFigureToFieldCastling(Figure king, Figure rock, Field kingFieldDestination, Field rockFieldDestination){
+        List<Tuple2<Figure, Field>> figureToField = new ArrayList<>();
+        figureToField.add(new Tuple2<>(king, kingFieldDestination));
+        figureToField.add(new Tuple2<>(rock, rockFieldDestination));
+        return figureToField;
+    }
+
+    private Turn setNonCastlingTurn(final String writtenStyle, final Color color){
         char firstCharacter = writtenStyle.charAt(0);
         switch (firstCharacter){
             case 'R' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Rock.class, color, true, false) : fetchFigureToTargetField(Rock.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
+                return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'N' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Knight.class, color, true, false) : fetchFigureToTargetField(Knight.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
+                return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'B' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Bishop.class, color, true, false) : fetchFigureToTargetField(Bishop.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
+                return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'Q' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Queen.class, color, true, false) : fetchFigureToTargetField(Queen.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
+                return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             case 'K' :  figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(King.class, color, true, false) : fetchFigureToTargetField(King.class, color, false, false);
-                        return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
+                return createTurn(figureToField, null, writtenStyle, isEating, false, false, targetedFigure, number);
             default :   figureToField = writtenStyle.contains("x") ? fetchFigureToTargetField(Pawn.class, color, true, transformation) : fetchFigureToTargetField(Pawn.class, color, false, transformation);
-                        return isEnPassantScenario(figureToField) ? createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, true, targetedFigure, number) :
-                                createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, false, targetedFigure, number);
+                return isEnPassantScenario(figureToField) ? createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, true, targetedFigure, number) :
+                        createTurn(figureToField, figureBornFromTransformation, writtenStyle, isEating, transformation, false, targetedFigure, number);
         }
     }
 
