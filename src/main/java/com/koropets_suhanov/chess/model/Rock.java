@@ -26,38 +26,10 @@ public class Rock extends Figure {
 
     @Override
     public void possibleTurns() {
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            Field field = new Field(i, this.getField().getY());
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            Field field = new Field(i, this.getField().getY());
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int j = this.getField().getY() + 1; j < SIZE; j++){
-            Field field = new Field(this.getField().getX(), j);
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int j = this.getField().getY() - 1; j >= 0; j--){
-            Field field = new Field(this.getField().getX(), j);
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
+        abovePossibleTurnsRockAndQueen();
+        belowPossibleTurnsRockAndQueen();
+        rightPossibleTurnsRockAndQueen();
+        leftPossibleTurnsRockAndQueen();
     }
 
     @Override
@@ -74,7 +46,7 @@ public class Rock extends Figure {
     public Set<Figure> pullAdditionalAlliesAndEnemies() {
         Set<Figure> chosen = new HashSet<>();
         this.getAlliesIProtect().forEach(f -> {
-            if (f.getClass() == Rock.class || f.getClass() == Queen.class){
+            if (f.getClass() == Rock.class || f.getClass() == Queen.class) {
                 chosen.add(f);
             }
         });
@@ -88,10 +60,10 @@ public class Rock extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < SIZE; i++){
-            for (int j = 0; j < SIZE; j++){
-                if (i == this.getField().getX() || j == this.getField().getY()){
-                    if (i == this.getField().getX() && j == this.getField().getY()){
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (i == this.getField().getX() || j == this.getField().getY()) {
+                    if (i == this.getField().getX() && j == this.getField().getY()) {
                         continue;
                     }
                     this.getAttackedFields().add(new Field(i, j));

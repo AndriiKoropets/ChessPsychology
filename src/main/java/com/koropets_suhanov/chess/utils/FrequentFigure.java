@@ -16,27 +16,27 @@ public class FrequentFigure {
     private int rock;
     private int pawn;
 
-    void updateKing(){
+    void updateKing() {
         this.king++;
     }
 
-    void updateQueen(){
+    void updateQueen() {
         this.queen++;
     }
 
-    void updateBishop(){
+    void updateBishop() {
         this.bishop++;
     }
 
-    void updateKnight(){
+    void updateKnight() {
         this.knight++;
     }
 
-    void updateRock(){
+    void updateRock() {
         this.rock++;
     }
 
-    void updatePawn(){
+    void updatePawn() {
         this.pawn++;
     }
 

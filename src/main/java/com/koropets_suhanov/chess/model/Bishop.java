@@ -19,9 +19,9 @@ public class Bishop extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < SIZE; i++){
-            for (int j = 0; j < SIZE; j++){
-                if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j) && abs(this.getField().getY() - j) != 0){
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j) && abs(this.getField().getY() - j) != 0) {
                     this.getAttackedFields().add(new Field(i, j));
                 }
             }
@@ -30,74 +30,10 @@ public class Bishop extends Figure {
 
     @Override
     public void possibleTurns() {
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < SIZE; j++){
-                if (i < SIZE && j < SIZE &&  abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i, j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            boolean flag = false;
-            for (int j = this.getField().getY() - 1; j >= 0; j--){
-                if (i < SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < SIZE; j++){
-                if (i >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            boolean flag = false;
-            for (int j = this.getField().getY() - 1; j >= 0; j--){
-                if (i >= 0 && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
+        aboveRightDiagonalPossibleTurnsBishopAndQueen();
+        aboveLeftDiagonalPossibleTurnsBishopAndQueen();
+        belowRightDiagonalPossibleTurnsBishopAndQueen();
+        belowLeftDiagonalPossibleTurnsBishopAndQueen();
     }
 
     @Override
@@ -114,7 +50,7 @@ public class Bishop extends Figure {
     public Set<Figure> pullAdditionalAlliesAndEnemies() {
         Set<Figure> chosenAllies = new HashSet<>();
         this.getAlliesIProtect().forEach(f -> {
-            if (f.getClass() == Bishop.class || f.getClass() == Queen.class){
+            if (f.getClass() == Bishop.class || f.getClass() == Queen.class) {
                 chosenAllies.add(f);
             }
         });

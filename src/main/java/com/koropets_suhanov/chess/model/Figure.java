@@ -1,9 +1,13 @@
 package com.koropets_suhanov.chess.model;
 
 import lombok.Getter;
+
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+import static java.lang.Math.abs;
 
 @Getter
 public abstract class Figure implements Observer {
@@ -19,21 +23,28 @@ public abstract class Figure implements Observer {
     private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
     private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
     private Set<Field> preyField = new HashSet<>();
+
     protected abstract void attackedFields();
+
     public abstract void possibleTurns();
+
     public abstract double getValue();
+
     public abstract int getPoint();
+
     public abstract Set<Figure> pullAdditionalAlliesAndEnemies();
+
     public abstract Figure createNewFigure();
 
-    public Figure(){}
+    public Figure() {
+    }
 
     public Figure(Field field, Color color) {
         this.field = field;
         this.color = color;
     }
 
-    public void update(Field field){
+    public void update(Field field) {
         this.field = field;
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
@@ -45,10 +56,10 @@ public abstract class Figure implements Observer {
         this.preyField.clear();
         this.possibleFieldsToMove.clear();
         this.fieldsUnderMyInfluence.clear();
-        if (this.getClass() == King.class){
+        if (this.getClass() == King.class) {
             ((King) this).looseOpportunityToCastling();
-        }else {
-            if (this.getClass() == Rock.class){
+        } else {
+            if (this.getClass() == Rock.class) {
                 ((Rock) this).looseOpportunityToCastling();
             }
         }
@@ -56,7 +67,7 @@ public abstract class Figure implements Observer {
         possibleTurns();
     }
 
-    public void update(){
+    public void update() {
         this.enemiesAttackMe.clear();
         this.alliesProtectMe.clear();
         this.whoCouldBeEatenPreviousState.clear();
@@ -71,29 +82,29 @@ public abstract class Figure implements Observer {
         possibleTurns();
     }
 
-    public void addEnemy(Figure figure){
+    public void addEnemy(Figure figure) {
         enemiesAttackMe.add(figure);
     }
 
-    public void addAllyProtectMe(Figure figure){
+    public void addAllyProtectMe(Figure figure) {
         alliesProtectMe.add(figure);
     }
 
-    public void addAllyIProtect(Figure figure){
+    public void addAllyIProtect(Figure figure) {
         alliesIProtect.add(figure);
     }
 
-    protected boolean checkingFieldForTaken(Field field){
-        if (!field.isTaken()){
+    protected boolean checkingFieldForTaken(Field field) {
+        if (!field.isTaken()) {
             this.getPossibleFieldsToMove().add(field);
-        }else {
+        } else {
             Figure tempFigure = Board.getFieldToFigure().get(field);
-            if (tempFigure != null){
-                if (tempFigure.getColor() == this.getColor()){
+            if (tempFigure != null) {
+                if (tempFigure.getColor() == this.getColor()) {
                     tempFigure.addAllyProtectMe(this);
                     this.addAllyIProtect(tempFigure);
                     return true;
-                }else {
+                } else {
                     tempFigure.addEnemy(this);
                     this.getWhoCouldBeEaten().add(tempFigure);
                     this.getPreyField().add(tempFigure.getField());
@@ -104,12 +115,137 @@ public abstract class Figure implements Observer {
         return false;
     }
 
+
+    protected void abovePossibleTurnsRockAndQueen() {
+        for (int i = this.getField().getX() + 1; i < SIZE; i++) {
+            Field field = new Field(i, this.getField().getY());
+            if (checkingFieldForTaken(field)) {
+                break;
+            } else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+    }
+
+    protected void belowPossibleTurnsRockAndQueen() {
+        for (int i = this.getField().getX() - 1; i >= 0; i--) {
+            Field field = new Field(i, this.getField().getY());
+            if (checkingFieldForTaken(field)) {
+                break;
+            } else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+    }
+
+    protected void rightPossibleTurnsRockAndQueen() {
+        for (int j = this.getField().getY() + 1; j < SIZE; j++) {
+            Field field = new Field(this.getField().getX(), j);
+            if (checkingFieldForTaken(field)) {
+                break;
+            } else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+    }
+
+    protected void leftPossibleTurnsRockAndQueen() {
+        for (int j = this.getField().getY() - 1; j >= 0; j--) {
+            Field field = new Field(this.getField().getX(), j);
+            if (checkingFieldForTaken(field)) {
+                break;
+            } else {
+                this.getFieldsUnderMyInfluence().add(field);
+            }
+        }
+    }
+
+    protected void aboveRightDiagonalPossibleTurnsBishopAndQueen() {
+        for (int i = this.getField().getX() + 1; i < SIZE; i++) {
+            boolean flag = false;
+            for (int j = this.getField().getY() + 1; j < SIZE; j++) {
+                if (i < SIZE && j < SIZE && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+                    Field field = new Field(i, j);
+                    if (checkingFieldForTaken(field)) {
+                        flag = true;
+                        break;
+                    } else {
+                        this.getFieldsUnderMyInfluence().add(field);
+                    }
+                }
+            }
+            if (flag) {
+                break;
+            }
+        }
+    }
+
+    protected void aboveLeftDiagonalPossibleTurnsBishopAndQueen() {
+        for (int i = this.getField().getX() + 1; i < SIZE; i++) {
+            boolean flag = false;
+            for (int j = this.getField().getY() - 1; j >= 0; j--) {
+                if (i < SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+                    Field field = new Field(i, j);
+                    if (checkingFieldForTaken(field)) {
+                        flag = true;
+                        break;
+                    } else {
+                        this.getFieldsUnderMyInfluence().add(field);
+                    }
+                }
+            }
+            if (flag) {
+                break;
+            }
+        }
+    }
+
+    protected void belowRightDiagonalPossibleTurnsBishopAndQueen() {
+        for (int i = this.getField().getX() - 1; i >= 0; i--) {
+            boolean flag = false;
+            for (int j = this.getField().getY() + 1; j < SIZE; j++) {
+                if (i >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+                    Field field = new Field(i, j);
+                    if (checkingFieldForTaken(field)) {
+                        flag = true;
+                        break;
+                    } else {
+                        this.getFieldsUnderMyInfluence().add(field);
+                    }
+                }
+            }
+            if (flag) {
+                break;
+            }
+        }
+    }
+
+    protected void belowLeftDiagonalPossibleTurnsBishopAndQueen() {
+        for (int i = this.getField().getX() - 1; i >= 0; i--) {
+            boolean flag = false;
+            for (int j = this.getField().getY() - 1; j >= 0; j--) {
+                if (i >= 0 && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+                    Field field = new Field(i, j);
+                    if (checkingFieldForTaken(field)) {
+                        flag = true;
+                        break;
+                    } else {
+                        this.getFieldsUnderMyInfluence().add(field);
+                    }
+                }
+            }
+            if (flag) {
+                break;
+            }
+        }
+    }
+
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        Figure other = (Figure)o;
-        if (other.getField().getX() == 3 && other.getField().getY() == 4){
+        Figure other = (Figure) o;
+        if (other.getField().getX() == 3 && other.getField().getY() == 4) {
         }
         if (this.getColor() != other.getColor()) return false;
         return this.getField().getY() == other.getField().getY() &&
@@ -117,7 +253,7 @@ public abstract class Figure implements Observer {
     }
 
     @Override
-    public int hashCode(){
-        return 31*this.getField().getX() + 97*this.getField().getY();
+    public int hashCode() {
+        return 31 * this.getField().getX() + 97 * this.getField().getY();
     }
 }

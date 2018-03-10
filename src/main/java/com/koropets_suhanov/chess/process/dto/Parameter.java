@@ -1,7 +1,5 @@
 package com.koropets_suhanov.chess.process.dto;
 
-import com.koropets_suhanov.chess.model.Field;
-import com.koropets_suhanov.chess.model.Figure;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +19,8 @@ public class Parameter {
     private int secondBeUnderAttack;
     private int thirdWithdrawAttackOnEnemy;
     private int fourthWithdrawAttackOnMe;
-    private Tuple2<Integer, List<Tuple2<Figure, Field>>> fifthDontTakeAChanceToAttack;
-    private Tuple2<Integer, List<Tuple2<Figure, Field>>> sixthDontTakeAChanceToBeUnderAttack;
-    private Tuple2<Integer, List<Tuple2<Figure, Field>>> seventhDontTakeAChanceToWithdrawAttackOnEnemy;
-    private Tuple2<Integer, List<Tuple2<Figure, Field>>> eighthDontTakeAChanceToWithdrawAttackOnMe;
+    private Tuple2<Integer, List<FigureToField>> fifthDontTakeAChanceToAttack;
+    private Tuple2<Integer, List<FigureToField>> sixthDontTakeAChanceToBeUnderAttack;
+    private Tuple2<Integer, List<FigureToField>> seventhDontTakeAChanceToWithdrawAttackOnEnemy;
+    private Tuple2<Integer, List<FigureToField>> eighthDontTakeAChanceToWithdrawAttackOnMe;
 }

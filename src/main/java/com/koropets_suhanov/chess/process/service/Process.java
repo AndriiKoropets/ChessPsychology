@@ -29,7 +29,7 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 @Slf4j
 public class Process {
 
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
+    //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantWhite.txt";
     private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
@@ -41,7 +41,9 @@ public class Process {
 
     private static Game game = new Game();
     private static EstimatePosition estimatePosition;
-
+    public static Color currentColor;
+    public static String currentWrittenStyleTurn;
+    public static int currentTurnNumber;
 
     private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
     private static Parameter whiteEstimationWholeParty;
@@ -56,7 +58,7 @@ public class Process {
 //        process();
 //    }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         log.info("Process is starting");
         System.out.println("Process started");
         whiteEstimationWholeParty = Parameter.builder().build();
@@ -66,7 +68,7 @@ public class Process {
         System.out.println("Board = " + board);
         printAllBoard();
         File file = null;
-        try{
+        try {
             file = new File(PATH_TO_FILE);
             Scanner scnr = new Scanner(file);
             String sCurrentLine;
@@ -75,13 +77,15 @@ public class Process {
             while (scnr.hasNextLine()) {
                 sCurrentLine = scnr.nextLine();
                 Matcher matcher = pattern.matcher(sCurrentLine);
-                if (matcher.matches()){
-                    int numberOfTurn = Integer.valueOf(matcher.group(1));
+                if (matcher.matches()) {
+                    currentTurnNumber = Integer.valueOf(matcher.group(1));
                     String writtenWhiteTurn = matcher.group(2);
                     String writtenBlackTurn = matcher.group(3);
-                    Turn whiteTurn = ProcessingUtils.getActualTurn(writtenWhiteTurn, Color.WHITE, numberOfTurn);
+                    currentColor = Color.WHITE;
+                    currentWrittenStyleTurn = writtenWhiteTurn;
+                    Turn whiteTurn = ProcessingUtils.getActualTurn();
 //                    System.out.println("White turn = " + whiteTurn);
-                    whitePossibleTurns = game.getPossibleTurnsAndEatings(Color.WHITE, numberOfTurn);
+                    whitePossibleTurns = game.getPossibleTurnsAndEatings();
 //                    printAllPossibleTurns(whitePossibleTurns);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
                     board.setCurrentTurn(whiteTurn);
@@ -92,10 +96,12 @@ public class Process {
                     whiteEstimationWholeParty = estimatePosition.estimate(whiteTurn, whitePossibleTurns, Color.WHITE);
 
                     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
-                    if (writtenBlackTurn != null){
-                        Turn blackTurn = ProcessingUtils.getActualTurn(writtenBlackTurn, Color.BLACK, numberOfTurn);
+                    if (writtenBlackTurn != null) {
+                        currentColor = Color.BLACK;
+                        currentWrittenStyleTurn = writtenBlackTurn;
+                        Turn blackTurn = ProcessingUtils.getActualTurn();
 //                        System.out.println("Black turn = " + blackTurn);
-                        blackPossibleTurns = game.getPossibleTurnsAndEatings(Color.BLACK, numberOfTurn);
+                        blackPossibleTurns = game.getPossibleTurnsAndEatings();
 //                        printAllPossibleTurns(blackPossibleTurns);
                         board.setCurrentTurn(blackTurn);
                         ProcessingUtils.makeTurn(blackTurn);
@@ -129,27 +135,27 @@ public class Process {
         }
     }
 
-    private static void currentStateOfAllFigures(){
+    private static void currentStateOfAllFigures() {
         System.out.println("White figures");
-        for (Observer observer : Board.getFigures(Color.WHITE)){
+        for (Observer observer : Board.getFigures(Color.WHITE)) {
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
         System.out.println("Black figures");
-        for (Observer observer : Board.getFigures(Color.BLACK)){
+        for (Observer observer : Board.getFigures(Color.BLACK)) {
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
     }
 
-    private static void printAllPossibleTurns(Set<Turn> allPossibleTurns){
+    private static void printAllPossibleTurns(Set<Turn> allPossibleTurns) {
         System.out.println("Size = " + allPossibleTurns.size());
-        for (Turn possibleTurn : allPossibleTurns){
+        for (Turn possibleTurn : allPossibleTurns) {
             System.out.println("Turn = " + possibleTurn.getFigureToDestinationField());
         }
     }
 
-    private static void printInfoAboutFigure(Figure currentFigure){
+    private static void printInfoAboutFigure(Figure currentFigure) {
         System.out.println(currentFigure);
 //        System.out.println("Possible fields to move = " + currentFigure.getPossibleFieldsToMove());
         System.out.println("Who could be eaten previous state = " + currentFigure.getWhoCouldBeEatenPreviousState());
@@ -159,24 +165,24 @@ public class Process {
         System.out.println("Get figures attack me = " + currentFigure.getEnemiesAttackMe());
     }
 
-    public static void printAllBoard(){
+    public static void printAllBoard() {
         System.out.println();
         int counter = 1;
-        for (int i = 0; i < SIZE; i++){
+        for (int i = 0; i < SIZE; i++) {
             System.out.print(Field.getVertical().get(i) + "  ");
-            for (int j = 0; j < SIZE; j++){
+            for (int j = 0; j < SIZE; j++) {
                 Field currentPoint = new Field(i, j);
-                if (currentPoint.isTaken()){
+                if (currentPoint.isTaken()) {
                     System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
-                }else {
+                } else {
                     System.out.print("   ");
                 }
             }
-            if (counter == SIZE){
+            if (counter == SIZE) {
                 System.out.println();
                 System.out.println();
                 System.out.print("    ");
-                for (int k = 0; k < SIZE; k++){
+                for (int k = 0; k < SIZE; k++) {
                     System.out.print(Field.getHorizontal().get(k) + "  ");
                 }
             }
@@ -185,29 +191,29 @@ public class Process {
         }
     }
 
-    private static String printFigure(Figure figure){
-        if (figure.getClass() == Pawn.class){
+    private static String printFigure(Figure figure) {
+        if (figure.getClass() == Pawn.class) {
             return figure.getColor() == Color.WHITE ? "P" : "p";
         }
-        if (figure.getClass() == Rock.class){
+        if (figure.getClass() == Rock.class) {
             return figure.getColor() == Color.WHITE ? "R" : "r";
         }
-        if (figure.getClass() == Knight.class){
+        if (figure.getClass() == Knight.class) {
             return figure.getColor() == Color.WHITE ? "N" : "n";
         }
-        if (figure.getClass() == Bishop.class){
+        if (figure.getClass() == Bishop.class) {
             return figure.getColor() == Color.WHITE ? "B" : "b";
         }
-        if (figure.getClass() == King.class){
+        if (figure.getClass() == King.class) {
             return figure.getColor() == Color.WHITE ? "K" : "k";
         }
-        if (figure.getClass() == Queen.class){
+        if (figure.getClass() == Queen.class) {
             return figure.getColor() == Color.WHITE ? "Q" : "q";
         }
         return null;
     }
 
-    private static FinalResult countFullEstimation(Parameter parameter, Color color){
+    private static FinalResult countFullEstimation(Parameter parameter, Color color) {
         FinalResult globalEstimation = (color == Color.BLACK) ? fullBlackEstimation : fullWhiteEstimation;
         return FinalResult.builder().first(globalEstimation.getFirst() + parameter.getFirstAttackEnemy())
                 .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())

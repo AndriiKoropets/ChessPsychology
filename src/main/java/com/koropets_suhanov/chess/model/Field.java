@@ -64,18 +64,18 @@ public class Field {
         vertical.put(7, 1);
     }
 
-    public Field(int x, int y){
-        if (isValidField(x, y)){
+    public Field(int x, int y) {
+        if (isValidField(x, y)) {
             this.x = x;
             this.y = y;
             log.trace("Created field with such points: x = {}, y = {}", x, y);
-        }else {
+        } else {
             log.error("Failed to created a field due to invalid points, x = {}, y = {}", x, y);
             throw new RuntimeException("Invalid points for field, x = " + x + ", y = " + y);
         }
     }
 
-    public static boolean isValidField(int x, int y){
+    public static boolean isValidField(int x, int y) {
         return x >= 0 && x < SIZE && y >= 0 && y < SIZE;
     }
 
@@ -103,16 +103,16 @@ public class Field {
         return invertedVertical;
     }
 
-    public boolean isTaken(){
+    public boolean isTaken() {
         return Board.getTakenFields().contains(this);
     }
 
     //TODO refactor this method. Should be placed in Board class.
-    public boolean isUnderInfluence(Color color){
+    public boolean isUnderInfluence(Color color) {
         List<Observer> figures = Board.getFigures(color);
-        for (Object figure : figures){
-            for (Object field : ((Figure)figure).getAttackedFields()){
-                if (this.equals(field)){
+        for (Object figure : figures) {
+            for (Object field : ((Figure) figure).getAttackedFields()) {
+                if (this.equals(field)) {
                     return true;
                 }
             }
@@ -120,7 +120,7 @@ public class Field {
         return false;
     }
 
-    public int distance(Field comparedField){
+    public int distance(Field comparedField) {
         return Math.abs(this.getX() - comparedField.getX()) + Math.abs(this.getY() - comparedField.getY());
     }
 

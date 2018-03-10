@@ -11,31 +11,28 @@ public class King extends Figure {
     private static final int KING_WEIGHT = Integer.MAX_VALUE;
     private static final int POINT = 5;
 
-//    @Autowired
-//    private Board board;
-
     public King(Field field, Color color) {
         super(field, color);
         attackedFields();
     }
 
     @Override
-    public void possibleTurns(){
+    public void possibleTurns() {
         Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
                 : Board.getFieldsUnderBlackInfluence();
         this.getAttackedFields().forEach(f -> {
             Figure figure = Board.getFieldToFigure().get(f);
-            if (!enemyInfluence.contains(f)){
-                if (figure != null){
-                    if (this.getColor() == figure.getColor()){
+            if (!enemyInfluence.contains(f)) {
+                if (figure != null) {
+                    if (this.getColor() == figure.getColor()) {
                         figure.addAllyProtectMe(this);
                         this.addAllyIProtect(figure);
-                    }else {
+                    } else {
                         figure.addEnemy(this);
                         this.getWhoCouldBeEaten().add(figure);
                         this.getPreyField().add(figure.getField());
                     }
-                }else {
+                } else {
                     this.getPossibleFieldsToMove().add(f);
                     this.getFieldsUnderMyInfluence().add(f);
                 }
@@ -71,7 +68,7 @@ public class King extends Figure {
         this.opportunityToCastling = false;
     }
 
-    public boolean isUnderAttack(){
+    public boolean isUnderAttack() {
         Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
                 : Board.getFieldsUnderWhiteInfluence();
         return enemyInfluence.contains(this.getField());
@@ -79,10 +76,10 @@ public class King extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int  i = 0; i < SIZE; i++){
-            for (int j = 0; j < SIZE; j++){
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 if ((abs(this.getField().getX() - i) <= 1) && (abs(this.getField().getY() - j) <= 1)) {
-                    if (this.getField().getX() == i && this.getField().getY() == j){
+                    if (this.getField().getX() == i && this.getField().getY() == j) {
                         continue;
                     }
                     Field field = new Field(i, j);

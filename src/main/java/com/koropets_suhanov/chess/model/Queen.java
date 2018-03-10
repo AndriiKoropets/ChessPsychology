@@ -18,106 +18,14 @@ public class Queen extends Figure {
 
     @Override
     public void possibleTurns() {
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            Field field = new Field(i, this.getField().getY());
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            Field field = new Field(i, this.getField().getY());
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int j = this.getField().getY() + 1; j < SIZE; j++){
-            Field field = new Field(this.getField().getX(), j);
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int j = this.getField().getY() - 1; j >= 0; j--){
-            Field field = new Field(this.getField().getX(), j);
-            if (checkingFieldForTaken(field)){
-                break;
-            }else {
-                this.getFieldsUnderMyInfluence().add(field);
-            }
-        }
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < SIZE; j++){
-                if (i < SIZE && j < SIZE &&  abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i, j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() + 1; i < SIZE; i++){
-            boolean flag = false;
-            for (int j = this.getField().getY() - 1; j >= 0; j--){
-                if (i < SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            boolean flag = false;
-            for (int j = this.getField().getY() + 1; j < SIZE; j++){
-                if (i >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
-        for (int i = this.getField().getX() - 1; i >= 0; i--){
-            boolean flag = false;
-            for (int j = this.getField().getY() - 1; j >= 0; j--){
-                if (i >= 0 && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)){
-                    Field field = new Field(i,j);
-                    if (checkingFieldForTaken(field)){
-                        flag = true;
-                        break;
-                    }else {
-                        this.getFieldsUnderMyInfluence().add(field);
-                    }
-                }
-            }
-            if (flag){
-                break;
-            }
-        }
+        abovePossibleTurnsRockAndQueen();
+        belowPossibleTurnsRockAndQueen();
+        rightPossibleTurnsRockAndQueen();
+        leftPossibleTurnsRockAndQueen();
+        aboveRightDiagonalPossibleTurnsBishopAndQueen();
+        aboveLeftDiagonalPossibleTurnsBishopAndQueen();
+        belowRightDiagonalPossibleTurnsBishopAndQueen();
+        belowLeftDiagonalPossibleTurnsBishopAndQueen();
     }
 
     @Override
@@ -134,7 +42,7 @@ public class Queen extends Figure {
     public Set<Figure> pullAdditionalAlliesAndEnemies() {
         Set<Figure> chosenAllies = new HashSet<>();
         this.getAlliesIProtect().forEach(f -> {
-            if (f.getClass() == Bishop.class || f.getClass() == Rock.class || f.getClass() == Queen.class){
+            if (f.getClass() == Bishop.class || f.getClass() == Rock.class || f.getClass() == Queen.class) {
                 chosenAllies.add(f);
             }
         });
@@ -148,10 +56,10 @@ public class Queen extends Figure {
 
     @Override
     protected void attackedFields() {
-        for (int i = 0; i < SIZE; i++){
-            for (int j = 0; j < SIZE; j++){
-                if ((i == this.getField().getX() || j == this.getField().getY()) || (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) ){
-                    if (this.getField().getX() == i && this.getField().getY() == j){
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if ((i == this.getField().getX() || j == this.getField().getY()) || (abs(this.getField().getX() - i) == abs(this.getField().getY() - j))) {
+                    if (this.getField().getX() == i && this.getField().getY() == j) {
                         continue;
                     }
                     this.getAttackedFields().add(new Field(i, j));
