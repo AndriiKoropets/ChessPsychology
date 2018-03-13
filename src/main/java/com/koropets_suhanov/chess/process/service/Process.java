@@ -39,7 +39,7 @@ public class Process {
     //The party is wrong written 13
     private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
-    private static Game game = new Game();
+    private static CurrentPosition game = new CurrentPosition();
     private static EstimatePosition estimatePosition;
     public static Color currentColor;
     public static String currentWrittenStyleTurn;
@@ -85,7 +85,7 @@ public class Process {
                     currentWrittenStyleTurn = writtenWhiteTurn;
                     Turn whiteTurn = ProcessingUtils.getActualTurn();
 //                    System.out.println("White turn = " + whiteTurn);
-                    whitePossibleTurns = game.getPossibleTurnsAndEatings();
+                    whitePossibleTurns = game.getAllPossibleTurns();
 //                    printAllPossibleTurns(whitePossibleTurns);
                     //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
                     board.setCurrentTurn(whiteTurn);
@@ -101,15 +101,15 @@ public class Process {
                         currentWrittenStyleTurn = writtenBlackTurn;
                         Turn blackTurn = ProcessingUtils.getActualTurn();
 //                        System.out.println("Black turn = " + blackTurn);
-                        blackPossibleTurns = game.getPossibleTurnsAndEatings();
+                        blackPossibleTurns = game.getAllPossibleTurns();
 //                        printAllPossibleTurns(blackPossibleTurns);
                         board.setCurrentTurn(blackTurn);
                         ProcessingUtils.makeTurn(blackTurn);
                         printAllBoard();
 //                        System.out.println("After turn = " + blackTurn);
                         System.out.println("Figures = " + Board.getFigures());
-                        System.out.println("White figures = " + Board.getFigures(Color.WHITE));
-                        System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
+                        System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
+                        System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
 //                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
                         blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns, Color.BLACK);
 
@@ -120,8 +120,8 @@ public class Process {
                 }
                 System.out.println("White estimation = " + whiteEstimationWholeParty);
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
-                System.out.println("White figures = " + Board.getFigures(Color.WHITE));
-                System.out.println("Black figures = " + Board.getFigures(Color.BLACK));
+                System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
+                System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
             }
             printAllBoard();
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
@@ -137,12 +137,12 @@ public class Process {
 
     private static void currentStateOfAllFigures() {
         System.out.println("White figures");
-        for (Observer observer : Board.getFigures(Color.WHITE)) {
+        for (Observer observer : Board.getFiguresByColor(Color.WHITE)) {
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }
         System.out.println("Black figures");
-        for (Observer observer : Board.getFigures(Color.BLACK)) {
+        for (Observer observer : Board.getFiguresByColor(Color.BLACK)) {
             Figure currentFigure = (Figure) observer;
             printInfoAboutFigure(currentFigure);
         }

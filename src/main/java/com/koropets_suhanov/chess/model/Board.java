@@ -125,25 +125,25 @@ public class Board implements Subject {
         }
     }
 
-    public static List<Figure> getFiguresByClass(Class clazz) {
+    public static List<Figure> getExactTypeOfFigures(Class clazz) {
         List<Figure> returnedFigures = new ArrayList<Figure>();
         figures.stream().filter(f -> f.getClass() == clazz).forEach(f -> returnedFigures.add((Figure) f));
         return returnedFigures;
     }
 
-    public static List<Figure> getFiguresByClass(Class clazz, Color color) {
-        List<Observer> observers = getFigures(color);
+    public static List<Figure> getExactTypeOfFiguresByColor(Class clazz, Color color) {
+        List<Observer> observers = getFiguresByColor(color);
         List<Figure> figures = new ArrayList<>();
         observers = observers.stream().filter(f -> f.getClass() == clazz).collect(Collectors.toList());
         observers.forEach(observer -> figures.add((Figure) observer));
         return figures;
     }
 
-    public static King getKing(Color color) {
-        return (King) getFigures(color).stream().filter(f -> f.getClass() == King.class).collect(Collectors.toList()).get(0);
+    public static King getKingByColor(Color color) {
+        return (King) getFiguresByColor(color).stream().filter(f -> f.getClass() == King.class).collect(Collectors.toList()).get(0);
     }
 
-    public static List<Observer> getFigures(Color color) {
+    public static List<Observer> getFiguresByColor(Color color) {
         return color == Color.WHITE ? whiteFigures : blackFigures;
     }
 
@@ -154,16 +154,6 @@ public class Board implements Subject {
 //    public void setPreviousTurn(Field previousTurn) {
 //        this.previousTurn = previousTurn;
 //    }
-
-    private static void updateFieldsUnderWhiteInfluence() {
-        fieldsUnderWhiteInfluence.clear();
-        whiteFigures.forEach(w -> fieldsUnderWhiteInfluence.addAll(((Figure) w).getFieldsUnderMyInfluence()));
-    }
-
-    private static void updateFieldsUnderBlackInfluence() {
-        fieldsUnderBlackInfluence.clear();
-        blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(((Figure) b).getFieldsUnderMyInfluence()));
-    }
 
     public boolean isFieldValid(Field field) {
         return field.getX() >= 0 && field.getX() < SIZE && field.getY() >= 0 && field.getY() < SIZE;
@@ -218,6 +208,23 @@ public class Board implements Subject {
         updateFieldsUnderWhiteInfluence();
         updateFieldsUnderBlackInfluence();
 
+    }
+
+    private static void updateTakenFields(Observer figure) {
+        takenFields.remove(((Figure) figure).getField());
+        takenFields.add(field);
+        fieldToFigure.put(field, (Figure) figure);
+        fieldToFigure.replace(((Figure) figure).getField(), null);
+    }
+
+    private static void updateFieldsUnderWhiteInfluence() {
+        fieldsUnderWhiteInfluence.clear();
+        whiteFigures.forEach(w -> fieldsUnderWhiteInfluence.addAll(((Figure) w).getFieldsUnderMyInfluence()));
+    }
+
+    private static void updateFieldsUnderBlackInfluence() {
+        fieldsUnderBlackInfluence.clear();
+        blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(((Figure) b).getFieldsUnderMyInfluence()));
     }
 
     public void register(Observer figure) {
@@ -317,13 +324,6 @@ public class Board implements Subject {
 
     public static Set<Field> getTakenFields() {
         return takenFields;
-    }
-
-    private static void updateTakenFields(Observer figure) {
-        takenFields.remove(((Figure) figure).getField());
-        takenFields.add(field);
-        fieldToFigure.put(field, (Figure) figure);
-        fieldToFigure.replace(((Figure) figure).getField(), null);
     }
 
     private static void setTakenFields() {

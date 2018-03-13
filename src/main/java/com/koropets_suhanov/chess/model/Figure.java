@@ -244,12 +244,9 @@ public abstract class Figure implements Observer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        Figure other = (Figure) o;
-        if (other.getField().getX() == 3 && other.getField().getY() == 4) {
-        }
-        if (this.getColor() != other.getColor()) return false;
-        return this.getField().getY() == other.getField().getY() &&
-                this.getField().getX() == other.getField().getX();
+        Figure figure = (Figure) o;
+        return this.getField() == figure.getField()
+                && this.getColor() == figure.getColor();
     }
 
     @Override

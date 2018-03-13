@@ -42,7 +42,6 @@ import static java.lang.Math.abs;
 @Slf4j
 public class ProcessingUtils {
 
-
     public final Field f1 = new Field(7, 5);
     public final Field g1 = new Field(7, 6);
     public final Field b1 = new Field(7, 1);
@@ -234,7 +233,7 @@ public class ProcessingUtils {
 
     private List<FigureToField> fetchFigureToTargetField(Class clazz) {
         List<Observer> targets = new ArrayList<>();
-        List<Figure> figures = Board.getFiguresByClass(clazz, currentColor);
+        List<Figure> figures = Board.getExactTypeOfFiguresByColor(clazz, currentColor);
         for (Observer curFigure : figures) {
             if (eating) {
                 if (transformation && clazz == Pawn.class) {
@@ -398,20 +397,6 @@ public class ProcessingUtils {
         return false;
     }
 
-    public Turn createTurn(List<FigureToField> figureToField, Figure figureFromTransformation,
-                           String writtenStyle, boolean isEating, boolean transformation, boolean enPassant,
-                           Figure targetedFigure, int numberOfTurn) {
-        return Turn.builder().figureToDestinationField(figureToField)
-                .figureFromTransformation(figureFromTransformation)
-                .writtenStyle(writtenStyle)
-                .eating(isEating)
-                .transformation(transformation)
-                .enPassant(enPassant)
-                .targetedFigure(targetedFigure)
-                .numberOfTurn(numberOfTurn)
-                .build();
-    }
-
     public Figure createFigure(Field field, String writtenStyleOfTheFigure, Color color) {
         switch (writtenStyleOfTheFigure) {
             case "Q":
@@ -426,80 +411,9 @@ public class ProcessingUtils {
         throw new RuntimeException("Could not choose figure. Turn must be wrong written." + currentWrittenStyleTurn + " " + figureBornFromTransformation + " " + figureInWrittenStyleToBorn);
     }
 
-    public Set<Field> fieldsBetweenRockAndKing(final King king, final Field rockPosition) {
-        Set<Field> fieldsBetween = new HashSet<>();
-        if (king.getField().getX() == rockPosition.getX()) {
-            if (king.getField().getX() > rockPosition.getX()) {
-                for (int i = king.getField().getX() - 1; i > rockPosition.getX(); i--) {
-                    fieldsBetween.add(new Field(i, king.getField().getY()));
-                }
-            } else {
-                for (int i = king.getField().getX() + 1; i < rockPosition.getX(); i++) {
-                    fieldsBetween.add(new Field(i, king.getField().getY()));
-                }
-            }
-        }
-        if (king.getField().getY() == rockPosition.getY()) {
-            if (king.getField().getY() > rockPosition.getY()) {
-                for (int j = king.getField().getY() - 1; j > rockPosition.getY(); j--) {
-                    fieldsBetween.add(new Field(king.getField().getX(), j));
-                }
-            } else {
-                for (int j = king.getField().getY() + 1; j < rockPosition.getY(); j++) {
-                    fieldsBetween.add(new Field(king.getField().getX(), j));
-                }
-            }
-        }
-        return fieldsBetween;
-    }
-
-    public Set<Field> fieldsBetweenBishopAndKing(final King king, final Field bishopPosition) {
-        Set<Field> fieldsBetween = new HashSet<>();
-        if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()) {
-            int yPosition = king.getField().getY() - 1;
-            for (int i = king.getField().getX() - 1; i > bishopPosition.getX(); i--) {
-                fieldsBetween.add(new Field(i, yPosition));
-                yPosition--;
-            }
-        }
-        if (king.getField().getX() > bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()) {
-            int yPosition = king.getField().getY() + 1;
-            for (int i = king.getField().getX() - 1; i > bishopPosition.getX(); i--) {
-                fieldsBetween.add(new Field(i, yPosition));
-                yPosition++;
-            }
-        }
-        if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() > bishopPosition.getY()) {
-            int yPosition = king.getField().getY() - 1;
-            for (int i = king.getField().getX() + 1; i < bishopPosition.getX(); i++) {
-                fieldsBetween.add(new Field(i, yPosition));
-                yPosition--;
-            }
-
-        }
-        if (king.getField().getX() < bishopPosition.getX() && king.getField().getY() < bishopPosition.getY()) {
-            int yPosition = king.getField().getY() + 1;
-            for (int i = king.getField().getX() + 1; i < bishopPosition.getX(); i++) {
-                fieldsBetween.add(new Field(i, yPosition));
-                yPosition++;
-            }
-        }
-        return fieldsBetween;
-    }
-
-    public Set<Field> fieldsBetweenQueenAndKing(final King king, final Field queenPosition) {
-        Set<Field> fieldsBetweenQueenAndKing = new HashSet<>();
-        if (king.getField().getX() == queenPosition.getX() || king.getField().getY() == queenPosition.getY()) {
-            fieldsBetweenQueenAndKing.addAll(fieldsBetweenRockAndKing(king, queenPosition));
-        } else {
-            fieldsBetweenQueenAndKing.addAll(fieldsBetweenBishopAndKing(king, queenPosition));
-        }
-        return fieldsBetweenQueenAndKing;
-    }
-
     public Set<Figure> getAffectedFigures(Color color) {
         Set<Figure> acceptedFigures = new HashSet<>();
-        List<Observer> observers = Board.getFigures(color);
+        List<Observer> observers = Board.getFiguresByColor(color);
         affectedFields.forEach(f -> {
             observers.forEach(o -> {
                 if (((Figure) o).getAttackedFields().contains(f)) {

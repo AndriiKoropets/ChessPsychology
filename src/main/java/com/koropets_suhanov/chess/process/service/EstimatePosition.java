@@ -133,22 +133,22 @@ public class EstimatePosition {
     }
 
     private static int estimateFourthParameter() {
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
         return calculateWithdrawingAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateThirdParameter() {
-        List<Observer> alliesObservers = Board.getFigures(whoseTurn);
+        List<Observer> alliesObservers = Board.getFiguresByColor(whoseTurn);
         return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
     }
 
     private static int estimateSecondParameter() {
-        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFigures(Color.BLACK) : Board.getFigures(Color.WHITE);
+        List<Observer> enemies = (whoseTurn == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
         return calculateAttackAndBeUnderAttack(enemies);
     }
 
     private static int estimateFirstParameter() {
-        List<Observer> chosenFigures = Board.getFigures(whoseTurn);
+        List<Observer> chosenFigures = Board.getFiguresByColor(whoseTurn);
         return calculateAttackAndBeUnderAttack(chosenFigures);
     }
 
