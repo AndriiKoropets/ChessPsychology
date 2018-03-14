@@ -368,7 +368,7 @@ public class ProcessingUtils {
             }
             return new Field(x, y);
         } else {
-            log.debug("Target field is null. CastlingService");
+            log.debug("Target field is null. Castling");
             return null;
         }
     }
@@ -385,16 +385,11 @@ public class ProcessingUtils {
         int lengthOfTheWrittenTurn = currentWrittenStyleTurn.length();
         if (currentWrittenStyleTurn.contains(PLUS)) {
             char previousBeforeTheLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 2);
-            if (FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(previousBeforeTheLast))) {
-                return true;
-            }
+            return FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(previousBeforeTheLast));
         } else {
             char theLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 1);
-            if (FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(theLast))) {
-                return true;
-            }
+            return FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(theLast));
         }
-        return false;
     }
 
     public Figure createFigure(Field field, String writtenStyleOfTheFigure, Color color) {

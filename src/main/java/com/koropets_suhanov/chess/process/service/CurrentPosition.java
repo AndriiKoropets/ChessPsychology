@@ -12,7 +12,6 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
-import com.koropets_suhanov.chess.utils.ProcessingUtils;
 
 import java.util.Set;
 import java.util.LinkedHashSet;
@@ -31,7 +30,9 @@ public class CurrentPosition {
 
     private King king;
     private List<Figure> kingsAllies;
-    private CastlingService castlingService = new CastlingService();
+    private Castling castlingService = new Castling();
+    private EnPassantAndTransformation enPassantAndTransformation = new EnPassantAndTransformation();
+    private Covering covering = new Covering();
 
     public Set<Turn> getAllPossibleTurns() {
         defineAllPossibleTurns();
@@ -92,7 +93,7 @@ public class CurrentPosition {
             } else if (isEnemyOnTheLastLine(enemy) && ally.getClass() == Pawn.class) {
                 Pawn pawnAlly = (Pawn) ally;
                 if (pawnReachesLastLineCanSaveKing(pawnAlly, enemy)) {
-                    allPossibleTurns.addAll(setTransformationFields(pawnAlly, enemy));
+                    allPossibleTurns.addAll(enPassantAndTransformation.setTransformationFields(pawnAlly, enemy));
 
                 }
             } else if (canKingProtectItself(ally, enemy)) {
@@ -108,13 +109,13 @@ public class CurrentPosition {
         Figure figureAttacksKing = king.getEnemiesAttackMe().iterator().next();
         Set<Turn> alienCovers = new HashSet<>();
         if (figureAttacksKing instanceof Rock) {
-            alienCovers = coveringIfRockAttacks(king, (Rock) figureAttacksKing);
+            alienCovers = covering.coveringIfRockAttacks(king, (Rock) figureAttacksKing);
         }
         if (figureAttacksKing instanceof Bishop) {
-            alienCovers = coveringIfBishopAttacks(king, (Bishop) figureAttacksKing);
+            alienCovers = covering.coveringIfBishopAttacks(king, (Bishop) figureAttacksKing);
         }
         if (figureAttacksKing instanceof Queen) {
-            alienCovers = coveringIfQueenAttacks(king, (Queen) figureAttacksKing);
+            alienCovers = covering.coveringIfQueenAttacks(king, (Queen) figureAttacksKing);
         }
 
         if (alienCovers != null) {
@@ -154,10 +155,10 @@ public class CurrentPosition {
     private void noOneAttacksKing() {
         for (Figure ally : kingsAllies) {
             if (isEnPassantCase(ally)) {
-                allPossibleTurns.addAll(turnsInCaseEnPassant((Pawn) ally));
+                allPossibleTurns.addAll(enPassantAndTransformation.turnsInCaseEnPassant((Pawn) ally));
 
             } else if (isTransformationCase(ally)) {
-                allPossibleTurns.addAll(turnsInCaseTransformation(ally));
+                allPossibleTurns.addAll(enPassantAndTransformation.turnsInCaseTransformation(ally));
 
             } else {
                 definePeacefulTurns(ally);
@@ -186,105 +187,5 @@ public class CurrentPosition {
             figureToField.add(FigureToField.builder().figure(figure).field(field).build());
             allPossibleTurns.add(Turn.builder().figureToDestinationField(figureToField).build());
         }
-    }
-
-    private Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock) {
-        Set<Turn> coveringTurns = new HashSet<>();
-        Set<Field> fieldsBetween = CurrentPositionUtils.fieldsBetweenRockAndKing(king, enemyRock.getField());
-        List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
-        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
-        return coveringTurns;
-    }
-
-    private Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop) {
-        Set<Field> fieldsBetween = CurrentPositionUtils.fieldsBetweenBishopAndKing(king, bishop.getField());
-        Set<Turn> coveringTurns = new HashSet<>();
-        List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
-        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
-        return coveringTurns;
-    }
-
-    private Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen) {
-        Set<Field> fieldsBetween = CurrentPositionUtils.fieldsBetweenQueenAndKing(king, queen.getField());
-        Set<Turn> coveringTurns = new HashSet<>();
-        List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
-        setCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
-        return coveringTurns;
-    }
-
-    private void setCoveringTurns(final List<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween) {
-        alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f -> {
-            ((Figure) f).getPossibleFieldsToMove().forEach(k -> {
-                if (fieldsBetween.contains(k)) {
-                    if (f.getClass() == Pawn.class && ((Pawn) f).isOnThePenultimateLine()) {
-                        for (String writtenStyleTurn : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE) {
-                            List<FigureToField> covering = new ArrayList<>();
-                            covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
-                            coveringTurns.add(Turn.builder().figureToDestinationField(covering).figureFromTransformation(ProcessingUtils.createFigure(k, writtenStyleTurn, ((Figure) f).getColor())).transformation(true).build());
-                        }
-                    }
-                    List<FigureToField> covering = new ArrayList<>();
-                    covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
-                    coveringTurns.add(Turn.builder().figureToDestinationField(covering).build());
-                }
-            });
-        });
-    }
-
-    private Set<Turn> turnsInCaseEnPassant(Pawn ally) {
-        Set<Turn> possibleTurns = new HashSet<>();
-        Figure enPassantEnemy = ally.getEnPassantEnemy();
-        for (Field field : ally.getPossibleFieldsToMove()) {
-            List<FigureToField> figureToFieldTupleList = new ArrayList<>();
-            figureToFieldTupleList.add(FigureToField.builder().figure(ally).field(field).build());
-            possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldTupleList).build());
-
-        }
-        for (Figure enemy : ally.getWhoCouldBeEaten()) {
-            if (!enemy.equals(enPassantEnemy)) {
-                List<FigureToField> figureToFieldTupleList = new ArrayList<>();
-                figureToFieldTupleList.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldTupleList).eating(true).targetedFigure(enemy).build());
-            }
-        }
-        if (enPassantEnemy != null) {
-            List<FigureToField> figureToFieldList = new ArrayList<>();
-            figureToFieldList.add(FigureToField.builder().figure(ally).field(ally.getEnPassantField()).build());
-            possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldList).eating(true).targetedFigure(enPassantEnemy).build());
-        }
-        return possibleTurns;
-    }
-
-    private Set<Turn> turnsInCaseTransformation(Figure ally) {
-        Set<Turn> possibleTurns = new HashSet<>();
-        for (Field possibleFieldToMove : ally.getPossibleFieldsToMove()) {
-            for (String writtenStyle : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE) {
-                List<FigureToField> figureToFieldTupleList = new ArrayList<>();
-                figureToFieldTupleList.add(FigureToField.builder().figure(ally).field(possibleFieldToMove).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldTupleList).transformation(true).figureFromTransformation(ProcessingUtils.createFigure(possibleFieldToMove, writtenStyle, currentColor)).build());
-
-            }
-        }
-        for (Figure enemy : ally.getWhoCouldBeEaten()) {
-            for (String writtenStyle : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE) {
-                List<FigureToField> figureToFieldTupleList = new ArrayList<>();
-                figureToFieldTupleList.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldTupleList).transformation(true).figureFromTransformation(ProcessingUtils.createFigure(enemy.getField(), writtenStyle, currentColor)).eating(true).targetedFigure(enemy).build());
-
-            }
-        }
-        return possibleTurns;
-    }
-
-    private Set<Turn> setTransformationFields(Pawn pawn, Figure enemy) {
-        Set<Turn> transformationSet = new HashSet<>();
-        for (String writtenStyleOfFigure : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE) {
-            List<FigureToField> allyToFieldList = new ArrayList<>();
-            allyToFieldList.add(FigureToField.builder().figure(pawn).field(enemy.getField()).build());
-
-            Turn newTransformationTurn = Turn.builder().figureToDestinationField(allyToFieldList).transformation(true). eating(true).targetedFigure(enemy).figureFromTransformation(ProcessingUtils.createFigure(enemy.getField(), writtenStyleOfFigure, currentColor)).build();
-            transformationSet.add(newTransformationTurn);
-        }
-        return transformationSet;
     }
 }
