@@ -51,7 +51,7 @@ public class Castling {
         return castlings;
     }
 
-    private boolean isShortCastlingPossible(King king, Rock rock){
+    private boolean isShortCastlingPossible(King king, Rock rock) {
         return ((currentColor == Color.BLACK && rock.getField().equals(h8) && king.getField().equals(e8))
                 || (currentColor == Color.WHITE && rock.getField().equals(h1)) && king.getField().equals(e1))
                 && rock.isOpportunityToCastling()
@@ -59,16 +59,16 @@ public class Castling {
                 && shortCastlingFieldsAreNotUnderInfluenceAndNotOccupied();
     }
 
-    private boolean shortCastlingFieldsAreNotUnderInfluenceAndNotOccupied(){
+    private boolean shortCastlingFieldsAreNotUnderInfluenceAndNotOccupied() {
         return (currentColor == Color.BLACK)
                 ? !Board.getFieldsUnderWhiteInfluence().contains(f8)
-                    && !Board.getFieldsUnderWhiteInfluence().contains(g8)
-                    && Board.getFieldToFigure().get(f8) == null
-                    && Board.getFieldToFigure().get(g8) == null
+                && !Board.getFieldsUnderWhiteInfluence().contains(g8)
+                && Board.getFieldToFigure().get(f8) == null
+                && Board.getFieldToFigure().get(g8) == null
                 : !Board.getFieldsUnderBlackInfluence().contains(f1)
-                    && !Board.getFieldsUnderBlackInfluence().contains(g1)
-                    && Board.getFieldToFigure().get(f1) == null
-                    && Board.getFieldToFigure().get(g1) == null;
+                && !Board.getFieldsUnderBlackInfluence().contains(g1)
+                && Board.getFieldToFigure().get(f1) == null
+                && Board.getFieldToFigure().get(g1) == null;
     }
 
     private Turn shortCastling(Rock rock, King king) {
@@ -83,7 +83,7 @@ public class Castling {
         return Turn.builder().figureToDestinationField(castlingDestinations).writtenStyle(SHORT_CASTLING_ZEROS).build();
     }
 
-    private boolean isLongCastlingPossible(King king, Rock rock){
+    private boolean isLongCastlingPossible(King king, Rock rock) {
         return ((currentColor == Color.BLACK && rock.getField().equals(a8) && king.getField().equals(e8))
                 || (currentColor == Color.WHITE && rock.getField().equals(a1)) && king.getField().equals(e1))
                 && rock.isOpportunityToCastling()
@@ -91,7 +91,7 @@ public class Castling {
                 && longCastlingFieldsAreNotUnderInfluenceAndNotOccupied();
     }
 
-    private boolean longCastlingFieldsAreNotUnderInfluenceAndNotOccupied(){
+    private boolean longCastlingFieldsAreNotUnderInfluenceAndNotOccupied() {
         return (currentColor == Color.BLACK)
                 ? !Board.getFieldsUnderWhiteInfluence().contains(b8)
                 && !Board.getFieldsUnderWhiteInfluence().contains(c8)

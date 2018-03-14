@@ -13,7 +13,6 @@ import lombok.Builder;
 @ToString
 @Builder
 public class FinalResult {
-
     private int first;
     private int second;
     private int third;

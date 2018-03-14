@@ -11,7 +11,6 @@ import lombok.Builder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class AntiParameter {
-
     private int fifthParam;
     private int sixthParam;
     private int seventhParam;

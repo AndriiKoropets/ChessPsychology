@@ -11,7 +11,6 @@ import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
-import com.koropets_suhanov.chess.utils.ProcessingUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -120,10 +119,10 @@ public class Covering {
             ((Figure) f).getPossibleFieldsToMove().forEach(k -> {
                 if (fieldsBetween.contains(k)) {
                     if (f.getClass() == Pawn.class && ((Pawn) f).isOnThePenultimateLine()) {
-                        for (String writtenStyleTurn : ProcessingUtils.FIGURES_IN_WRITTEN_STYLE) {
+                        for (String writtenStyleTurn : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
                             List<FigureToField> covering = new ArrayList<>();
                             covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
-                            coveringTurns.add(Turn.builder().figureToDestinationField(covering).figureFromTransformation(ProcessingUtils.createFigure(k, writtenStyleTurn, ((Figure) f).getColor())).transformation(true).build());
+                            coveringTurns.add(Turn.builder().figureToDestinationField(covering).figureFromTransformation(ParseWrittenTurn.createFigure(k, writtenStyleTurn, ((Figure) f).getColor())).transformation(true).build());
                         }
                     }
                     List<FigureToField> covering = new ArrayList<>();

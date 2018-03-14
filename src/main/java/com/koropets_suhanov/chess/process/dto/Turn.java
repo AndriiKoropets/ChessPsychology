@@ -15,7 +15,6 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Turn {
-
     private List<FigureToField> figureToDestinationField;
     private Figure figureFromTransformation;
     private boolean eating;

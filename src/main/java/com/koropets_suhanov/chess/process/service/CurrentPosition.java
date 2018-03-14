@@ -50,7 +50,7 @@ public class CurrentPosition {
         define();
     }
 
-    private void define(){
+    private void define() {
         if (oneEnemyAttacksKing()) {
             turnsWhenOneEnemyAttacksKing();
         } else if (manyEnemiesAttackKing()) {
@@ -60,11 +60,11 @@ public class CurrentPosition {
         }
     }
 
-    private boolean manyEnemiesAttackKing(){
+    private boolean manyEnemiesAttackKing() {
         return king.isUnderAttack() && king.getEnemiesAttackMe().size() > 1;
     }
 
-    private boolean oneEnemyAttacksKing(){
+    private boolean oneEnemyAttacksKing() {
         return king.isUnderAttack() && king.getEnemiesAttackMe().size() == 1;
     }
 
@@ -75,7 +75,7 @@ public class CurrentPosition {
         coveringTurns();
     }
 
-    private void kingEscapesByEatingEnemies(){
+    private void kingEscapesByEatingEnemies() {
         List<FigureToField> kingToDestinationField = new ArrayList<>();
         for (Figure enemy : king.getWhoCouldBeEaten()) {
             if (enemy.getAlliesProtectMe().size() == 0) {
@@ -85,7 +85,7 @@ public class CurrentPosition {
         }
     }
 
-    private void eatingTurns(){
+    private void eatingTurns() {
         Figure enemy = king.getEnemiesAttackMe().iterator().next();
         for (Figure ally : kingsAllies) {
             if (isEnemyAndAllyPawns(enemy, ally)) {
@@ -105,7 +105,7 @@ public class CurrentPosition {
         }
     }
 
-    private void coveringTurns(){
+    private void coveringTurns() {
         Figure figureAttacksKing = king.getEnemiesAttackMe().iterator().next();
         Set<Turn> alienCovers = new HashSet<>();
         if (figureAttacksKing instanceof Rock) {
@@ -123,20 +123,20 @@ public class CurrentPosition {
         }
     }
 
-    private boolean isEnemyAndAllyPawns(Figure enemy, Figure ally){
+    private boolean isEnemyAndAllyPawns(Figure enemy, Figure ally) {
         return enemy.getClass() == Pawn.class && ally.getClass() == Pawn.class;
     }
 
-    private boolean isEnemyOnTheLastLine(Figure enemy){
-        return  (currentColor == Color.WHITE && enemy.getField().getX() == LINE_H)
+    private boolean isEnemyOnTheLastLine(Figure enemy) {
+        return (currentColor == Color.WHITE && enemy.getField().getX() == LINE_H)
                 || (currentColor == Color.BLACK && enemy.getField().getX() == LINE_A);
     }
 
-    private boolean canKingProtectItself(Figure ally, Figure enemy){
+    private boolean canKingProtectItself(Figure ally, Figure enemy) {
         return ally.getWhoCouldBeEaten().contains(enemy) && enemy.getAlliesProtectMe().size() == 1;
     }
 
-    private void pawnAttacksAndPawnProtectsKing(Pawn enemy, Pawn ally){
+    private void pawnAttacksAndPawnProtectsKing(Pawn enemy, Pawn ally) {
         if (canEnPassantSaveKing(ally, enemy)) {
             List<FigureToField> alienToTargetField = new ArrayList<>();
             alienToTargetField.add(FigureToField.builder().figure(ally).field(ally.getEnPassantField()).build());
@@ -163,21 +163,21 @@ public class CurrentPosition {
             } else {
                 definePeacefulTurns(ally);
                 for (Figure attackedFigure : ally.getWhoCouldBeEaten()) {
-                    List<FigureToField> figureFieldTuple = new ArrayList<>();
-                    figureFieldTuple.add(FigureToField.builder().figure(ally).field(attackedFigure.getField()).build());
+                    List<FigureToField> figureField = new ArrayList<>();
+                    figureField.add(FigureToField.builder().figure(ally).field(attackedFigure.getField()).build());
 
-                    allPossibleTurns.add(Turn.builder().figureToDestinationField(figureFieldTuple).eating(true).targetedFigure(attackedFigure).build());
+                    allPossibleTurns.add(Turn.builder().figureToDestinationField(figureField).eating(true).targetedFigure(attackedFigure).build());
                 }
             }
         }
         allPossibleTurns.addAll(castlingService.getCastlings());
     }
 
-    private boolean isEnPassantCase(Figure ally){
+    private boolean isEnPassantCase(Figure ally) {
         return ally.getClass() == Pawn.class && ((Pawn) ally).isEnPassant();
     }
 
-    private boolean isTransformationCase(Figure ally){
+    private boolean isTransformationCase(Figure ally) {
         return ally.getClass() == Pawn.class && ((Pawn) ally).isOnThePenultimateLine();
     }
 

@@ -1,8 +1,9 @@
 package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.dto.Turn;
+import com.koropets_suhanov.chess.process.service.PositionInfluence;
 import com.koropets_suhanov.chess.process.service.Process;
-import com.koropets_suhanov.chess.utils.ProcessingUtils;
+import com.koropets_suhanov.chess.process.service.ParseWrittenTurn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -288,7 +289,7 @@ public class Board implements Subject {
                         ((Figure) f).attackedFields();
                     });
                 } else {
-                    Figure newFigureForUpdate = ProcessingUtils.getFigureBornFromTransformation();
+                    Figure newFigureForUpdate = ParseWrittenTurn.getFigureBornFromTransformation();
                     register(newFigureForUpdate);
                     removeFigure(turn.getFigureToDestinationField().get(0).getFigure());
                     this.field = updatedField;
@@ -309,7 +310,7 @@ public class Board implements Subject {
                     Figure figureToDelete = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
                     removeFigure(figureToDelete);
                 }
-                Figure figureToResurrect = ProcessingUtils.eatenFigureToResurrection;
+                Figure figureToResurrect = PositionInfluence.eatenFigureToResurrection;
                 if (figureToResurrect != null) {
 //                Process.printAllBoard();
                     register(figureToResurrect);
