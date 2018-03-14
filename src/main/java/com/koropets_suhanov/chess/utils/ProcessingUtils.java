@@ -91,7 +91,7 @@ public class ProcessingUtils {
     public Turn getActualTurn() {
         candidates = new ArrayList<>();
         field = parseTargetField(currentWrittenStyleTurn);
-        return setTurn();
+        return defineTurn();
     }
 
     public Tuple2<FrequentFigure, FrequentFigure> countFrequency(boolean isWhite, String writtenTurn) {
@@ -118,7 +118,7 @@ public class ProcessingUtils {
         return new Tuple2<>(WHITE_FREQUENCY, BLACK_FREQUENCY);
     }
 
-    private Turn setTurn() {
+    private Turn defineTurn() {
         initialize();
         return isCastling() ? setCastlingTurn() : setNonCastlingTurn();
     }
@@ -368,7 +368,7 @@ public class ProcessingUtils {
             }
             return new Field(x, y);
         } else {
-            log.debug("Target field is null. Castling");
+            log.debug("Target field is null. CastlingService");
             return null;
         }
     }

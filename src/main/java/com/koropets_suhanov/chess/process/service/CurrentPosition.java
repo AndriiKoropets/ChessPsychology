@@ -23,41 +23,23 @@ import java.util.stream.Collectors;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.LINE_A;
 import static com.koropets_suhanov.chess.process.constants.Constants.LINE_H;
-import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING_ZEROS;
-import static com.koropets_suhanov.chess.process.constants.Constants.SHORT_CASTLING_ZEROS;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
 public class CurrentPosition {
 
-    private Set<Turn> possibleTurnsAndEating = new LinkedHashSet<>();
-
-    public static final Field f1 = new Field(7, 5);
-    public static final Field g1 = new Field(7, 6);
-    public static final Field b1 = new Field(7, 1);
-    public static final Field c1 = new Field(7, 2);
-    public static final Field d1 = new Field(7, 3);
-    public static final Field f8 = new Field(0, 5);
-    public static final Field g8 = new Field(0, 6);
-    public static final Field b8 = new Field(0, 1);
-    public static final Field c8 = new Field(0, 2);
-    public static final Field d8 = new Field(0, 3);
-    public static final Field a1 = new Field(7, 0);
-    public static final Field h1 = new Field(7, 7);
-    public static final Field e1 = new Field(7, 4);
-    public static final Field a8 = new Field(0, 0);
-    public static final Field h8 = new Field(0, 7);
-    public static final Field e8 = new Field(0, 4);
+    private Set<Turn> allPossibleTurns = new LinkedHashSet<>();
 
     private King king;
     private List<Figure> kingsAllies;
+    private CastlingService castlingService = new CastlingService();
 
     public Set<Turn> getAllPossibleTurns() {
         defineAllPossibleTurns();
-        return possibleTurnsAndEating.stream().filter(turn -> turn != null).collect(Collectors.toSet());
+        return allPossibleTurns.stream().filter(turn -> turn != null).collect(Collectors.toSet());
     }
 
     private void defineAllPossibleTurns() {
-        possibleTurnsAndEating.clear();
+        allPossibleTurns.clear();
         king = Board.getKingByColor(currentColor);
 
         List<Observer> allyObservers = Board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
@@ -71,7 +53,7 @@ public class CurrentPosition {
         if (oneEnemyAttacksKing()) {
             turnsWhenOneEnemyAttacksKing();
         } else if (manyEnemiesAttackKing()) {
-            peacefulKingTurns();
+            definePeacefulTurns(king);
         } else {
             noOneAttacksKing();
         }
@@ -88,7 +70,7 @@ public class CurrentPosition {
     private void turnsWhenOneEnemyAttacksKing() {
         kingEscapesByEatingEnemies();
         eatingTurns();
-        peacefulKingTurns();
+        definePeacefulTurns(king);
         coveringTurns();
     }
 
@@ -97,7 +79,7 @@ public class CurrentPosition {
         for (Figure enemy : king.getWhoCouldBeEaten()) {
             if (enemy.getAlliesProtectMe().size() == 0) {
                 kingToDestinationField.add(FigureToField.builder().figure(king).field(enemy.getField()).build());
-                possibleTurnsAndEating.add(Turn.builder().figureToDestinationField(kingToDestinationField).eating(true).targetedFigure(enemy).build());
+                allPossibleTurns.add(Turn.builder().figureToDestinationField(kingToDestinationField).eating(true).targetedFigure(enemy).build());
             }
         }
     }
@@ -110,14 +92,14 @@ public class CurrentPosition {
             } else if (isEnemyOnTheLastLine(enemy) && ally.getClass() == Pawn.class) {
                 Pawn pawnAlly = (Pawn) ally;
                 if (pawnReachesLastLineCanSaveKing(pawnAlly, enemy)) {
-                    possibleTurnsAndEating.addAll(setTransformationFields(pawnAlly, enemy));
+                    allPossibleTurns.addAll(setTransformationFields(pawnAlly, enemy));
 
                 }
             } else if (canKingProtectItself(ally, enemy)) {
                 List<FigureToField> alienToTargetField = new ArrayList<>();
                 alienToTargetField.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
 
-                possibleTurnsAndEating.add(Turn.builder().figureToDestinationField(alienToTargetField).eating(true).targetedFigure(enemy).build());
+                allPossibleTurns.add(Turn.builder().figureToDestinationField(alienToTargetField).eating(true).targetedFigure(enemy).build());
             }
         }
     }
@@ -136,7 +118,7 @@ public class CurrentPosition {
         }
 
         if (alienCovers != null) {
-            possibleTurnsAndEating.addAll(alienCovers);
+            allPossibleTurns.addAll(alienCovers);
         }
     }
 
@@ -157,8 +139,12 @@ public class CurrentPosition {
         if (canEnPassantSaveKing(ally, enemy)) {
             List<FigureToField> alienToTargetField = new ArrayList<>();
             alienToTargetField.add(FigureToField.builder().figure(ally).field(ally.getEnPassantField()).build());
-            possibleTurnsAndEating.add(Turn.builder().figureToDestinationField(alienToTargetField).eating(true).enPassant(true).targetedFigure(enemyAttacksKing).build());
+            allPossibleTurns.add(Turn.builder().figureToDestinationField(alienToTargetField).eating(true).enPassant(true).targetedFigure(enemy).build());
         }
+    }
+
+    private boolean pawnReachesLastLineCanSaveKing(Pawn pawnAlly, Figure enemy) {
+        return pawnAlly.isOnThePenultimateLine() && pawnAlly.getWhoCouldBeEaten().contains(enemy);
     }
 
     private boolean canEnPassantSaveKing(Pawn pawnAlly, Figure pawnEnemy) {
@@ -166,32 +152,39 @@ public class CurrentPosition {
     }
 
     private void noOneAttacksKing() {
-        for (Observer observer : allies) {
-            Figure ally = (Figure) observer;
-            if (ally.getClass() == Pawn.class && ((Pawn) ally).isEnPassant()) {
-                possibleTurnsAndEating.addAll(turnsInCaseEnPassant((Pawn) ally));
+        for (Figure ally : kingsAllies) {
+            if (isEnPassantCase(ally)) {
+                allPossibleTurns.addAll(turnsInCaseEnPassant((Pawn) ally));
 
-            } else if (ally.getClass() == Pawn.class && ((Pawn) ally).isOnThePenultimateLine()) {
-                possibleTurnsAndEating.addAll(turnsInCaseTransformation(ally));
+            } else if (isTransformationCase(ally)) {
+                allPossibleTurns.addAll(turnsInCaseTransformation(ally));
 
             } else {
-                peacefulKingTurns(ally);
+                definePeacefulTurns(ally);
                 for (Figure attackedFigure : ally.getWhoCouldBeEaten()) {
                     List<FigureToField> figureFieldTuple = new ArrayList<>();
                     figureFieldTuple.add(FigureToField.builder().figure(ally).field(attackedFigure.getField()).build());
 
-                    possibleTurnsAndEating.add(Turn.builder().figureToDestinationField(figureFieldTuple).eating(true).targetedFigure(attackedFigure).build());
+                    allPossibleTurns.add(Turn.builder().figureToDestinationField(figureFieldTuple).eating(true).targetedFigure(attackedFigure).build());
                 }
             }
         }
-        possibleTurnsAndEating.addAll(castling());
+        allPossibleTurns.addAll(castlingService.getCastlings());
     }
 
-    private void peacefulKingTurns() {
+    private boolean isEnPassantCase(Figure ally){
+        return ally.getClass() == Pawn.class && ((Pawn) ally).isEnPassant();
+    }
+
+    private boolean isTransformationCase(Figure ally){
+        return ally.getClass() == Pawn.class && ((Pawn) ally).isOnThePenultimateLine();
+    }
+
+    private void definePeacefulTurns(Figure figure) {
         for (Field field : figure.getPossibleFieldsToMove()) {
             List<FigureToField> figureToField = new ArrayList<>();
             figureToField.add(FigureToField.builder().figure(figure).field(field).build());
-            possibleTurnsAndEating.add(Turn.builder().figureToDestinationField(figureToField).build());
+            allPossibleTurns.add(Turn.builder().figureToDestinationField(figureToField).build());
         }
     }
 
@@ -236,89 +229,6 @@ public class CurrentPosition {
                 }
             });
         });
-    }
-
-    private List<Turn> castling() {
-        List<Turn> castlings = new ArrayList<>();
-        List<Figure> rocks = Board.getExactTypeOfFiguresByColor(Rock.class, currentColor);
-        King king = (King) Board.getExactTypeOfFiguresByColor(King.class, currentColor).get(0);
-        for (Figure figure : rocks) {
-            Rock rock = (Rock) figure;
-            if (isShortCastlingPossible(rock)) {
-                castlings.add(shortCastling(rock, king));
-            }
-            if (isLongCastlingPossible(rock)) {
-                castlings.add(longCastling(rock, king));
-            }
-        }
-        return castlings;
-    }
-
-    private boolean isShortCastlingPossible(Rock rock){
-        return ((currentColor == Color.BLACK && rock.getField().equals(h8))
-                || (currentColor == Color.WHITE && rock.getField().equals(h1)))
-                && rock.isOpportunityToCastling()
-                && king.isOpportunityToCastling();
-    }
-
-    private boolean isLongCastlingPossible(Rock rock){
-        return ((currentColor == Color.BLACK && rock.getField().equals(a8))
-                || (currentColor == Color.WHITE && rock.getField().equals(a1)))
-                && rock.isOpportunityToCastling()
-                && king.isOpportunityToCastling();
-    }
-
-    private Turn shortCastling(Rock rock, King king) {
-        Turn shortCastlingTurn = null;
-        List<FigureToField> castlingTuple = new ArrayList<>();
-        if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()) {
-            if (currentColor == Color.BLACK) {
-                if (!Board.getFieldsUnderWhiteInfluence().contains(f8) && !Board.getFieldsUnderWhiteInfluence().contains(g8) &&
-                        Board.getFieldToFigure().get(f8) == null && Board.getFieldToFigure().get(g8) == null) {
-                    castlingTuple.add(FigureToField.builder().figure(king).field(g8).build());
-                    castlingTuple.add(FigureToField.builder().figure(rock).field(f8).build());
-
-                    shortCastlingTurn = Turn.builder().figureToDestinationField(castlingTuple).writtenStyle(SHORT_CASTLING_ZEROS).build();
-                }
-            } else {
-                if (!Board.getFieldsUnderBlackInfluence().contains(f1) && !Board.getFieldsUnderBlackInfluence().contains(g1) &&
-                        Board.getFieldToFigure().get(f1) == null && Board.getFieldToFigure().get(g1) == null) {
-                    castlingTuple.add(FigureToField.builder().figure(king).field(g1).build());
-                    castlingTuple.add(FigureToField.builder().figure(rock).field(f1).build());
-                    shortCastlingTurn = Turn.builder().figureToDestinationField(castlingTuple).writtenStyle(SHORT_CASTLING_ZEROS).build();
-                }
-            }
-        }
-        return shortCastlingTurn;
-    }
-
-    private Turn longCastling(Rock rock, King king) {
-        Turn longCastlingTurn = null;
-        List<FigureToField> castlingTuple = new ArrayList<>();
-        if (rock.isOpportunityToCastling() && king.isOpportunityToCastling()) {
-            if (currentColor == Color.BLACK) {
-                if (!Board.getFieldsUnderWhiteInfluence().contains(b8) && !Board.getFieldsUnderWhiteInfluence().contains(c8) &&
-                        !Board.getFieldsUnderWhiteInfluence().contains(d8) && Board.getFieldToFigure().get(b8) == null &&
-                        Board.getFieldToFigure().get(c8) == null && Board.getFieldToFigure().get(d8) == null) {
-                    castlingTuple.add(FigureToField.builder().figure(king).field(c8).build());
-                    castlingTuple.add(FigureToField.builder().figure(rock).field(d8).build());
-                    longCastlingTurn = Turn.builder().figureToDestinationField(castlingTuple).writtenStyle(LONG_CASTLING_ZEROS).build();
-                }
-            } else {
-                if (!Board.getFieldsUnderBlackInfluence().contains(b1) && !Board.getFieldsUnderBlackInfluence().contains(c1) &&
-                        !Board.getFieldsUnderBlackInfluence().contains(d1) && Board.getFieldToFigure().get(b1) == null &&
-                        Board.getFieldToFigure().get(c1) == null && Board.getFieldToFigure().get(d1) == null) {
-                    castlingTuple.add(FigureToField.builder().figure(king).field(c1).build());
-                    castlingTuple.add(FigureToField.builder().figure(rock).field(d1).build());
-                    longCastlingTurn = Turn.builder().figureToDestinationField(castlingTuple).writtenStyle(LONG_CASTLING_ZEROS).build();
-                }
-            }
-        }
-        return longCastlingTurn;
-    }
-
-    private boolean pawnReachesLastLineCanSaveKing(Pawn pawnAlly, Figure enemy) {
-        return pawnAlly.isOnThePenultimateLine() && pawnAlly.getWhoCouldBeEaten().contains(enemy);
     }
 
     private Set<Turn> turnsInCaseEnPassant(Pawn ally) {
