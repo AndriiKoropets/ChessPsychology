@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Covering {
+    //todo: need to be refactored
 
     public Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock) {
         Set<Turn> coveringTurns = new HashSet<>();

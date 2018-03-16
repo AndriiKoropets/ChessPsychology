@@ -40,7 +40,7 @@ public class Process {
 
     private static CurrentPosition game = new CurrentPosition();
     public static PositionInfluence positionInfluence = new PositionInfluence();
-    private static EstimatePosition estimatePosition;
+    private static EstimatePosition estimatePosition = new EstimatePosition();
     public static Color currentColor;
     public static String currentWrittenStyleTurn;
     public static int currentTurnNumber;
@@ -215,10 +215,10 @@ public class Process {
                 .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())
                 .third(globalEstimation.getThird() + parameter.getThirdWithdrawAttackOnEnemy())
                 .fourth(globalEstimation.getFourth() + parameter.getFourthWithdrawAttackOnMe())
-                .fifth(globalEstimation.getFifth() + parameter.getFifthDontTakeAChanceToAttack()._1)
-                .sixth(globalEstimation.getSixth() + parameter.getSixthDontTakeAChanceToBeUnderAttack()._1)
-                .seventh(globalEstimation.getSeventh() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy()._1)
-                .eighth(globalEstimation.getEighth() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe()._1)
+                .fifth(globalEstimation.getFifth() + parameter.getFifthDontTakeAChanceToAttack().getWeight())
+                .sixth(globalEstimation.getSixth() + parameter.getSixthDontTakeAChanceToBeUnderAttack().getWeight())
+                .seventh(globalEstimation.getSeventh() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy().getWeight())
+                .eighth(globalEstimation.getEighth() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe().getWeight())
                 .build();
     }
 }

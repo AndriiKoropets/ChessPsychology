@@ -36,6 +36,7 @@ import static com.koropets_suhanov.chess.process.service.Process.currentWrittenS
 @UtilityClass
 @Slf4j
 public class ParseWrittenTurn {
+    //todo: need to be refactored
 
     public final Field a1 = new Field(7, 0);
     public final Field h1 = new Field(7, 7);

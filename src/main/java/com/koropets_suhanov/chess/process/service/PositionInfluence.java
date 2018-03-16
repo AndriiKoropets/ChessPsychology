@@ -24,6 +24,7 @@ import static com.koropets_suhanov.chess.process.service.ParseWrittenTurn.figure
 import static java.lang.Math.abs;
 
 public class PositionInfluence {
+    //todo: need to be refactored
 
     private Set<Field> affectedFields;
     private List<FigureToField> tuplesFigureToField;
@@ -96,20 +97,30 @@ public class PositionInfluence {
     }
 
     private boolean isOnTheSameLine(Figure f1, Figure f2, Figure f3) {
-        if (f1.getClass() == Bishop.class || f2.getClass() == Bishop.class || f3.getClass() == Bishop.class) {
+        if (isSomeoneBishop(f1, f2, f3)) {
             return (abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
                     && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY()))
                     && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY()));
         }
-        if (f1.getClass() == Rock.class || f2.getClass() == Rock.class || f3.getClass() == Rock.class) {
-            return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
-                    ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY()));
+        if (isSomeoneRock(f1, f2, f3)) {
+            return ((f1.getField().getX() == f2.getField().getX())
+                        && (f2.getField().getX() == f3.getField().getX()))
+                    || ((f1.getField().getY() == f2.getField().getY())
+                        && (f2.getField().getY() == f3.getField().getY()));
         }
-        return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX())) ||
-                ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY())) ||
-                (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
+        return ((f1.getField().getX() == f2.getField().getX()) && (f2.getField().getX() == f3.getField().getX()))
+                || ((f1.getField().getY() == f2.getField().getY()) && (f2.getField().getY() == f3.getField().getY()))
+                || (((abs(f1.getField().getX() - f2.getField().getX()) == abs(f1.getField().getY() - f2.getField().getY()))
                         && (abs(f2.getField().getX() - f3.getField().getX()) == abs(f2.getField().getY() - f3.getField().getY())))
                         && (abs(f1.getField().getX() - f3.getField().getX()) == abs(f1.getField().getY() - f3.getField().getY())));
+    }
+
+    private boolean isSomeoneBishop(Figure f1, Figure f2, Figure f3){
+        return f1.getClass() == Bishop.class || f2.getClass() == Bishop.class || f3.getClass() == Bishop.class;
+    }
+
+    private boolean isSomeoneRock(Figure f1, Figure f2, Figure f3){
+        return f1.getClass() == Rock.class || f2.getClass() == Rock.class || f3.getClass() == Rock.class;
     }
 
     public boolean isEmpty(Set<?> set) {
