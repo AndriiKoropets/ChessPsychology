@@ -5,6 +5,7 @@ import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
+import com.koropets_suhanov.chess.process.utils.ProcessUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,13 +29,21 @@ public class EnPassantAndTransformation {
             if (!enemy.equals(enPassantEnemy)) {
                 List<FigureToField> figureToField = new ArrayList<>();
                 figureToField.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToField).eating(true).targetedFigure(enemy).build());
+                possibleTurns.add(Turn.builder()
+                        .figureToDestinationField(figureToField)
+                        .eating(true)
+                        .targetedFigure(enemy)
+                        .build());
             }
         }
         if (enPassantEnemy != null) {
             List<FigureToField> figureToFieldList = new ArrayList<>();
             figureToFieldList.add(FigureToField.builder().figure(ally).field(ally.getEnPassantField()).build());
-            possibleTurns.add(Turn.builder().figureToDestinationField(figureToFieldList).eating(true).targetedFigure(enPassantEnemy).build());
+            possibleTurns.add(Turn.builder()
+                    .figureToDestinationField(figureToFieldList)
+                    .eating(true)
+                    .targetedFigure(enPassantEnemy)
+                    .build());
         }
         return possibleTurns;
     }
@@ -45,16 +54,23 @@ public class EnPassantAndTransformation {
             for (String writtenStyle : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
                 List<FigureToField> figureToField = new ArrayList<>();
                 figureToField.add(FigureToField.builder().figure(ally).field(possibleFieldToMove).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToField).transformation(true).figureFromTransformation(ParseWrittenTurn.createFigure(possibleFieldToMove, writtenStyle, currentColor)).build());
-
+                possibleTurns.add(Turn.builder()
+                        .figureToDestinationField(figureToField)
+                        .transformation(true)
+                        .figureFromTransformation(ProcessUtils.createFigure(possibleFieldToMove, writtenStyle, currentColor))
+                        .build());
             }
         }
         for (Figure enemy : ally.getWhoCouldBeEaten()) {
             for (String writtenStyle : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
                 List<FigureToField> figureToField = new ArrayList<>();
                 figureToField.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
-                possibleTurns.add(Turn.builder().figureToDestinationField(figureToField).transformation(true).figureFromTransformation(ParseWrittenTurn.createFigure(enemy.getField(), writtenStyle, currentColor)).eating(true).targetedFigure(enemy).build());
-
+                possibleTurns.add(Turn.builder()
+                        .figureToDestinationField(figureToField)
+                        .transformation(true)
+                        .figureFromTransformation(ProcessUtils.createFigure(enemy.getField(), writtenStyle, currentColor)).eating(true)
+                        .targetedFigure(enemy)
+                        .build());
             }
         }
         return possibleTurns;
@@ -66,7 +82,13 @@ public class EnPassantAndTransformation {
             List<FigureToField> allyToFieldList = new ArrayList<>();
             allyToFieldList.add(FigureToField.builder().figure(pawn).field(enemy.getField()).build());
 
-            Turn newTransformationTurn = Turn.builder().figureToDestinationField(allyToFieldList).transformation(true).eating(true).targetedFigure(enemy).figureFromTransformation(ParseWrittenTurn.createFigure(enemy.getField(), writtenStyleOfFigure, currentColor)).build();
+            Turn newTransformationTurn = Turn.builder()
+                    .figureToDestinationField(allyToFieldList)
+                    .transformation(true)
+                    .eating(true)
+                    .targetedFigure(enemy)
+                    .figureFromTransformation(ProcessUtils.createFigure(enemy.getField(), writtenStyleOfFigure, currentColor))
+                    .build();
             transformationSet.add(newTransformationTurn);
         }
         return transformationSet;

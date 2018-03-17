@@ -13,6 +13,7 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
+import com.koropets_suhanov.chess.process.utils.ProcessUtils;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,7 @@ public class ParseWrittenTurn {
     public final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
     @Getter
     public static Figure figureBornFromTransformation;
-    private String figureInWrittenStyleToBorn;
+    public static String figureInWrittenStyleToBorn;
 
     public Turn getActualTurn() {
         candidates = new ArrayList<>();
@@ -201,7 +202,7 @@ public class ParseWrittenTurn {
                     if (pawn.getPreyField().contains(field)) {
                         targets.add(curFigure);
                         targetedFigure = Board.getFieldToFigure().get(field);
-                        figureBornFromTransformation = createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
+                        figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
                     }
                 } else {
                     if (clazz == Pawn.class && ((Pawn) curFigure).isEnPassant()) {
@@ -229,7 +230,7 @@ public class ParseWrittenTurn {
                     Pawn pawn = (Pawn) curFigure;
                     if (pawn.getPossibleFieldsToMove().contains(field)) {
                         candidates.add(pawn);
-                        figureBornFromTransformation = createFigure(field, figureInWrittenStyleToBorn, currentColor);
+                        figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, currentColor);
                     }
                 } else {
                     if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)) {
@@ -350,20 +351,6 @@ public class ParseWrittenTurn {
             char theLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 1);
             return FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(theLast));
         }
-    }
-
-    public Figure createFigure(Field field, String writtenStyleOfTheFigure, Color color) {
-        switch (writtenStyleOfTheFigure) {
-            case "Q":
-                return new Queen(field, color);
-            case "B":
-                return new Bishop(field, color);
-            case "N":
-                return new Knight(field, color);
-            case "R":
-                return new Rock(field, color);
-        }
-        throw new RuntimeException("Could not choose figure. Turn must be wrong written." + currentWrittenStyleTurn + " " + figureBornFromTransformation + " " + figureInWrittenStyleToBorn);
     }
 
     private boolean isEnPassantScenario(List<FigureToField> figureToField) {
