@@ -34,7 +34,7 @@ public class PositionInfluence {
     public void makeTurn(Turn turn) {
         getAffectedFields(turn);
         System.out.println(affectedFields);
-        System.out.println("Turn = " + turn);
+//        System.out.println("Turn = " + turn);
         setTurnForUndoing(turn);
         for (FigureToField figuresToFields : turn.getFigureToDestinationField()) {
             board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), turn.getTargetedFigure(), false, turn.isEnPassant());
@@ -142,7 +142,7 @@ public class PositionInfluence {
     }
 
     private void setTurnForUndoing(Turn turn) {
-        System.out.println("Turn = " + turn);
+//        System.out.println("Turn = " + turn);
         tuplesFigureToField = new ArrayList<>();
         eatenFigureToResurrection = null;
         for (FigureToField figureToField : turn.getFigureToDestinationField()) {

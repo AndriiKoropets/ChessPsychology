@@ -258,16 +258,16 @@ public class Board implements Subject {
         if (eatenFigure != null) {
             removeFigure(eatenFigure);
         }
-        System.out.println("updatedFigure " + updatedFigure);
-        System.out.println("updatedField " + updatedField);
-        System.out.println("eatenFigure " + eatenFigure);
-        System.out.println("isUndoing " + isUndoing);
-        System.out.println("enPassant " + enPassant);
-        System.out.println("isTransformation " + turn.isTransformation());
+//        System.out.println("updatedFigure " + updatedFigure);
+//        System.out.println("updatedField " + updatedField);
+//        System.out.println("eatenFigure " + eatenFigure);
+//        System.out.println("isUndoing " + isUndoing);
+//        System.out.println("enPassant " + enPassant);
+//        System.out.println("isTransformation " + turn.isTransformation());
 //        for (Observer f : figures){
 //            System.out.println(f);
 //        }
-        Process.printAllBoard();
+//        Process.printAllBoard();
         if (turn.isTransformation() && isUndoing) {
             Figure pawnToReborn = turn.getFigureToDestinationField().get(0).getFigure();
             Figure transformatedFigureToRemove = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
@@ -298,7 +298,7 @@ public class Board implements Subject {
                         ((Figure) f).possibleTurns();
                         ((Figure) f).attackedFields();
                     });
-                    Process.printAllBoard();
+//                    Process.printAllBoard();
                 }
 
             } else {
@@ -320,7 +320,7 @@ public class Board implements Subject {
                 enPassantPrey = turn.getTargetedFigure();
             }
         }
-        Process.printAllBoard();
+//        Process.printAllBoard();
     }
 
     public static Set<Field> getTakenFields() {

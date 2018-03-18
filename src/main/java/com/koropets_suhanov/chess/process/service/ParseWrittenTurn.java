@@ -46,7 +46,8 @@ public class ParseWrittenTurn {
     public final Field h8 = new Field(0, 7);
     public final Field e8 = new Field(0, 4);
 
-    private List<Observer> candidates;
+    private List<Observer> candidateFiguresPeacefullTurn = new ArrayList<>();
+    private List<Observer> eatTurnCandidateFigures = new ArrayList<>();
     private Field field;
     private List<FigureToField> figureToField = new ArrayList<>();
     private Figure figure;
@@ -68,7 +69,6 @@ public class ParseWrittenTurn {
     public static String figureInWrittenStyleToBorn;
 
     public Turn getActualTurn() {
-        candidates = new ArrayList<>();
         field = parseTargetField(currentWrittenStyleTurn);
         return defineTurn();
     }
@@ -79,7 +79,8 @@ public class ParseWrittenTurn {
     }
 
     private void initialize() {
-        candidates.clear();
+        candidateFiguresPeacefullTurn.clear();
+        eatTurnCandidateFigures.clear();
         figureToField.clear();
         figure = null;
         targetedFigure = null;
@@ -145,29 +146,10 @@ public class ParseWrittenTurn {
         Turn.TurnBuilder curTurnBuilder = Turn.builder();
         char firstCharacter = currentWrittenStyleTurn.charAt(0);
 
-        if (!isPawn(firstCharacter)) {
-            switch (firstCharacter) {
-                case 'R':
-                    figureToField = createFigureToFieldDependsOnFigureType(Rock.class);
-                    break;
-                case 'N':
-                    figureToField = createFigureToFieldDependsOnFigureType(Knight.class);
-                    break;
-                case 'B':
-                    figureToField = createFigureToFieldDependsOnFigureType(Bishop.class);
-                    break;
-                case 'Q':
-                    figureToField = createFigureToFieldDependsOnFigureType(Queen.class);
-                    break;
-                case 'K':
-                    figureToField = createFigureToFieldDependsOnFigureType(King.class);
-                    break;
-                default:
-                    figureToField = createFigureToFieldDependsOnFigureType(Pawn.class);
-                    break;
-            }
+        if (isNotPawn(firstCharacter)) {
+            notPawnDefineFigureToField(firstCharacter);
         } else {
-            figureToField = createFigureToFieldDependsOnFigureType(Pawn.class);
+            figureToField = defineFiguresToDestinationFields(Pawn.class);
             curTurnBuilder.enPassant(isEnPassantScenario(figureToField));
         }
 
@@ -182,77 +164,49 @@ public class ParseWrittenTurn {
                 .build();
     }
 
-    private boolean isPawn(Character firstCharacter) {
+    private boolean isNotPawn(Character firstCharacter) {
         return FIGURES_IN_WRITTEN_STYLE_EXCEPT_PAWN.contains(firstCharacter);
     }
 
-    private List<FigureToField> createFigureToFieldDependsOnFigureType(Class figure) {
-        return currentWrittenStyleTurn.contains("x")
-                ? fetchFigureToTargetField(figure)
-                : fetchFigureToTargetField(figure);
+    private void notPawnDefineFigureToField(Character firstCharacter){
+        switch (firstCharacter) {
+            case 'R':
+                figureToField = defineFiguresToDestinationFields(Rock.class);
+                break;
+            case 'N':
+                figureToField = defineFiguresToDestinationFields(Knight.class);
+                break;
+            case 'B':
+                figureToField = defineFiguresToDestinationFields(Bishop.class);
+                break;
+            case 'Q':
+                figureToField = defineFiguresToDestinationFields(Queen.class);
+                break;
+            case 'K':
+                figureToField = defineFiguresToDestinationFields(King.class);
+                break;
+            default:
+                figureToField = defineFiguresToDestinationFields(Pawn.class);
+                break;
+        }
     }
 
-    private List<FigureToField> fetchFigureToTargetField(Class clazz) {
-        List<Observer> targets = new ArrayList<>();
-        List<Figure> figures = Board.getExactTypeOfFiguresByColor(clazz, currentColor);
-        for (Observer curFigure : figures) {
-            if (eating) {
-                if (transformation && clazz == Pawn.class) {
-                    Pawn pawn = (Pawn) curFigure;
-                    if (pawn.getPreyField().contains(field)) {
-                        targets.add(curFigure);
-                        targetedFigure = Board.getFieldToFigure().get(field);
-                        figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
-                    }
-                } else {
-                    if (clazz == Pawn.class && ((Pawn) curFigure).isEnPassant()) {
-                        Pawn pawn = (Pawn) curFigure;
-                        if (pawn.getEnPassantField().equals(field)) {
-//                        System.out.println("Field = " + field);
-                            targets.add(pawn);
-                            targetedFigure = pawn.getEnPassantEnemy();
-//                        System.out.println("Here... passed " + targetedFigure + " " + targets);
-//                        System.out.println("who could be eaten = " + pawn.getWhoCouldBeEaten() + " aleis I protect = "
-//                                + pawn.getAlliesIProtect() + " enemy fields = " + pawn.getPreyField() + " enPassant enemy = "
-//                        + pawn.getEnPassantEnemy());
-                        }
-                    } else {
-//                    System.out.println("Class = "  + clazz + " color = " + color + " eating = " + eating);
-                        if (((Figure) curFigure).getPreyField().contains(field)) {
-                            targets.add(curFigure);
-                            targetedFigure = Board.getFieldToFigure().get(field);
-//                        System.out.println("targeted figure = " + targetedFigure);
-                        }
-                    }
-                }
-            } else {
-                if (transformation && clazz == Pawn.class) {
-                    Pawn pawn = (Pawn) curFigure;
-                    if (pawn.getPossibleFieldsToMove().contains(field)) {
-                        candidates.add(pawn);
-                        figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, currentColor);
-                    }
-                } else {
-                    if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)) {
-                        candidates.add(curFigure);
-                    }
-                }
-            }
-        }
-        if (!targets.isEmpty()) {
-            System.out.println("targets = " + targets);
-            if (targets.size() == 1) {
-                figure = (Figure) targets.get(0);
+    private List<FigureToField> defineFiguresToDestinationFields(Class figureType) {
+        definePossibleCandidatesFromWrittenTurn(figureType);
+        if (!eatTurnCandidateFigures.isEmpty()) {
+            System.out.println("eatTurnCandidateFigures = " + eatTurnCandidateFigures);
+            if (eatTurnCandidateFigures.size() == 1) {
+                figure = (Figure) eatTurnCandidateFigures.get(0);
                 System.out.println("Figure = " + figure);
             } else {
-                figure = choseFigureWhichAttack(targets, clazz);
+                figure = choseFigureWhichAttack(eatTurnCandidateFigures, figureType);
             }
         }
-        if (!candidates.isEmpty()) {
-            if (candidates.size() > 1) {
-                figure = choseExactFigure(candidates);
+        if (!candidateFiguresPeacefullTurn.isEmpty()) {
+            if (candidateFiguresPeacefullTurn.size() > 1) {
+                figure = choseExactFigure(candidateFiguresPeacefullTurn);
             } else {
-                figure = (Figure) candidates.get(0);
+                figure = (Figure) candidateFiguresPeacefullTurn.get(0);
             }
         }
         if (figure != null) {
@@ -263,6 +217,60 @@ public class ParseWrittenTurn {
             throw new RuntimeException("Could not fetch figure. Turn must be wrong written. Turn = " + currentWrittenStyleTurn);
         }
         return figureToField;
+    }
+
+    private void definePossibleCandidatesFromWrittenTurn(Class figureType){
+        List<Figure> figures = Board.getExactTypeOfFiguresByColor(figureType, currentColor);
+        for (Observer curFigure : figures) {
+            if (eating) {
+                if (((Figure) curFigure).getPreyField().contains(field)) {
+                    eatTurnCandidateFigures.add(curFigure);
+                    targetedFigure = Board.getFieldToFigure().get(field);
+                }
+            } else {
+                if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)) {
+                    candidateFiguresPeacefullTurn.add(curFigure);
+                }
+            }
+        }
+    }
+
+    private List<FigureToField> definePawnsToDestinationFields(){
+        List<Figure> figures = Board.getExactTypeOfFiguresByColor(Pawn.class, currentColor);
+        for (Observer curFigure : figures) {
+            if (eating) {
+                if (transformation) {
+                    Pawn pawn = (Pawn) curFigure;
+                    if (pawn.getPreyField().contains(field)) {
+                        eatTurnCandidateFigures.add(curFigure);
+                        targetedFigure = Board.getFieldToFigure().get(field);
+                        figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, pawn.getColor());
+                    }
+                } else {
+                    if (((Pawn) curFigure).isEnPassant()) {
+                        Pawn pawn = (Pawn) curFigure;
+                        if (pawn.getEnPassantField().equals(field)) {
+                            eatTurnCandidateFigures.add(pawn);
+                            targetedFigure = pawn.getEnPassantEnemy();
+                        }
+                    }
+                }
+            } else {
+                if (transformation) {
+                    Pawn pawn = (Pawn) curFigure;
+                    if (pawn.getPossibleFieldsToMove().contains(field)) {
+                        candidateFiguresPeacefullTurn.add(pawn);
+                        figureBornFromTransformation = ProcessUtils
+                                .createFigure(field, figureInWrittenStyleToBorn, currentColor);
+                    }
+                } else {
+                    if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)) {
+                        candidateFiguresPeacefullTurn.add(curFigure);
+                    }
+                }
+            }
+        }
+        return figures;
     }
 
     private Figure choseFigureWhichAttack(List<Observer> targets, Class clazz) {
@@ -290,7 +298,7 @@ public class ParseWrittenTurn {
     }
 
     private Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne) {
-        System.out.println("candidates = " + candidatesForBeingTheOne);
+        System.out.println("candidateFiguresPeacefullTurn = " + candidatesForBeingTheOne);
         for (Observer observer : candidatesForBeingTheOne) {
             if (integer > SIZE) {
                 System.out.println("Passed = " + integer);
