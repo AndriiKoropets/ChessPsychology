@@ -28,12 +28,12 @@ public class Castling {
     private static final Field b8 = new Field(0, 1);
     private static final Field c8 = new Field(0, 2);
     private static final Field d8 = new Field(0, 3);
-    private static final Field a1 = new Field(7, 0);
-    private static final Field h1 = new Field(7, 7);
-    private static final Field e1 = new Field(7, 4);
-    private static final Field a8 = new Field(0, 0);
-    private static final Field h8 = new Field(0, 7);
-    private static final Field e8 = new Field(0, 4);
+    public static final Field a1 = new Field(7, 0);
+    public static final Field h1 = new Field(7, 7);
+    public static final Field e1 = new Field(7, 4);
+    public static final Field a8 = new Field(0, 0);
+    public static final Field h8 = new Field(0, 7);
+    public static final Field e8 = new Field(0, 4);
 
     public List<Turn> getCastlings() {
         List<Turn> castlings = new ArrayList<>();

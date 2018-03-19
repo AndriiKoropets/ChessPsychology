@@ -118,7 +118,7 @@ public class Process {
                 System.out.println("Black estimation = " + blackEstimationWholeParty);
                 System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
                 System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
-                System.out.println("Number " + currentTurnNumber + " has just been processed");
+                System.out.println("Number " + currentTurnNumber + " = " + currentWrittenStyleTurn + " has just been processed");
             }
             printAllBoard();
 //            System.out.println("White estimation = " + whiteEstimationWholeParty);
