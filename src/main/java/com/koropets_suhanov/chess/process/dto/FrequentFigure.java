@@ -11,11 +11,10 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FrequentFigure {
-
-    private int king;
-    private int queen;
-    private int bishop;
-    private int knight;
-    private int rock;
-    private int pawn;
+  private int king;
+  private int queen;
+  private int bishop;
+  private int knight;
+  private int rock;
+  private int pawn;
 }

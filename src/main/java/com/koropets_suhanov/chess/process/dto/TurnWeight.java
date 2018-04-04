@@ -11,6 +11,6 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TurnWeight {
-    private int weight;
-    private Turn turn;
+  private int weight;
+  private Turn turn;
 }

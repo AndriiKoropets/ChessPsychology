@@ -11,12 +11,12 @@ import lombok.Builder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Parameter {
-    private int firstAttackEnemy;
-    private int secondBeUnderAttack;
-    private int thirdWithdrawAttackOnEnemy;
-    private int fourthWithdrawAttackOnMe;
-    private WeightAndDestinations fifthDontTakeAChanceToAttack;
-    private WeightAndDestinations sixthDontTakeAChanceToBeUnderAttack;
-    private WeightAndDestinations seventhDontTakeAChanceToWithdrawAttackOnEnemy;
-    private WeightAndDestinations eighthDontTakeAChanceToWithdrawAttackOnMe;
+  private int firstAttackEnemy;
+  private int secondBeUnderAttack;
+  private int thirdWithdrawAttackOnEnemy;
+  private int fourthWithdrawAttackOnMe;
+  private WeightAndDestinations fifthDontTakeAChanceToAttack;
+  private WeightAndDestinations sixthDontTakeAChanceToBeUnderAttack;
+  private WeightAndDestinations seventhDontTakeAChanceToWithdrawAttackOnEnemy;
+  private WeightAndDestinations eighthDontTakeAChanceToWithdrawAttackOnMe;
 }

@@ -11,6 +11,6 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Frequency {
-    private FrequentFigure white;
-    private FrequentFigure black;
+  private FrequentFigure white;
+  private FrequentFigure black;
 }

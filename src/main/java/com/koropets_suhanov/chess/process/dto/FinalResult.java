@@ -13,12 +13,12 @@ import lombok.Builder;
 @ToString
 @Builder
 public class FinalResult {
-    private int first;
-    private int second;
-    private int third;
-    private int fourth;
-    private int fifth;
-    private int sixth;
-    private int seventh;
-    private int eighth;
+  private int first;
+  private int second;
+  private int third;
+  private int fourth;
+  private int fifth;
+  private int sixth;
+  private int seventh;
+  private int eighth;
 }

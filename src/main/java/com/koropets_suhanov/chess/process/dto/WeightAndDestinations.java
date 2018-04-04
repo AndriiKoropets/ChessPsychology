@@ -13,6 +13,6 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class WeightAndDestinations {
-    private int weight;
-    private List<FigureToField> figureToFields;
+  private int weight;
+  private List<FigureToField> figureToFields;
 }

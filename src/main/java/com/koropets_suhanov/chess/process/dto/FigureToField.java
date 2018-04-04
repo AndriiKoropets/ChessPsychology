@@ -13,6 +13,6 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FigureToField {
-    private Figure figure;
-    private Field field;
+  private Figure figure;
+  private Field field;
 }

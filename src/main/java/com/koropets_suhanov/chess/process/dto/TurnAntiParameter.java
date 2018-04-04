@@ -11,6 +11,6 @@ import lombok.AccessLevel;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TurnAntiParameter {
-    private AntiParameter antiParameter;
-    private Turn turn;
+  private AntiParameter antiParameter;
+  private Turn turn;
 }
