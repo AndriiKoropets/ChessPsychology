@@ -175,7 +175,7 @@ public class Covering {
       ((Figure) f).getPossibleFieldsToMove().forEach(k -> {
         if (fieldsBetween.contains(k)) {
           if (f.getClass() == Pawn.class && ((Pawn) f).isOnThePenultimateLine()) {
-            for (String writtenStyleTurn : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
+            for (String writtenStyleTurn : ParseWrittenTurn.ALL_FIGURES) {
               List<FigureToField> covering = new ArrayList<>();
               covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
               coveringTurns.add(Turn.builder()

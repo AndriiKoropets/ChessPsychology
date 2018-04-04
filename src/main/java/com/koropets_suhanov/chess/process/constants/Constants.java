@@ -10,6 +10,7 @@ public class Constants {
   public static final String SHORT_CASTLING = "O-O";
   public static final String LONG_CASTLING_ZEROS = "0-0-0";
   public static final String LONG_CASTLING = "O-O-O";
+  public static final String EATING_SYMBOL = "x";
   public static final byte SIZE = 8;
   public static final String PLUS = "+";
 }

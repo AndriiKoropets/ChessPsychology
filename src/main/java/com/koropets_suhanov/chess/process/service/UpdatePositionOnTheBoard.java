@@ -10,6 +10,7 @@ import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
+import com.koropets_suhanov.chess.process.utils.ProcessUtils;
 
 import java.util.Set;
 import java.util.List;
@@ -23,7 +24,7 @@ import static com.koropets_suhanov.chess.process.service.Process.board;
 import static com.koropets_suhanov.chess.process.service.ParseWrittenTurn.figureBornFromTransformation;
 import static java.lang.Math.abs;
 
-public class PositionInfluence {
+public class UpdatePositionOnTheBoard {
   //todo: need to be refactored
 
   private Set<Field> affectedFields;
@@ -37,7 +38,7 @@ public class PositionInfluence {
 //        System.out.println("Turn = " + turn);
     setTurnForUndoing(turn);
     for (FigureToField figuresToFields : turn.getFigureToDestinationField()) {
-      board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), turn.getTargetedFigure(), false, turn.isEnPassant());
+      board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), false);
     }
     makePullAdditionalAlliesAndEnemies();
   }
@@ -54,7 +55,7 @@ public class PositionInfluence {
     Map<Figure, Set<Figure>> figureToChosenAllies = new HashMap<>();
     Board.getFigures().forEach(f -> {
       Set<Figure> chosenAllies = ((Figure) f).pullAdditionalAlliesAndEnemies();
-      if (!isEmpty(chosenAllies)) {
+      if (!ProcessUtils.isEmpty(chosenAllies)) {
         figureToChosenAllies.put((Figure) f, chosenAllies);
       }
     });
@@ -123,10 +124,6 @@ public class PositionInfluence {
     return f1.getClass() == Rock.class || f2.getClass() == Rock.class || f3.getClass() == Rock.class;
   }
 
-  public boolean isEmpty(Set<?> set) {
-    return set == null || set.isEmpty();
-  }
-
   public void undoTurn(Turn turn) {
     Turn undoTurn = Turn.builder()
             .figureToDestinationField(tuplesFigureToField)
@@ -135,7 +132,7 @@ public class PositionInfluence {
             .numberOfTurn(turn.getNumberOfTurn())
             .build();
     for (FigureToField figuresToFields : undoTurn.getFigureToDestinationField()) {
-      board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), undoTurn.getTargetedFigure(), true, turn.isEnPassant());
+      board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), true);
     }
     eatenFigureToResurrection = null;
     makePullAdditionalAlliesAndEnemies();

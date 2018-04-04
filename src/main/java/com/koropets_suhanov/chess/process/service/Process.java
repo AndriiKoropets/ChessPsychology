@@ -39,11 +39,15 @@ public class Process {
   private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
   private static CurrentPosition game = new CurrentPosition();
-  public static PositionInfluence positionInfluence = new PositionInfluence();
+  public static UpdatePositionOnTheBoard updatePositionOnTheBoard = new UpdatePositionOnTheBoard();
   private static EstimatePosition estimatePosition = new EstimatePosition();
   public static Color currentColor;
   public static String currentWrittenStyleTurn;
   public static int currentTurnNumber;
+  public static Turn currentWhiteTurn;
+  public static Turn currentBlackTurn;
+  public static Turn previousWhiteTurn;
+  public static Turn previousBlackTurn;
 
   private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
   private static Parameter whiteEstimationWholeParty;
@@ -79,13 +83,14 @@ public class Process {
           String writtenBlackTurn = matcher.group(3);
           currentColor = Color.WHITE;
           currentWrittenStyleTurn = writtenWhiteTurn;
+          previousWhiteTurn = currentWhiteTurn;
           Turn whiteTurn = ParseWrittenTurn.getActualTurn();
+          currentWhiteTurn = whiteTurn;
 //                    System.out.println("White turn = " + whiteTurn);
           whitePossibleTurns = game.getAllPossibleTurns();
 //                    printAllPossibleTurns(whitePossibleTurns);
           //TODO write logic which gets rid of makeTurn. It should be monolithic. Whole estimation could be defined in EstimatePosition class.
-          board.setCurrentTurn(whiteTurn);
-          positionInfluence.makeTurn(whiteTurn);
+          updatePositionOnTheBoard.makeTurn(whiteTurn);
 //                    System.out.println("After turn = " + whiteTurn);
           printAllBoard();
 //                    currentStateOfAllFigures();
@@ -95,12 +100,13 @@ public class Process {
           if (writtenBlackTurn != null) {
             currentColor = Color.BLACK;
             currentWrittenStyleTurn = writtenBlackTurn;
+            previousBlackTurn = currentBlackTurn;
             Turn blackTurn = ParseWrittenTurn.getActualTurn();
+            currentBlackTurn = blackTurn;
 //                        System.out.println("Black turn = " + blackTurn);
             blackPossibleTurns = game.getAllPossibleTurns();
 //                        printAllPossibleTurns(blackPossibleTurns);
-            board.setCurrentTurn(blackTurn);
-            positionInfluence.makeTurn(blackTurn);
+            updatePositionOnTheBoard.makeTurn(blackTurn);
             printAllBoard();
 //                        System.out.println("After turn = " + blackTurn);
             System.out.println("Figures = " + Board.getFigures());

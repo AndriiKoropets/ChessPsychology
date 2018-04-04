@@ -10,6 +10,8 @@ import com.koropets_suhanov.chess.model.Rock;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Set;
+
 import static com.koropets_suhanov.chess.process.service.ParseWrittenTurn.figureBornFromTransformation;
 import static com.koropets_suhanov.chess.process.service.ParseWrittenTurn.figureInWrittenStyleToBorn;
 import static com.koropets_suhanov.chess.process.service.Process.currentWrittenStyleTurn;
@@ -30,5 +32,9 @@ public class ProcessUtils {
         return new Rock(field, color);
     }
     throw new RuntimeException("Could not choose figure. Turn must be wrong written." + currentWrittenStyleTurn + " " + figureBornFromTransformation + " " + figureInWrittenStyleToBorn);
+  }
+
+  public boolean isEmpty(Set<? extends Figure> set) {
+    return set == null || set.isEmpty();
   }
 }

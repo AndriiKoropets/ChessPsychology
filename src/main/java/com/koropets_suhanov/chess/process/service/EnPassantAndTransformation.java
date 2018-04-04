@@ -51,7 +51,7 @@ public class EnPassantAndTransformation {
   public Set<Turn> turnsInCaseTransformation(Figure ally) {
     Set<Turn> possibleTurns = new HashSet<>();
     for (Field possibleFieldToMove : ally.getPossibleFieldsToMove()) {
-      for (String writtenStyle : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
+      for (String writtenStyle : ParseWrittenTurn.ALL_FIGURES) {
         List<FigureToField> figureToField = new ArrayList<>();
         figureToField.add(FigureToField.builder().figure(ally).field(possibleFieldToMove).build());
         possibleTurns.add(Turn.builder()
@@ -62,7 +62,7 @@ public class EnPassantAndTransformation {
       }
     }
     for (Figure enemy : ally.getWhoCouldBeEaten()) {
-      for (String writtenStyle : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
+      for (String writtenStyle : ParseWrittenTurn.ALL_FIGURES) {
         List<FigureToField> figureToField = new ArrayList<>();
         figureToField.add(FigureToField.builder().figure(ally).field(enemy.getField()).build());
         possibleTurns.add(Turn.builder()
@@ -78,7 +78,7 @@ public class EnPassantAndTransformation {
 
   public Set<Turn> setTransformationFields(Pawn pawn, Figure enemy) {
     Set<Turn> transformationSet = new HashSet<>();
-    for (String writtenStyleOfFigure : ParseWrittenTurn.FIGURES_IN_WRITTEN_STYLE) {
+    for (String writtenStyleOfFigure : ParseWrittenTurn.ALL_FIGURES) {
       List<FigureToField> allyToFieldList = new ArrayList<>();
       allyToFieldList.add(FigureToField.builder().figure(pawn).field(enemy.getField()).build());
 

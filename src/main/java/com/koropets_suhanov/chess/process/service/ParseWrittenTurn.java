@@ -28,6 +28,7 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SHORT_CASTL
 import static com.koropets_suhanov.chess.process.constants.Constants.SHORT_CASTLING_ZEROS;
 import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING;
 import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING_ZEROS;
+import static com.koropets_suhanov.chess.process.constants.Constants.EATING_SYMBOL;
 import static com.koropets_suhanov.chess.process.constants.Constants.PLUS;
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 import static com.koropets_suhanov.chess.process.service.Castling.e1;
@@ -60,8 +61,8 @@ public class ParseWrittenTurn {
   private final Field WHITE_ROCK_LONG_CASTLING = new Field(7, 3);
   private final Field BLACK_ROCK_SHORT_CASTLING = new Field(0, 5);
   private final Field BLACK_ROCK_LONG_CASTLING = new Field(0, 3);
-  public final Set<Character> FIGURES_IN_WRITTEN_STYLE_EXCEPT_PAWN = new HashSet<>(Arrays.asList('R', 'N', 'B', 'Q', 'K'));
-  public final Set<String> FIGURES_IN_WRITTEN_STYLE = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
+  public final Set<Character> ALL_FIGURES_EXCEPT_PAWN = new HashSet<>(Arrays.asList('R', 'N', 'B', 'Q', 'K'));
+  public final Set<String> ALL_FIGURES = new HashSet<>(Arrays.asList("R", "N", "B", "Q"));
   @Getter
   public static Figure figureBornFromTransformation;
   public static String figureInWrittenStyleToBorn;
@@ -128,15 +129,15 @@ public class ParseWrittenTurn {
     int lengthOfTheWrittenTurn = currentWrittenStyleTurn.length();
     if (currentWrittenStyleTurn.contains(PLUS)) {
       char previousBeforeTheLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 2);
-      return FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(previousBeforeTheLast));
+      return ALL_FIGURES.contains(Character.toString(previousBeforeTheLast));
     } else {
       char theLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 1);
-      return FIGURES_IN_WRITTEN_STYLE.contains(Character.toString(theLast));
+      return ALL_FIGURES.contains(Character.toString(theLast));
     }
   }
 
   private boolean isEating() {
-    return currentWrittenStyleTurn.contains("x");
+    return currentWrittenStyleTurn.contains(EATING_SYMBOL);
   }
 
   private boolean isCastling() {
@@ -210,7 +211,7 @@ public class ParseWrittenTurn {
   }
 
   private boolean isNotPawn(Character firstCharacter) {
-    return FIGURES_IN_WRITTEN_STYLE_EXCEPT_PAWN.contains(firstCharacter);
+    return ALL_FIGURES_EXCEPT_PAWN.contains(firstCharacter);
   }
 
   private void notPawnDefineFigureToField(Character firstCharacter) {
@@ -342,9 +343,7 @@ public class ParseWrittenTurn {
       }
     } else {
       char secondPosition = currentWrittenStyleTurn.charAt(1);
-//            System.out.println("SecondPosition = " + secondPosition);
       int integer = Character.getNumericValue(secondPosition);
-//            System.out.println("integer = " + integer);
       return chose(integer, secondPosition, targets);
     }
     return null;
@@ -357,10 +356,8 @@ public class ParseWrittenTurn {
   }
 
   private Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne) {
-//        System.out.println("candidateFiguresPeacefulTurn = " + candidatesForBeingTheOne);
     for (Observer observer : candidatesForBeingTheOne) {
       if (integer > SIZE) {
-//                System.out.println("Passed = " + integer);
         if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)) {
           return (Figure) observer;
         }

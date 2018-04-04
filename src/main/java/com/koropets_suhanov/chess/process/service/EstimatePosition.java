@@ -17,7 +17,7 @@ import com.koropets_suhanov.chess.process.dto.WeightAndDestinations;
 import com.koropets_suhanov.chess.process.dto.Parameter;
 import com.koropets_suhanov.chess.process.dto.Turn;
 
-import static com.koropets_suhanov.chess.process.service.Process.positionInfluence;
+import static com.koropets_suhanov.chess.process.service.Process.updatePositionOnTheBoard;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
 public class EstimatePosition {
@@ -39,7 +39,7 @@ public class EstimatePosition {
     WeightAndDestinations seventhParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSeventhParameter.getWeight() - thirdParam).figureToFields(estimatedSeventhParameter.getTurn().getFigureToDestinationField()).build();
     WeightAndDestinations eighthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedEighthParameter.getWeight() - fourthParam).figureToFields(estimatedEighthParameter.getTurn().getFigureToDestinationField()).build();
 
-    positionInfluence.makeTurn(turn);
+    updatePositionOnTheBoard.makeTurn(turn);
 
     return Parameter.builder()
             .firstAttackEnemy(firstParam)
@@ -130,11 +130,11 @@ public class EstimatePosition {
   }
 
   private List<TurnAntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns) {
-    positionInfluence.undoTurn(turn);
+    updatePositionOnTheBoard.undoTurn(turn);
     List<TurnAntiParameter> turnAntiParameterMap = new ArrayList<>();
     for (Turn posTurn : possibleTurns) {
       if (!posTurn.equals(turn)) {
-        positionInfluence.makeTurn(posTurn);
+        updatePositionOnTheBoard.makeTurn(posTurn);
         AntiParameter antiParameter = AntiParameter.builder()
                 .fifthParam(estimateFirstParameter())
                 .sixthParam(estimateSecondParameter())
@@ -142,7 +142,7 @@ public class EstimatePosition {
                 .eighthParam(estimateFourthParameter())
                 .build();
         turnAntiParameterMap.add(TurnAntiParameter.builder().turn(posTurn).antiParameter(antiParameter).build());
-        positionInfluence.undoTurn(posTurn);
+        updatePositionOnTheBoard.undoTurn(posTurn);
       }
     }
     return turnAntiParameterMap;
