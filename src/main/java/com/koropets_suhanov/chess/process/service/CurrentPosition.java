@@ -9,7 +9,6 @@ import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Pawn;
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
 
@@ -43,9 +42,9 @@ public class CurrentPosition {
     allPossibleTurns.clear();
     king = Board.getKingByColor(currentColor);
 
-    List<Observer> allyObservers = Board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
+    List<Figure> allies = Board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
     kingsAllies = new ArrayList<>();
-    allyObservers.forEach(o -> kingsAllies.add((Figure) o));
+    allies.forEach(o -> kingsAllies.add(o));
 
     define();
   }

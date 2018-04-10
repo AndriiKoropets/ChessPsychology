@@ -1,7 +1,6 @@
 package com.koropets_suhanov.chess.process.service;
 
 import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Board;
 
@@ -54,21 +53,21 @@ public class EstimatePosition {
   }
 
   private int estimateFirstParameter() {
-    List<Observer> chosenFigures = Board.getFiguresByColor(currentColor);
+    List<Figure> chosenFigures = Board.getFiguresByColor(currentColor);
     return calculateAttackAndBeUnderAttack(chosenFigures);
   }
 
   private int estimateSecondParameter() {
-    List<Observer> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
+    List<Figure> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
     return calculateAttackAndBeUnderAttack(enemies);
   }
 
-  private int calculateAttackAndBeUnderAttack(List<Observer> figures) {
+  private int calculateAttackAndBeUnderAttack(List<Figure> figures) {
     int param = 0;
     Set<Figure> chosenFigures = new HashSet<>();
-    figures.forEach(o -> {
-      if (isPreysBecameBigger(((Figure) o).getWhoCouldBeEatenPreviousState(), ((Figure) o).getWhoCouldBeEaten())) {
-        chosenFigures.add(((Figure) o));
+    figures.forEach(f -> {
+      if (isPreysBecameBigger(f.getWhoCouldBeEatenPreviousState(), f.getWhoCouldBeEaten())) {
+        chosenFigures.add(f);
       }
     });
     for (Figure curFigure : chosenFigures) {
@@ -93,21 +92,21 @@ public class EstimatePosition {
   }
 
   private int estimateThirdParameter() {
-    List<Observer> alliesObservers = Board.getFiguresByColor(currentColor);
-    return calculateWithdrawingAttackAndBeUnderAttack(alliesObservers);
+    List<Figure> allies = Board.getFiguresByColor(currentColor);
+    return calculateWithdrawingAttackAndBeUnderAttack(allies);
   }
 
   private int estimateFourthParameter() {
-    List<Observer> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
+    List<Figure> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
     return calculateWithdrawingAttackAndBeUnderAttack(enemies);
   }
 
-  private int calculateWithdrawingAttackAndBeUnderAttack(List<Observer> figures) {
+  private int calculateWithdrawingAttackAndBeUnderAttack(List<Figure> figures) {
     int param = 0;
     Set<Figure> chosenFigures = new HashSet<>();
-    figures.forEach(o -> {
-      if (isPreysBecameSmaller(((Figure) o).getWhoCouldBeEatenPreviousState(), ((Figure) o).getWhoCouldBeEaten())) {
-        chosenFigures.add(((Figure) o));
+    figures.forEach(f -> {
+      if (isPreysBecameSmaller(f.getWhoCouldBeEatenPreviousState(), f.getWhoCouldBeEaten())) {
+        chosenFigures.add(f);
       }
     });
     for (Figure curFigure : chosenFigures) {

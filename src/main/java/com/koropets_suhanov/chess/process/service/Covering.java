@@ -8,7 +8,6 @@ import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.Turn;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.utils.ProcessUtils;
@@ -23,7 +22,7 @@ public class Covering {
   public Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock) {
     Set<Turn> coveringTurns = new HashSet<>();
     Set<Field> fieldsBetween = fieldsBetweenRockAndKing(king, enemyRock.getField());
-    List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
@@ -82,7 +81,7 @@ public class Covering {
   public Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop) {
     Set<Field> fieldsBetween = fieldsBetweenBishopAndKing(king, bishop.getField());
     Set<Turn> coveringTurns = new HashSet<>();
-    List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
@@ -155,7 +154,7 @@ public class Covering {
   public Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen) {
     Set<Field> fieldsBetween = fieldsBetweenQueenAndKing(king, queen.getField());
     Set<Turn> coveringTurns = new HashSet<>();
-    List<Observer> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
@@ -170,24 +169,24 @@ public class Covering {
     return fieldsBetweenQueenAndKing;
   }
 
-  private void defineCoveringTurns(final List<Observer> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween) {
+  private void defineCoveringTurns(final List<Figure> alienFigures, final Set<Turn> coveringTurns, final Set<Field> fieldsBetween) {
     alienFigures.stream().filter(v -> v.getClass() != King.class).forEach(f -> {
-      ((Figure) f).getPossibleFieldsToMove().forEach(k -> {
+      f.getPossibleFieldsToMove().forEach(k -> {
         if (fieldsBetween.contains(k)) {
           if (f.getClass() == Pawn.class && ((Pawn) f).isOnThePenultimateLine()) {
             for (String writtenStyleTurn : ParseWrittenTurn.ALL_FIGURES) {
               List<FigureToField> covering = new ArrayList<>();
-              covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
+              covering.add(FigureToField.builder().figure(f).field(k).build());
               coveringTurns.add(Turn.builder()
                       .figureToDestinationField(covering)
                       .figureFromTransformation(
-                              ProcessUtils.createFigure(k, writtenStyleTurn, ((Figure) f).getColor()))
+                              ProcessUtils.createFigure(k, writtenStyleTurn, f.getColor()))
                       .transformation(true)
                       .build());
             }
           }
           List<FigureToField> covering = new ArrayList<>();
-          covering.add(FigureToField.builder().figure((Figure) f).field(k).build());
+          covering.add(FigureToField.builder().figure(f).field(k).build());
           coveringTurns.add(Turn.builder().figureToDestinationField(covering).build());
         }
       });

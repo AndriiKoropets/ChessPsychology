@@ -1,6 +1,5 @@
 package com.koropets_suhanov.chess.process.service;
 
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.process.dto.FinalResult;
 import com.koropets_suhanov.chess.process.dto.Parameter;
 import com.koropets_suhanov.chess.model.Board;
@@ -140,13 +139,13 @@ public class Process {
 
   private static void currentStateOfAllFigures() {
     System.out.println("White figures");
-    for (Observer observer : Board.getFiguresByColor(Color.WHITE)) {
-      Figure currentFigure = (Figure) observer;
+    for (Figure figure : Board.getFiguresByColor(Color.WHITE)) {
+      Figure currentFigure = figure;
       printInfoAboutFigure(currentFigure);
     }
     System.out.println("Black figures");
-    for (Observer observer : Board.getFiguresByColor(Color.BLACK)) {
-      Figure currentFigure = (Figure) observer;
+    for (Figure observer : Board.getFiguresByColor(Color.BLACK)) {
+      Figure currentFigure = observer;
       printInfoAboutFigure(currentFigure);
     }
   }

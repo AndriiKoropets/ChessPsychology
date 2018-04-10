@@ -5,7 +5,6 @@ import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.Color;
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
@@ -36,7 +35,7 @@ public class UpdatePositionOnTheBoard {
     getAffectedFields(turn);
     System.out.println(affectedFields);
 //        System.out.println("Turn = " + turn);
-    setTurnForUndoing(turn);
+    prepareTurnForUndoing(turn);
     for (FigureToField figuresToFields : turn.getFigureToDestinationField()) {
       board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), false);
     }
@@ -54,9 +53,9 @@ public class UpdatePositionOnTheBoard {
   private void makePullAdditionalAlliesAndEnemies() {
     Map<Figure, Set<Figure>> figureToChosenAllies = new HashMap<>();
     Board.getFigures().forEach(f -> {
-      Set<Figure> chosenAllies = ((Figure) f).pullAdditionalAlliesAndEnemies();
+      Set<Figure> chosenAllies = (f).pullAdditionalAlliesAndEnemies();
       if (!ProcessUtils.isEmpty(chosenAllies)) {
-        figureToChosenAllies.put((Figure) f, chosenAllies);
+        figureToChosenAllies.put(f, chosenAllies);
       }
     });
     for (int i = 0; i < SIZE; i++) {
@@ -138,7 +137,7 @@ public class UpdatePositionOnTheBoard {
     makePullAdditionalAlliesAndEnemies();
   }
 
-  private void setTurnForUndoing(Turn turn) {
+  private void prepareTurnForUndoing(Turn turn) {
 //        System.out.println("Turn = " + turn);
     tuplesFigureToField = new ArrayList<>();
     eatenFigureToResurrection = null;
@@ -166,11 +165,11 @@ public class UpdatePositionOnTheBoard {
 
   public Set<Figure> getAffectedFigures(Color color) {
     Set<Figure> acceptedFigures = new HashSet<>();
-    List<Observer> observers = Board.getFiguresByColor(color);
+    List<Figure> observers = Board.getFiguresByColor(color);
     affectedFields.forEach(f -> {
       observers.forEach(o -> {
-        if (((Figure) o).getAttackedFields().contains(f)) {
-          acceptedFigures.add((Figure) o);
+        if ((o).getAttackedFields().contains(f)) {
+          acceptedFigures.add(o);
         }
       });
     });

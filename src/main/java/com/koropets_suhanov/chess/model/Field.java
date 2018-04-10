@@ -1,6 +1,5 @@
 package com.koropets_suhanov.chess.model;
 
-import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -105,23 +104,6 @@ public class Field {
 
   public boolean isTaken() {
     return Board.getTakenFields().contains(this);
-  }
-
-  //TODO refactor this method. Should be placed in Board class.
-  public boolean isUnderInfluence(Color color) {
-    List<Observer> figures = Board.getFiguresByColor(color);
-    for (Object figure : figures) {
-      for (Object field : ((Figure) figure).getAttackedFields()) {
-        if (this.equals(field)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public int distance(Field comparedField) {
-    return Math.abs(this.getX() - comparedField.getX()) + Math.abs(this.getY() - comparedField.getY());
   }
 
   @Override

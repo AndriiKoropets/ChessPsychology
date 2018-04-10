@@ -1,7 +1,6 @@
 package com.koropets_suhanov.chess.process.service;
 
 import com.koropets_suhanov.chess.model.Bishop;
-import com.koropets_suhanov.chess.model.Observer;
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Board;
@@ -45,8 +44,8 @@ import static com.koropets_suhanov.chess.process.service.Process.currentWrittenS
 @Slf4j
 public class ParseWrittenTurn {
 
-  private List<Observer> candidateFiguresPeacefulTurn = new ArrayList<>();
-  private List<Observer> eatTurnCandidateFigures = new ArrayList<>();
+  private List<Figure> candidateFiguresPeacefulTurn = new ArrayList<>();
+  private List<Figure> eatTurnCandidateFigures = new ArrayList<>();
   private Field field;
   private List<FigureToField> figureToField = new ArrayList<>();
   private Figure figure;
@@ -251,15 +250,15 @@ public class ParseWrittenTurn {
   }
 
   private void definePossibleCandidatesFromWrittenTurn(Class figureType) {
-    List<Figure> figures = Board.getExactTypeOfFiguresByColor(figureType, currentColor);
-    for (Observer curFigure : figures) {
+    List<Figure> figures = Board.getTypeOfFigures(figureType, currentColor);
+    for (Figure curFigure : figures) {
       if (eating) {
-        if (((Figure) curFigure).getPreyField().contains(field)) {
+        if (curFigure.getPreyField().contains(field)) {
           eatTurnCandidateFigures.add(curFigure);
           targetedFigureToBeEaten = Board.getFieldToFigure().get(field);
         }
       } else {
-        if (((Figure) curFigure).getPossibleFieldsToMove().contains(field)) {
+        if (curFigure.getPossibleFieldsToMove().contains(field)) {
           candidateFiguresPeacefulTurn.add(curFigure);
         }
       }
@@ -268,7 +267,7 @@ public class ParseWrittenTurn {
 
   private void electOneFromEatingCandidates(Class figureType) {
     if (eatTurnCandidateFigures.size() == 1) {
-      figure = (Figure) eatTurnCandidateFigures.get(0);
+      figure = eatTurnCandidateFigures.get(0);
     } else {
       figure = choseFigureWhichAttack(eatTurnCandidateFigures, figureType);
     }
@@ -278,7 +277,7 @@ public class ParseWrittenTurn {
     if (candidateFiguresPeacefulTurn.size() > 1) {
       figure = choseExactFigure(candidateFiguresPeacefulTurn);
     } else {
-      figure = (Figure) candidateFiguresPeacefulTurn.get(0);
+      figure = candidateFiguresPeacefulTurn.get(0);
     }
   }
 
@@ -297,8 +296,8 @@ public class ParseWrittenTurn {
   }
 
   private void definePossiblePawnsCandidates() {
-    List<Figure> figures = Board.getExactTypeOfFiguresByColor(Pawn.class, currentColor);
-    for (Observer curFigure : figures) {
+    List<Figure> figures = Board.getTypeOfFigures(Pawn.class, currentColor);
+    for (Figure curFigure : figures) {
       Pawn pawn = (Pawn) curFigure;
       if (eating) {
         if (transformation) {
@@ -333,12 +332,12 @@ public class ParseWrittenTurn {
     }
   }
 
-  private Figure choseFigureWhichAttack(List<Observer> targets, Class clazz) {
+  private Figure choseFigureWhichAttack(List<Figure> targets, Class clazz) {
     if (clazz == Pawn.class) {
       char verticalPawn = currentWrittenStyleTurn.charAt(0);
-      for (Object currentFigure : targets) {
-        if (((Figure) currentFigure).getField().getY() == Field.getInvertedHorizontal().get(verticalPawn)) {
-          return (Figure) currentFigure;
+      for (Figure currentFigure : targets) {
+        if (currentFigure.getField().getY() == Field.getInvertedHorizontal().get(verticalPawn)) {
+          return currentFigure;
         }
       }
     } else {
@@ -349,21 +348,21 @@ public class ParseWrittenTurn {
     return null;
   }
 
-  private Figure choseExactFigure(List<Observer> targets) {
+  private Figure choseExactFigure(List<Figure> targets) {
     char secondPosition = currentWrittenStyleTurn.charAt(1);
     int integer = Character.getNumericValue(secondPosition);
     return chose(integer, secondPosition, targets);
   }
 
-  private Figure chose(int integer, char secondPosition, List<Observer> candidatesForBeingTheOne) {
-    for (Observer observer : candidatesForBeingTheOne) {
+  private Figure chose(int integer, char secondPosition, List<Figure> candidatesForBeingTheOne) {
+    for (Figure candidate : candidatesForBeingTheOne) {
       if (integer > SIZE) {
-        if (((Figure) observer).getField().getY() == Field.getInvertedHorizontal().get(secondPosition)) {
-          return (Figure) observer;
+        if (candidate.getField().getY() == Field.getInvertedHorizontal().get(secondPosition)) {
+          return candidate;
         }
       } else {
-        if (((Figure) observer).getField().getX() == Field.getInvertedVertical().get(integer)) {
-          return (Figure) observer;
+        if (candidate.getField().getX() == Field.getInvertedVertical().get(integer)) {
+          return candidate;
         }
       }
     }

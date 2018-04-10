@@ -37,8 +37,8 @@ public class Castling {
 
   public List<Turn> getCastlings() {
     List<Turn> castlings = new ArrayList<>();
-    List<Figure> rocks = Board.getExactTypeOfFiguresByColor(Rock.class, currentColor);
-    King king = (King) Board.getExactTypeOfFiguresByColor(King.class, currentColor).get(0);
+    List<Figure> rocks = Board.getTypeOfFigures(Rock.class, currentColor);
+    King king = (King) Board.getTypeOfFigures(King.class, currentColor).get(0);
     for (Figure figure : rocks) {
       Rock rock = (Rock) figure;
       if (isShortCastlingPossible(king, rock)) {
