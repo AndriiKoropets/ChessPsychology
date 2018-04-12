@@ -108,10 +108,10 @@ public class Process {
             updatePositionOnTheBoard.makeTurn(blackTurn);
             printAllBoard();
 //                        System.out.println("After turn = " + blackTurn);
-            System.out.println("Figures = " + Board.getFigures());
-            System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
-            System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
-//                        System.out.println("Size = " + Board.getTakenFields().size() + "Taken fields = " + Board.getTakenFields());
+            System.out.println("Figures = " + board.getFigures());
+            System.out.println("White figures = " + board.getFiguresByColor(Color.WHITE));
+            System.out.println("Black figures = " + board.getFiguresByColor(Color.BLACK));
+//                        System.out.println("Size = " + board.getTakenFields().size() + "Taken fields = " + board.getTakenFields());
             blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns);
 
             fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
@@ -121,8 +121,8 @@ public class Process {
         }
         System.out.println("White estimation = " + whiteEstimationWholeParty);
         System.out.println("Black estimation = " + blackEstimationWholeParty);
-        System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
-        System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
+        System.out.println("White figures = " + board.getFiguresByColor(Color.WHITE));
+        System.out.println("Black figures = " + board.getFiguresByColor(Color.BLACK));
         System.out.println("Number " + currentTurnNumber + " = " + currentWrittenStyleTurn + " has just been processed");
       }
       printAllBoard();
@@ -139,14 +139,12 @@ public class Process {
 
   private static void currentStateOfAllFigures() {
     System.out.println("White figures");
-    for (Figure figure : Board.getFiguresByColor(Color.WHITE)) {
-      Figure currentFigure = figure;
-      printInfoAboutFigure(currentFigure);
+    for (Figure curFigure : board.getFiguresByColor(Color.WHITE)) {
+      printInfoAboutFigure(curFigure);
     }
     System.out.println("Black figures");
-    for (Figure observer : Board.getFiguresByColor(Color.BLACK)) {
-      Figure currentFigure = observer;
-      printInfoAboutFigure(currentFigure);
+    for (Figure curtFigure : board.getFiguresByColor(Color.BLACK)) {
+      printInfoAboutFigure(curtFigure);
     }
   }
 
@@ -175,7 +173,7 @@ public class Process {
       for (int j = 0; j < SIZE; j++) {
         Field currentPoint = new Field(i, j);
         if (currentPoint.isTaken()) {
-          System.out.print(" " + printFigure(Board.getFieldToFigure().get(currentPoint)) + " ");
+          System.out.print(" " + printFigure(board.getFieldToFigure().get(currentPoint)) + " ");
         } else {
           System.out.print("   ");
         }

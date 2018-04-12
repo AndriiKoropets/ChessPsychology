@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+import static com.koropets_suhanov.chess.process.service.Process.board;
 import static java.lang.Math.abs;
 
 @Getter
@@ -98,7 +99,7 @@ public abstract class Figure implements Observer {
     if (!field.isTaken()) {
       this.getPossibleFieldsToMove().add(field);
     } else {
-      Figure tempFigure = Board.getFieldToFigure().get(field);
+      Figure tempFigure = board.getFieldToFigure().get(field);
       if (tempFigure != null) {
         if (tempFigure.getColor() == this.getColor()) {
           tempFigure.addAllyProtectMe(this);

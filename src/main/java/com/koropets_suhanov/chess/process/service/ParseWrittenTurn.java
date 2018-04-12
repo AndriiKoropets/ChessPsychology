@@ -36,9 +36,7 @@ import static com.koropets_suhanov.chess.process.service.Castling.h1;
 import static com.koropets_suhanov.chess.process.service.Castling.h8;
 import static com.koropets_suhanov.chess.process.service.Castling.a1;
 import static com.koropets_suhanov.chess.process.service.Castling.a8;
-import static com.koropets_suhanov.chess.process.service.Process.currentColor;
-import static com.koropets_suhanov.chess.process.service.Process.currentTurnNumber;
-import static com.koropets_suhanov.chess.process.service.Process.currentWrittenStyleTurn;
+import static com.koropets_suhanov.chess.process.service.Process.*;
 
 @UtilityClass
 @Slf4j
@@ -152,8 +150,8 @@ public class ParseWrittenTurn {
 
   private Turn shortCastlingTurn() {
     List<FigureToField> figureToField = (currentColor == Color.WHITE)
-            ? createFigureToFieldCastling(Board.getFieldToFigure().get(e1), Board.getFieldToFigure().get(h1), WHITE_KING_SHORT_CASTLING, WHITE_ROCK_SHORT_CASTLING)
-            : createFigureToFieldCastling(Board.getFieldToFigure().get(e8), Board.getFieldToFigure().get(h8), BLACK_KING_SHORT_CASTLING, BLACK_ROCK_SHORT_CASTLING);
+            ? createFigureToFieldCastling(board.getFieldToFigure().get(e1), board.getFieldToFigure().get(h1), WHITE_KING_SHORT_CASTLING, WHITE_ROCK_SHORT_CASTLING)
+            : createFigureToFieldCastling(board.getFieldToFigure().get(e8), board.getFieldToFigure().get(h8), BLACK_KING_SHORT_CASTLING, BLACK_ROCK_SHORT_CASTLING);
     return Turn.builder()
             .figureToDestinationField(figureToField)
             .writtenStyle(currentWrittenStyleTurn)
@@ -163,8 +161,8 @@ public class ParseWrittenTurn {
 
   private Turn longCastlingTurn() {
     List<FigureToField> figureToField = (currentColor == Color.WHITE)
-            ? createFigureToFieldCastling(Board.getFieldToFigure().get(e1), Board.getFieldToFigure().get(a1), WHITE_KING_LONG_CASTLING, WHITE_ROCK_LONG_CASTLING)
-            : createFigureToFieldCastling(Board.getFieldToFigure().get(e8), Board.getFieldToFigure().get(a8), BLACK_KING_LONG_CASTLING, BLACK_ROCK_LONG_CASTLING);
+            ? createFigureToFieldCastling(board.getFieldToFigure().get(e1), board.getFieldToFigure().get(a1), WHITE_KING_LONG_CASTLING, WHITE_ROCK_LONG_CASTLING)
+            : createFigureToFieldCastling(board.getFieldToFigure().get(e8), board.getFieldToFigure().get(a8), BLACK_KING_LONG_CASTLING, BLACK_ROCK_LONG_CASTLING);
     return Turn.builder()
             .figureToDestinationField(figureToField)
             .writtenStyle(currentWrittenStyleTurn)
@@ -250,12 +248,12 @@ public class ParseWrittenTurn {
   }
 
   private void definePossibleCandidatesFromWrittenTurn(Class figureType) {
-    List<Figure> figures = Board.getTypeOfFigures(figureType, currentColor);
+    List<Figure> figures = board.getTypeOfFigures(figureType, currentColor);
     for (Figure curFigure : figures) {
       if (eating) {
         if (curFigure.getPreyField().contains(field)) {
           eatTurnCandidateFigures.add(curFigure);
-          targetedFigureToBeEaten = Board.getFieldToFigure().get(field);
+          targetedFigureToBeEaten = board.getFieldToFigure().get(field);
         }
       } else {
         if (curFigure.getPossibleFieldsToMove().contains(field)) {
@@ -296,14 +294,14 @@ public class ParseWrittenTurn {
   }
 
   private void definePossiblePawnsCandidates() {
-    List<Figure> figures = Board.getTypeOfFigures(Pawn.class, currentColor);
+    List<Figure> figures = board.getTypeOfFigures(Pawn.class, currentColor);
     for (Figure curFigure : figures) {
       Pawn pawn = (Pawn) curFigure;
       if (eating) {
         if (transformation) {
           if (pawn.getPreyField().contains(field)) {
             eatTurnCandidateFigures.add(pawn);
-            targetedFigureToBeEaten = Board.getFieldToFigure().get(field);
+            targetedFigureToBeEaten = board.getFieldToFigure().get(field);
             figureBornFromTransformation = ProcessUtils.createFigure(field, figureInWrittenStyleToBorn, currentColor);
           }
         } else if (pawn.isEnPassant()) {
@@ -314,7 +312,7 @@ public class ParseWrittenTurn {
         } else {
           if (pawn.getPreyField().contains(field)) {
             eatTurnCandidateFigures.add(pawn);
-            targetedFigureToBeEaten = Board.getFieldToFigure().get(field);
+            targetedFigureToBeEaten = board.getFieldToFigure().get(field);
           }
         }
       } else {

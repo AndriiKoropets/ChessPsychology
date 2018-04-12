@@ -4,7 +4,6 @@ import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Rock;
-import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
@@ -14,6 +13,7 @@ import java.util.List;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING_ZEROS;
 import static com.koropets_suhanov.chess.process.constants.Constants.SHORT_CASTLING_ZEROS;
+import static com.koropets_suhanov.chess.process.service.Process.board;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
 public class Castling {
@@ -37,8 +37,8 @@ public class Castling {
 
   public List<Turn> getCastlings() {
     List<Turn> castlings = new ArrayList<>();
-    List<Figure> rocks = Board.getTypeOfFigures(Rock.class, currentColor);
-    King king = (King) Board.getTypeOfFigures(King.class, currentColor).get(0);
+    List<Figure> rocks = board.getTypeOfFigures(Rock.class, currentColor);
+    King king = (King) board.getTypeOfFigures(King.class, currentColor).get(0);
     for (Figure figure : rocks) {
       Rock rock = (Rock) figure;
       if (isShortCastlingPossible(king, rock)) {
@@ -61,14 +61,14 @@ public class Castling {
 
   private boolean shortCastlingFieldsAreNotUnderInfluenceAndNotOccupied() {
     return (currentColor == Color.BLACK)
-            ? !Board.getFieldsUnderWhiteInfluence().contains(f8)
-            && !Board.getFieldsUnderWhiteInfluence().contains(g8)
-            && Board.getFieldToFigure().get(f8) == null
-            && Board.getFieldToFigure().get(g8) == null
-            : !Board.getFieldsUnderBlackInfluence().contains(f1)
-            && !Board.getFieldsUnderBlackInfluence().contains(g1)
-            && Board.getFieldToFigure().get(f1) == null
-            && Board.getFieldToFigure().get(g1) == null;
+            ? !board.getFieldsUnderWhiteInfluence().contains(f8)
+            && !board.getFieldsUnderWhiteInfluence().contains(g8)
+            && board.getFieldToFigure().get(f8) == null
+            && board.getFieldToFigure().get(g8) == null
+            : !board.getFieldsUnderBlackInfluence().contains(f1)
+            && !board.getFieldsUnderBlackInfluence().contains(g1)
+            && board.getFieldToFigure().get(f1) == null
+            && board.getFieldToFigure().get(g1) == null;
   }
 
   private Turn shortCastling(Rock rock, King king) {
@@ -93,18 +93,18 @@ public class Castling {
 
   private boolean longCastlingFieldsAreNotUnderInfluenceAndNotOccupied() {
     return (currentColor == Color.BLACK)
-            ? !Board.getFieldsUnderWhiteInfluence().contains(b8)
-            && !Board.getFieldsUnderWhiteInfluence().contains(c8)
-            && !Board.getFieldsUnderWhiteInfluence().contains(d8)
-            && Board.getFieldToFigure().get(b8) == null
-            && Board.getFieldToFigure().get(c8) == null
-            && Board.getFieldToFigure().get(d8) == null
-            : !Board.getFieldsUnderBlackInfluence().contains(b1)
-            && !Board.getFieldsUnderBlackInfluence().contains(c1)
-            && !Board.getFieldsUnderBlackInfluence().contains(d1)
-            && Board.getFieldToFigure().get(b1) == null
-            && Board.getFieldToFigure().get(c1) == null
-            && Board.getFieldToFigure().get(d1) == null;
+            ? !board.getFieldsUnderWhiteInfluence().contains(b8)
+            && !board.getFieldsUnderWhiteInfluence().contains(c8)
+            && !board.getFieldsUnderWhiteInfluence().contains(d8)
+            && board.getFieldToFigure().get(b8) == null
+            && board.getFieldToFigure().get(c8) == null
+            && board.getFieldToFigure().get(d8) == null
+            : !board.getFieldsUnderBlackInfluence().contains(b1)
+            && !board.getFieldsUnderBlackInfluence().contains(c1)
+            && !board.getFieldsUnderBlackInfluence().contains(d1)
+            && board.getFieldToFigure().get(b1) == null
+            && board.getFieldToFigure().get(c1) == null
+            && board.getFieldToFigure().get(d1) == null;
   }
 
   private Turn longCastling(Rock rock, King king) {

@@ -2,7 +2,6 @@ package com.koropets_suhanov.chess.process.service;
 
 import com.koropets_suhanov.chess.model.Color;
 import com.koropets_suhanov.chess.model.Figure;
-import com.koropets_suhanov.chess.model.Board;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.koropets_suhanov.chess.process.dto.WeightAndDestinations;
 import com.koropets_suhanov.chess.process.dto.Parameter;
 import com.koropets_suhanov.chess.process.dto.Turn;
 
+import static com.koropets_suhanov.chess.process.service.Process.board;
 import static com.koropets_suhanov.chess.process.service.Process.updatePositionOnTheBoard;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
@@ -53,12 +53,12 @@ public class EstimatePosition {
   }
 
   private int estimateFirstParameter() {
-    List<Figure> chosenFigures = Board.getFiguresByColor(currentColor);
+    List<Figure> chosenFigures = board.getFiguresByColor(currentColor);
     return calculateAttackAndBeUnderAttack(chosenFigures);
   }
 
   private int estimateSecondParameter() {
-    List<Figure> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
+    List<Figure> enemies = (currentColor == Color.WHITE) ? board.getFiguresByColor(Color.BLACK) : board.getFiguresByColor(Color.WHITE);
     return calculateAttackAndBeUnderAttack(enemies);
   }
 
@@ -92,12 +92,12 @@ public class EstimatePosition {
   }
 
   private int estimateThirdParameter() {
-    List<Figure> allies = Board.getFiguresByColor(currentColor);
+    List<Figure> allies = board.getFiguresByColor(currentColor);
     return calculateWithdrawingAttackAndBeUnderAttack(allies);
   }
 
   private int estimateFourthParameter() {
-    List<Figure> enemies = (currentColor == Color.WHITE) ? Board.getFiguresByColor(Color.BLACK) : Board.getFiguresByColor(Color.WHITE);
+    List<Figure> enemies = (currentColor == Color.WHITE) ? board.getFiguresByColor(Color.BLACK) : board.getFiguresByColor(Color.WHITE);
     return calculateWithdrawingAttackAndBeUnderAttack(enemies);
   }
 

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.LINE_A;
 import static com.koropets_suhanov.chess.process.constants.Constants.LINE_H;
+import static com.koropets_suhanov.chess.process.service.Process.board;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
 public class CurrentPosition {
@@ -40,9 +41,9 @@ public class CurrentPosition {
 
   private void defineAllPossibleTurns() {
     allPossibleTurns.clear();
-    king = Board.getKingByColor(currentColor);
+    king = board.getKingByColor(currentColor);
 
-    List<Figure> allies = Board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
+    List<Figure> allies = board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
     kingsAllies = new ArrayList<>();
     allies.forEach(o -> kingsAllies.add(o));
 

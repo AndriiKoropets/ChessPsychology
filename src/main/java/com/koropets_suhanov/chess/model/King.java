@@ -2,6 +2,7 @@ package com.koropets_suhanov.chess.model;
 
 import java.util.Set;
 
+import static com.koropets_suhanov.chess.process.service.Process.board;
 import static java.lang.Math.abs;
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 
@@ -18,10 +19,10 @@ public class King extends Figure {
 
   @Override
   public void possibleTurns() {
-    Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
-            : Board.getFieldsUnderBlackInfluence();
+    Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? board.getFieldsUnderWhiteInfluence()
+            : board.getFieldsUnderBlackInfluence();
     this.getAttackedFields().forEach(f -> {
-      Figure figure = Board.getFieldToFigure().get(f);
+      Figure figure = board.getFieldToFigure().get(f);
       if (!enemyInfluence.contains(f)) {
         if (figure != null) {
           if (this.getColor() == figure.getColor()) {
@@ -69,8 +70,8 @@ public class King extends Figure {
   }
 
   public boolean isUnderAttack() {
-    Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
-            : Board.getFieldsUnderWhiteInfluence();
+    Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? board.getFieldsUnderBlackInfluence()
+            : board.getFieldsUnderWhiteInfluence();
     return enemyInfluence.contains(this.getField());
   }
 

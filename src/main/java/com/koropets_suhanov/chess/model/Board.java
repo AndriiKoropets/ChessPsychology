@@ -5,7 +5,6 @@ import com.koropets_suhanov.chess.process.service.FillBoard;
 import com.koropets_suhanov.chess.process.service.UpdatePositionOnTheBoard;
 import com.koropets_suhanov.chess.process.service.ParseWrittenTurn;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -17,26 +16,22 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Getter
 public class Board implements Subject {
 
+  private List<Figure> figures = new ArrayList<>();
+  private List<Figure> whiteFigures = new ArrayList<>();
+  private List<Figure> blackFigures = new ArrayList<>();
+  private Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<>();
   @Getter
-  private static List<Figure> figures = new ArrayList<>();
-  private static List<Figure> whiteFigures = new ArrayList<>();
-  private static List<Figure> blackFigures = new ArrayList<>();
-  @Getter
-  private static Set<Field> fieldsUnderWhiteInfluence = new LinkedHashSet<>();
-  @Getter
-  private static Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<>();
+  private static final Set<Field> fieldsUnderBlackInfluence = new LinkedHashSet<>();
   @Getter
   private static final Set<Field> takenFields = new LinkedHashSet<>();
   @Getter
   private static final Map<Field, Figure> fieldToFigure = new HashMap<>();
-  @Getter
-  @Setter
-  private static Figure enPassantPrey;
-  private static Field newFigureOccupation;
+  private Figure enPassantPrey;
+  private Field newFigureOccupation;
   private static Board instance;
-
 
   public static Board getInstance() {
     if (instance == null) {
@@ -61,33 +56,33 @@ public class Board implements Subject {
   public void register(Observer observer) {
     Figure figure = (Figure) observer;
     figures.add(figure);
-    if ((figure).getColor() == Color.WHITE) {
+    if (figure.getColor() == Color.WHITE) {
       whiteFigures.add((figure));
     } else {
       blackFigures.add(figure);
     }
-    Field field = (figure).getField();
-    fieldToFigure.put((figure).getField(), (figure));
+    Field field = figure.getField();
+    fieldToFigure.put(figure.getField(), figure);
     takenFields.add(field);
   }
 
-  private static void setTakenFields() {
+  private void setTakenFields() {
     figures.forEach(f -> takenFields.add(f.getField()));
   }
 
-  private static void updateTakenFields(Observer figure) {
-    takenFields.remove(((Figure) figure).getField());
+  private void updateTakenFields(Figure figure) {
+    takenFields.remove(figure.getField());
     takenFields.add(newFigureOccupation);
-    fieldToFigure.put(newFigureOccupation, (Figure) figure);
-    fieldToFigure.replace(((Figure) figure).getField(), null);
+    fieldToFigure.put(newFigureOccupation, figure);
+    fieldToFigure.replace(figure.getField(), null);
   }
 
-  private static void updateFieldsUnderWhiteInfluence() {
+  private void updateFieldsUnderWhiteInfluence() {
     fieldsUnderWhiteInfluence.clear();
     whiteFigures.forEach(w -> fieldsUnderWhiteInfluence.addAll(w.getFieldsUnderMyInfluence()));
   }
 
-  private static void updateFieldsUnderBlackInfluence() {
+  private void updateFieldsUnderBlackInfluence() {
     fieldsUnderBlackInfluence.clear();
     blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(b.getFieldsUnderMyInfluence()));
   }
@@ -123,7 +118,7 @@ public class Board implements Subject {
 
   private void undoTransformation(Turn turn, Field updatedField){
     Figure pawnToReborn = turn.getFigureToDestinationField().get(0).getFigure();
-    Figure transformedFigureToRemove = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
+    Figure transformedFigureToRemove = fieldToFigure.get(turn.getFigureToDestinationField().get(0).getField());
     newFigureOccupation = updatedField;
     removeFigure(transformedFigureToRemove);
     register(pawnToReborn);
@@ -186,7 +181,7 @@ public class Board implements Subject {
 
   @Override
   public void notify(Observer figure) {
-    updateTakenFields(figure);
+    updateTakenFields((Figure) figure);
     figure.update(newFigureOccupation);
     figures.forEach(cf -> {
       if (!cf.equals(figure)) {
@@ -209,15 +204,15 @@ public class Board implements Subject {
     takenFields.remove(((Figure) figure).getField());
   }
 
-  public static List<Figure> getTypeOfFigures(Class clazz, Color color) {
+  public List<Figure> getTypeOfFigures(Class clazz, Color color) {
     return getFiguresByColor(color).stream().filter(f -> f.getClass() == clazz).collect(Collectors.toList());
   }
 
-  public static King getKingByColor(Color color) {
+  public King getKingByColor(Color color) {
     return (King) getFiguresByColor(color).stream().filter(f -> f.getClass() == King.class).collect(Collectors.toList()).get(0);
   }
 
-  public static List<Figure> getFiguresByColor(Color color) {
+  public List<Figure> getFiguresByColor(Color color) {
     return color == Color.WHITE ? whiteFigures : blackFigures;
   }
 }

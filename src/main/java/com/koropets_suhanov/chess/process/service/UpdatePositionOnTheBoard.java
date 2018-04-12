@@ -52,7 +52,7 @@ public class UpdatePositionOnTheBoard {
 
   private void makePullAdditionalAlliesAndEnemies() {
     Map<Figure, Set<Figure>> figureToChosenAllies = new HashMap<>();
-    Board.getFigures().forEach(f -> {
+    board.getFigures().forEach(f -> {
       Set<Figure> chosenAllies = (f).pullAdditionalAlliesAndEnemies();
       if (!ProcessUtils.isEmpty(chosenAllies)) {
         figureToChosenAllies.put(f, chosenAllies);
@@ -151,7 +151,7 @@ public class UpdatePositionOnTheBoard {
 
         eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
       } else {
-        Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
+        Figure tempFigure = board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
         if (!turn.isEnPassant()) {
           eatenFigureToResurrection = tempFigure.createNewFigure();
         }
@@ -165,7 +165,7 @@ public class UpdatePositionOnTheBoard {
 
   public Set<Figure> getAffectedFigures(Color color) {
     Set<Figure> acceptedFigures = new HashSet<>();
-    List<Figure> observers = Board.getFiguresByColor(color);
+    List<Figure> observers = board.getFiguresByColor(color);
     affectedFields.forEach(f -> {
       observers.forEach(o -> {
         if ((o).getAttackedFields().contains(f)) {

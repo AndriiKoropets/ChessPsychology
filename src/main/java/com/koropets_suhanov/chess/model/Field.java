@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
+import static com.koropets_suhanov.chess.process.service.Process.board;
 
 @Slf4j
 @Getter
@@ -14,9 +15,13 @@ public class Field {
 
   private int x;
   private int y;
+  @Getter
   private static final Map<Integer, Character> horizontal = new LinkedHashMap<Integer, Character>();
+  @Getter
   private static final Map<Integer, Integer> vertical = new LinkedHashMap<Integer, Integer>();
+  @Getter
   private static final Map<Character, Integer> invertedHorizontal = new LinkedHashMap<Character, Integer>();
+  @Getter
   private static final Map<Integer, Integer> invertedVertical = new LinkedHashMap<Integer, Integer>();
 
   static {
@@ -78,32 +83,8 @@ public class Field {
     return x >= 0 && x < SIZE && y >= 0 && y < SIZE;
   }
 
-  public int getX() {
-    return x;
-  }
-
-  public int getY() {
-    return y;
-  }
-
-  public static Map<Integer, Character> getHorizontal() {
-    return horizontal;
-  }
-
-  public static Map<Integer, Integer> getVertical() {
-    return vertical;
-  }
-
-  public static Map<Character, Integer> getInvertedHorizontal() {
-    return invertedHorizontal;
-  }
-
-  public static Map<Integer, Integer> getInvertedVertical() {
-    return invertedVertical;
-  }
-
   public boolean isTaken() {
-    return Board.getTakenFields().contains(this);
+    return board.getTakenFields().contains(this);
   }
 
   @Override

@@ -4,7 +4,6 @@ import com.koropets_suhanov.chess.model.Field;
 import com.koropets_suhanov.chess.model.Figure;
 import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.model.King;
-import com.koropets_suhanov.chess.model.Board;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Bishop;
@@ -17,12 +16,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static com.koropets_suhanov.chess.process.service.Process.board;
+
 public class Covering {
 
   public Set<Turn> coveringIfRockAttacks(final King king, final Rock enemyRock) {
     Set<Turn> coveringTurns = new HashSet<>();
     Set<Field> fieldsBetween = fieldsBetweenRockAndKing(king, enemyRock.getField());
-    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
@@ -81,7 +82,7 @@ public class Covering {
   public Set<Turn> coveringIfBishopAttacks(final King king, final Bishop bishop) {
     Set<Field> fieldsBetween = fieldsBetweenBishopAndKing(king, bishop.getField());
     Set<Turn> coveringTurns = new HashSet<>();
-    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
@@ -154,7 +155,7 @@ public class Covering {
   public Set<Turn> coveringIfQueenAttacks(final King king, final Queen queen) {
     Set<Field> fieldsBetween = fieldsBetweenQueenAndKing(king, queen.getField());
     Set<Turn> coveringTurns = new HashSet<>();
-    List<Figure> alienFigures = Board.getFiguresByColor(king.getColor());
+    List<Figure> alienFigures = board.getFiguresByColor(king.getColor());
     defineCoveringTurns(alienFigures, coveringTurns, fieldsBetween);
     return coveringTurns;
   }
