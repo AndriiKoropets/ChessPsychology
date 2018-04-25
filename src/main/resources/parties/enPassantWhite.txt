@@ -1,3 +1,4 @@
 1. e4 a5
 2. e5 d5
-3. exd6
+3. exd6 Qxd6
+4. Nf3 Nc6

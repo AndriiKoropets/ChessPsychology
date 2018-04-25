@@ -299,6 +299,7 @@ public class ParseWrittenTurn {
     List<Figure> figures = Board.getTypeOfFigures(Pawn.class, currentColor);
     for (Figure curFigure : figures) {
       Pawn pawn = (Pawn) curFigure;
+      pawn.printAllInformationAboutFigure();
       if (eating) {
         if (transformation) {
           if (pawn.getPreyField().contains(field)) {

@@ -253,4 +253,15 @@ public abstract class Figure implements Observer {
   public int hashCode() {
     return 31 * this.getField().getX() + 97 * this.getField().getY();
   }
+
+  public void printAllInformationAboutFigure(){
+    System.out.println(this
+        + ", possibleFTM " + this.getPossibleFieldsToMove()
+        + ", whoCouldBeEatenByMe " + this.getWhoCouldBeEaten()
+        + ", underMyInfluence " + this.getFieldsUnderMyInfluence()
+        + ", alliesIProtect " + this.getAlliesIProtect()
+        + ", alliesProtectMe " + this.getAlliesProtectMe()
+        + ", attackedFields " + this.getAttackedFields()
+        + ", enemiesAttackMe " + this.getEnemiesAttackMe());
+  }
 }
