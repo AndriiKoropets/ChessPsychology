@@ -12,11 +12,7 @@ import com.koropets_suhanov.chess.model.Pawn;
 import com.koropets_suhanov.chess.process.dto.FigureToField;
 import com.koropets_suhanov.chess.process.dto.Turn;
 
-import java.util.Set;
-import java.util.LinkedHashSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.koropets_suhanov.chess.process.constants.Constants.LINE_A;
@@ -35,16 +31,18 @@ public class CurrentPosition {
 
   public Set<Turn> getAllPossibleTurns() {
     defineAllPossibleTurns();
-    return allPossibleTurns.stream().filter(turn -> turn != null).collect(Collectors.toSet());
+    return allPossibleTurns.stream().filter(Objects::nonNull).collect(Collectors.toSet());
   }
 
   private void defineAllPossibleTurns() {
     allPossibleTurns.clear();
     king = Board.getKingByColor(currentColor);
 
-    List<Figure> allies = Board.getFiguresByColor(currentColor).stream().filter(a -> a.getClass() != King.class).collect(Collectors.toList());
+    List<Figure> allies = Board.getFiguresByColor(currentColor).stream()
+        .filter(a -> a.getClass() != King.class)
+        .collect(Collectors.toList());
     kingsAllies = new ArrayList<>();
-    allies.forEach(o -> kingsAllies.add(o));
+    kingsAllies.addAll(allies);
 
     define();
   }

@@ -132,7 +132,9 @@ public class EstimatePosition {
     updatePositionOnTheBoard.undoTurn(turn);
     List<TurnAntiParameter> turnAntiParameterMap = new ArrayList<>();
     for (Turn posTurn : possibleTurns) {
-      if (!posTurn.equals(turn)) {
+      if (!turn.equals(posTurn)) {
+        System.out.println("Turn = " + turn);
+        System.out.println("PossibleTurn = " + posTurn);
         updatePositionOnTheBoard.makeTurn(posTurn);
         AntiParameter antiParameter = AntiParameter.builder()
                 .fifthParam(estimateFirstParameter())

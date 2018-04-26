@@ -25,7 +25,7 @@ import static java.lang.Math.abs;
 
 public class UpdatePositionOnTheBoard {
   private Set<Field> affectedFields;
-  private List<FigureToField> tuplesFigureToField;
+  private List<FigureToField> figureToFieldList;
   private Figure pawnFromTransformation;
   public static Figure eatenFigureToResurrection;
 
@@ -38,6 +38,33 @@ public class UpdatePositionOnTheBoard {
       board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), false);
     }
     makePullAdditionalAlliesAndEnemies();
+  }
+
+  private void prepareTurnForUndoing(Turn turn) {
+    System.out.println("PrepareTurnForUndoing = " + turn);
+    System.out.println("AllPossibleTurns = ");
+//    Process.printAllPossibleTurns();
+    figureToFieldList = new ArrayList<>();
+    eatenFigureToResurrection = null;
+    for (FigureToField figureToField : turn.getFigureToDestinationField()) {
+      figureToFieldList.add(FigureToField.builder().figure(figureToField.getFigure()).field(figureToField.getFigure().getField()).build());
+    }
+    if (turn.isEating()) {
+      if (turn.getFigureToDestinationField().size() == 1
+          && turn.getFigureToDestinationField().get(0).getFigure().getClass() == Pawn.class
+          && ((Pawn) turn.getFigureToDestinationField().get(0).getFigure()).isEnPassant()) {
+        eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
+      } else {
+        Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
+        if (!turn.isEnPassant()) {
+          eatenFigureToResurrection = tempFigure.createNewFigure();
+        }
+      }
+    }
+    if (turn.isTransformation()) {
+      pawnFromTransformation = turn.getFigureToDestinationField().get(0).getFigure();
+    }
+    figureBornFromTransformation = turn.getFigureFromTransformation();
   }
 
   private void getAffectedFields(Turn turn) {
@@ -123,7 +150,7 @@ public class UpdatePositionOnTheBoard {
 
   public void undoTurn(Turn turn) {
     Turn undoTurn = Turn.builder()
-            .figureToDestinationField(tuplesFigureToField)
+            .figureToDestinationField(figureToFieldList)
             .eating(false)
             .writtenStyle("")
             .numberOfTurn(turn.getNumberOfTurn())
@@ -133,32 +160,6 @@ public class UpdatePositionOnTheBoard {
     }
     eatenFigureToResurrection = null;
     makePullAdditionalAlliesAndEnemies();
-  }
-
-  private void prepareTurnForUndoing(Turn turn) {
-//        System.out.println("Turn = " + turn);
-    tuplesFigureToField = new ArrayList<>();
-    eatenFigureToResurrection = null;
-    for (FigureToField figureToField : turn.getFigureToDestinationField()) {
-      tuplesFigureToField.add(FigureToField.builder().figure(figureToField.getFigure()).field(figureToField.getFigure().getField()).build());
-    }
-    if (turn.isEating()) {
-      if (turn.getFigureToDestinationField().size() == 1
-              && turn.getFigureToDestinationField().get(0).getFigure().getClass() == Pawn.class
-              && ((Pawn) turn.getFigureToDestinationField().get(0).getFigure()).isEnPassant()) {
-
-        eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
-      } else {
-        Figure tempFigure = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
-        if (!turn.isEnPassant()) {
-          eatenFigureToResurrection = tempFigure.createNewFigure();
-        }
-      }
-    }
-    if (turn.isTransformation()) {
-      pawnFromTransformation = turn.getFigureToDestinationField().get(0).getFigure();
-    }
-    figureBornFromTransformation = turn.getFigureFromTransformation();
   }
 
   public Set<Figure> getAffectedFigures(Color color) {

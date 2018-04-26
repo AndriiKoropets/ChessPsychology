@@ -42,6 +42,7 @@ public class EnPassantAndTransformation {
       possibleTurns.add(Turn.builder()
               .figureToDestinationField(figureToFieldList)
               .eating(true)
+              .enPassant(true)
               .targetedFigure(enPassantEnemy)
               .build());
     }

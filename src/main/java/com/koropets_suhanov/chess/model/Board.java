@@ -34,10 +34,9 @@ public class Board implements Subject {
   @Getter
   @Setter
   private static Figure enPassantPrey;
-  private static Field newFigureOccupation;
+  private static Field newFieldOccupation;
   private static Board instance;
   private static boolean transformation;
-
 
   public static Board getInstance() {
     if (instance == null) {
@@ -86,9 +85,11 @@ public class Board implements Subject {
     blackFigures.forEach(b -> fieldsUnderBlackInfluence.addAll(b.getFieldsUnderMyInfluence()));
   }
 
-  public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, boolean isUndoing) {
-    if (!figures.contains(updatedFigure)) {
-      throw new RuntimeException("There is no such figure on the Board: " + updatedFigure + ", field = " + updatedField);
+  public void setNewCoordinates(Turn turn, Figure figureWillBeUpdated, Field previousAndFutureOccupiedField, boolean isUndoing) {
+    if (!(figures.contains(figureWillBeUpdated) || turn.isTransformation())) {
+      throw new RuntimeException("There is no such figure on the Board: " + figureWillBeUpdated
+          + (isUndoing ? ", previousField = " + previousAndFutureOccupiedField
+          : ", field = " + previousAndFutureOccupiedField));
     }
 
     Figure eatenFigure = turn.getTargetedFigure();
@@ -100,28 +101,27 @@ public class Board implements Subject {
 
     if (isUndoing) {
       if (turn.isTransformation()) {
-        undoTransformation(turn, updatedField);
+        undoTransformation(turn, previousAndFutureOccupiedField);
       } else if (turn.isEnPassant()) {
-        undoEnPassant();
+        undoEnPassant(figureWillBeUpdated, previousAndFutureOccupiedField);
       } else {
-        undoCasualTurn();
+        undoCasualTurn(figureWillBeUpdated, previousAndFutureOccupiedField);
       }
     } else {
       if (turn.isTransformation()) {
-        makeTransformation(turn, updatedField);
+        makeTransformation(turn, previousAndFutureOccupiedField);
       } else if (turn.isEnPassant()) {
-        makeEnPassant(turn, updatedFigure, updatedField);
+        makeEnPassant(turn, figureWillBeUpdated, previousAndFutureOccupiedField);
       } else {
-        makeCasualTurn(updatedFigure, updatedField);
+        makeCasualTurn(figureWillBeUpdated, previousAndFutureOccupiedField);
       }
     }
   }
 
-  private void undoTransformation(Turn turn, Field updatedField) {
+  private void undoTransformation(Turn turn, Field previousOccupiedField) {
     Figure pawnToReborn = turn.getFigureToDestinationField().get(0).getFigure();
-    Figure transformedFigureToRemove = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
-    newFigureOccupation = updatedField;
-    removeFigure(transformedFigureToRemove);
+    newFieldOccupation = previousOccupiedField;
+    removeFigure(turn.getFigureFromTransformation());
     register(pawnToReborn);
     notify(pawnToReborn);
     figures.forEach(f -> {
@@ -131,12 +131,15 @@ public class Board implements Subject {
     fulfillResurrection();
   }
 
-  private void undoEnPassant() {
-    fulfillResurrection();
+  private void undoEnPassant(Figure figureFoUpdate, Field previousOccupiedField) {
+    undoCasualTurn(figureFoUpdate, previousOccupiedField);
   }
 
-  private void undoCasualTurn() {
+  private void undoCasualTurn(Figure figureForUpdate, Field previousOccupiedField) {
+    newFieldOccupation = previousOccupiedField;
+    notify(figureForUpdate);
     fulfillResurrection();
+    updateStateOfAllFigures();
   }
 
   private void fulfillResurrection() {
@@ -147,18 +150,12 @@ public class Board implements Subject {
   }
 
   private void makeTransformation(Turn turn, Field updatedField) {
-    newFigureOccupation = updatedField;
+    newFieldOccupation = updatedField;
     Figure newFigureForUpdate = ParseWrittenTurn.getFigureBornFromTransformation();
     register(newFigureForUpdate);
     removeFigure(turn.getFigureToDestinationField().get(0).getFigure());
-//    System.out.println("Before update = ");
-//    System.out.println(takenFields);
-//    System.out.println(fieldToFigure);
     notify(newFigureForUpdate);
-    figures.forEach(f -> {
-      f.possibleTurns();
-      f.attackedFields();
-    });
+    updateStateOfAllFigures();
   }
 
   private void makeEnPassant(Turn turn, Figure updatedFigure, Field updatedField) {
@@ -167,8 +164,12 @@ public class Board implements Subject {
   }
 
   private void makeCasualTurn(Figure updatedFigure, Field updatedField) {
-    newFigureOccupation = updatedField;
+    newFieldOccupation = updatedField;
     notify(updatedFigure);
+    updateStateOfAllFigures();
+  }
+
+  private void updateStateOfAllFigures() {
     figures.forEach(f -> {
       f.possibleTurns();
       f.attackedFields();
@@ -179,7 +180,7 @@ public class Board implements Subject {
   public void notify(Observer observerFigure) {
     Figure figure = (Figure) observerFigure;
     updateTakenFields(figure);
-    figure.update(newFigureOccupation);
+    figure.update(newFieldOccupation);
     figures.forEach(f -> {
       if (!f.equals(figure)) {
         f.update();
@@ -192,8 +193,8 @@ public class Board implements Subject {
   private static void updateTakenFields(Figure figure) {
     if (!transformation) {
       takenFields.remove(figure.getField());
-      takenFields.add(newFigureOccupation);
-      fieldToFigure.put(newFigureOccupation, figure);
+      takenFields.add(newFieldOccupation);
+      fieldToFigure.put(newFieldOccupation, figure);
       fieldToFigure.replace(figure.getField(), null);
     }
   }

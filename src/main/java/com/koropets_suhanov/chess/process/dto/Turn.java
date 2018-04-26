@@ -30,20 +30,24 @@ public class Turn {
     if (o == null || getClass() != o.getClass()) return false;
     Turn turn = (Turn) o;
     boolean equals = false;
+    System.out.println("Here");
+    System.out.println("Here = " + this);
+    System.out.println("Here = " + turn);
     for (FigureToField originalFigureToField : this.figureToDestinationField) {
       for (FigureToField comparableFigureToField : turn.figureToDestinationField) {
-        equals = originalFigureToField.getFigure().equals(comparableFigureToField.getFigure()) && originalFigureToField.getField().equals(comparableFigureToField.getField());
+        equals = originalFigureToField.getFigure().equals(comparableFigureToField.getFigure())
+            && originalFigureToField.getField().equals(comparableFigureToField.getField());
         if (!equals) {
           return false;
         }
       }
     }
-    return equals && eating == turn.eating &&
-            transformation == turn.transformation &&
-            numberOfTurn == turn.numberOfTurn &&
-            enPassant == turn.enPassant &&
-            Objects.equals(figureFromTransformation, turn.figureFromTransformation) &&
-            Objects.equals(targetedFigure, turn.targetedFigure);
+    System.out.println("Passed");
+    return equals && eating == turn.eating
+//            && transformation == turn.transformation
+//            && enPassant == turn.enPassant
+        && Objects.equals(figureFromTransformation, turn.figureFromTransformation)
+        && Objects.equals(targetedFigure, turn.targetedFigure);
   }
 
   @Override

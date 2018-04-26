@@ -72,8 +72,7 @@ public class ParseWrittenTurn {
   }
 
   private Field parseDestinationField(String turn) {
-    int x;
-    int y;
+    int x, y;
     if (!turn.equalsIgnoreCase(SHORT_CASTLING_ZEROS) && !turn.equalsIgnoreCase(LONG_CASTLING_ZEROS)) {
       if (!whetherWrittenTurnIsTransformation()) {
         if (turn.contains(PLUS)) {
@@ -299,7 +298,7 @@ public class ParseWrittenTurn {
     List<Figure> figures = Board.getTypeOfFigures(Pawn.class, currentColor);
     for (Figure curFigure : figures) {
       Pawn pawn = (Pawn) curFigure;
-//      pawn.printAllInformation();
+      pawn.printAllInformation();
       if (eating) {
         if (transformation) {
           if (pawn.getPreyField().contains(field)) {

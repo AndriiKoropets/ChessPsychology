@@ -165,7 +165,7 @@ public class Pawn extends Figure {
             && Process.currentBlackTurn.getFigureToDestinationField().size() == 1
             && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
             && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
-          this.printAllInformation();
+//          this.printAllInformation();
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {

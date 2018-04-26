@@ -13,6 +13,7 @@ import com.koropets_suhanov.chess.model.Rock;
 import com.koropets_suhanov.chess.model.Queen;
 import com.koropets_suhanov.chess.model.King;
 import com.koropets_suhanov.chess.process.dto.Turn;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -27,16 +28,18 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 @Slf4j
 public class Process {
 
-  //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantWhite.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/transformation.txt";
-  private final static String PATH_TO_FILE = "src/main/resources/parties/transformation_eat.txt";
-  //  private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
-  //1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 14, 15, 16, 17 19, 20 21 are processed properly
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/transformation_eat.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/21.txt";
+  private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
   //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
   //Transformation : 6, 7, 18
   //The party is wrong written 13
+  //Wrong processed 4, 7, 8, 13, 20, hou
   private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
   private static CurrentPosition game = new CurrentPosition();
@@ -53,7 +56,9 @@ public class Process {
   private static final Pattern pattern = Pattern.compile("^(\\d+)\\.\\s*(\\S+)\\s*(\\S+)*$");
   private static Parameter whiteEstimationWholeParty;
   private static Parameter blackEstimationWholeParty;
+  @Getter
   private static Set<Turn> whitePossibleTurns;
+  @Getter
   private static Set<Turn> blackPossibleTurns;
 
   static FinalResult fullWhiteEstimation;
@@ -64,9 +69,8 @@ public class Process {
   public void runProcess() throws FileNotFoundException {
     initialize();
     Scanner scnr = new Scanner(new File(PATH_TO_FILE));
-    String sCurrentLine;
     while (scnr.hasNextLine()) {
-      sCurrentLine = scnr.nextLine();
+      String sCurrentLine = scnr.nextLine();
       Matcher matcher = pattern.matcher(sCurrentLine);
       if (matcher.matches()) {
 
@@ -104,7 +108,7 @@ public class Process {
 //    printAllPossibleTurns(whitePossibleTurns);
     updatePositionOnTheBoard.makeTurn(whiteTurn);
     printAllBoard();
-//    whiteEstimationWholeParty = estimatePosition.estimate(whiteTurn, whitePossibleTurns);
+    whiteEstimationWholeParty = estimatePosition.estimate(whiteTurn, whitePossibleTurns);
     fullWhiteEstimation = countFullEstimation(whiteEstimationWholeParty, Color.WHITE);
   }
 
@@ -117,7 +121,7 @@ public class Process {
     blackPossibleTurns = game.getAllPossibleTurns();
     updatePositionOnTheBoard.makeTurn(blackTurn);
     printAllBoard();
-//    blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns);
+    blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns);
     fullBlackEstimation = countFullEstimation(blackEstimationWholeParty, Color.BLACK);
   }
 
@@ -143,6 +147,17 @@ public class Process {
     for (Turn possibleTurn : allPossibleTurns) {
       System.out.println("Turn = " + possibleTurn.getFigureToDestinationField());
     }
+  }
+
+  public static void printAllPossibleTurns() {
+    System.out.println("White possibleTurns:");
+    for (Turn turn : whitePossibleTurns) {
+      System.out.println(turn);
+    }
+    System.out.println("Black possibleTurns:");
+//    for (Turn turn : blackPossibleTurns) {
+//      System.out.println(turn);
+//    }
   }
 
   private void printAllBoard() {
@@ -199,10 +214,10 @@ public class Process {
         .second(globalEstimation.getSecond() + parameter.getSecondBeUnderAttack())
         .third(globalEstimation.getThird() + parameter.getThirdWithdrawAttackOnEnemy())
         .fourth(globalEstimation.getFourth() + parameter.getFourthWithdrawAttackOnMe())
-//            .fifth(globalEstimation.getFifth() + parameter.getFifthDontTakeAChanceToAttack().getWeight())
-//            .sixth(globalEstimation.getSixth() + parameter.getSixthDontTakeAChanceToBeUnderAttack().getWeight())
-//            .seventh(globalEstimation.getSeventh() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy().getWeight())
-//            .eighth(globalEstimation.getEighth() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe().getWeight())
+            .fifth(globalEstimation.getFifth() + parameter.getFifthDontTakeAChanceToAttack().getWeight())
+            .sixth(globalEstimation.getSixth() + parameter.getSixthDontTakeAChanceToBeUnderAttack().getWeight())
+            .seventh(globalEstimation.getSeventh() + parameter.getSeventhDontTakeAChanceToWithdrawAttackOnEnemy().getWeight())
+            .eighth(globalEstimation.getEighth() + parameter.getEighthDontTakeAChanceToWithdrawAttackOnMe().getWeight())
         .build();
   }
 }
