@@ -19,7 +19,7 @@ public class King extends Figure {
   @Override
   public void possibleTurns() {
     Set<Field> enemyInfluence = (this.getColor() == Color.BLACK) ? Board.getFieldsUnderWhiteInfluence()
-            : Board.getFieldsUnderBlackInfluence();
+        : Board.getFieldsUnderBlackInfluence();
     this.getAttackedFields().forEach(f -> {
       Figure figure = Board.getFieldToFigure().get(f);
       if (!enemyInfluence.contains(f)) {
@@ -70,7 +70,7 @@ public class King extends Figure {
 
   public boolean isUnderAttack() {
     Set<Field> enemyInfluence = (this.getColor() == Color.WHITE) ? Board.getFieldsUnderBlackInfluence()
-            : Board.getFieldsUnderWhiteInfluence();
+        : Board.getFieldsUnderWhiteInfluence();
     return enemyInfluence.contains(this.getField());
   }
 

@@ -246,7 +246,7 @@ public abstract class Figure implements Observer {
     if (o == null || this.getClass() != o.getClass()) return false;
     Figure figure = (Figure) o;
     return this.getField() == figure.getField()
-            && this.getColor() == figure.getColor();
+        && this.getColor() == figure.getColor();
   }
 
   @Override
@@ -254,7 +254,7 @@ public abstract class Figure implements Observer {
     return 31 * this.getField().getX() + 97 * this.getField().getY();
   }
 
-  public void printAllInformationAboutFigure(){
+  public void printAllInformation() {
     System.out.println(this
         + ", possibleFTM " + this.getPossibleFieldsToMove()
         + ", whoCouldBeEatenByMe " + this.getWhoCouldBeEaten()

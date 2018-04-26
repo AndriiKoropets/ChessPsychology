@@ -162,10 +162,10 @@ public class Pawn extends Figure {
     if (Process.currentTurnNumber >= 2) {
       if (this.getColor() == Color.WHITE) {
         if (this.getField().getX() == 3
-                && Process.currentBlackTurn.getFigureToDestinationField().size() == 1
-                && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
-                && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
-          this.printAllInformationAboutFigure();
+            && Process.currentBlackTurn.getFigureToDestinationField().size() == 1
+            && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
+            && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
+          this.printAllInformation();
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {
@@ -173,7 +173,7 @@ public class Pawn extends Figure {
             leftEnemy = Board.getFieldToFigure().get(leftField);
           }
           if (leftEnemy != null && leftEnemy.getColor() == Color.BLACK && leftEnemy.getClass() == Pawn.class
-                  && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().equals(leftEnemy)) {
+              && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().equals(leftEnemy)) {
             initializeEnPassant(leftField, leftEnemy, Color.WHITE);
           }
           Field rightField = null;
@@ -183,15 +183,15 @@ public class Pawn extends Figure {
             rightEnemy = Board.getFieldToFigure().get(rightField);
           }
           if (rightEnemy != null && rightEnemy.getColor() == Color.BLACK && rightEnemy.getClass() == Pawn.class
-                  && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().equals(rightEnemy)) {
+              && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().equals(rightEnemy)) {
             initializeEnPassant(rightField, rightEnemy, Color.WHITE);
           }
         }
       } else {
         if (this.getField().getX() == 4
-                && Process.currentWhiteTurn.getFigureToDestinationField().size() == 1
-                && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
-                && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
+            && Process.currentWhiteTurn.getFigureToDestinationField().size() == 1
+            && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
+            && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {
@@ -199,7 +199,7 @@ public class Pawn extends Figure {
             leftEnemy = Board.getFieldToFigure().get(leftField);
           }
           if (leftEnemy != null && leftEnemy.getColor() == Color.WHITE && leftEnemy.getClass() == Pawn.class
-                  && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().equals(leftEnemy)) {
+              && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().equals(leftEnemy)) {
             initializeEnPassant(leftField, leftEnemy, Color.BLACK);
           }
           Field rightField = null;
@@ -209,7 +209,7 @@ public class Pawn extends Figure {
             rightEnemy = Board.getFieldToFigure().get(rightField);
           }
           if (rightEnemy != null && rightEnemy.getColor() == Color.WHITE && rightEnemy.getClass() == Pawn.class
-                  && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().equals(rightEnemy)) {
+              && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().equals(rightEnemy)) {
             initializeEnPassant(rightField, rightEnemy, Color.BLACK);
           }
         }
@@ -223,12 +223,12 @@ public class Pawn extends Figure {
     enPassantEnemy = Board.getFieldToFigure().get(enemyField);
     enPassant = true;
     enPassantField = (color == Color.WHITE) ? new Field(enemyField.getX() - 1, enemyField.getY())
-            : new Field(enemyField.getX() + 1, enemyField.getY());
+        : new Field(enemyField.getX() + 1, enemyField.getY());
   }
 
   public boolean isOnThePenultimateLine() {
     return (this.getColor() == Color.BLACK && this.getField().getX() == 6)
-            || (this.getColor() == Color.WHITE && this.getField().getX() == 1);
+        || (this.getColor() == Color.WHITE && this.getField().getX() == 1);
   }
 
   @Override

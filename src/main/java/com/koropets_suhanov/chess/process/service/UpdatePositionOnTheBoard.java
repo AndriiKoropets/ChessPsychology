@@ -24,8 +24,6 @@ import static com.koropets_suhanov.chess.process.service.ParseWrittenTurn.figure
 import static java.lang.Math.abs;
 
 public class UpdatePositionOnTheBoard {
-  //todo: need to be refactored
-
   private Set<Field> affectedFields;
   private List<FigureToField> tuplesFigureToField;
   private Figure pawnFromTransformation;
@@ -33,7 +31,7 @@ public class UpdatePositionOnTheBoard {
 
   public void makeTurn(Turn turn) {
     getAffectedFields(turn);
-    System.out.println(affectedFields);
+//    System.out.println("Affected fields on the current turn = " + affectedFields);
 //        System.out.println("Turn = " + turn);
     prepareTurnForUndoing(turn);
     for (FigureToField figuresToFields : turn.getFigureToDestinationField()) {

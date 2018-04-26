@@ -36,6 +36,7 @@ public class Board implements Subject {
   private static Figure enPassantPrey;
   private static Field newFigureOccupation;
   private static Board instance;
+  private static boolean transformation;
 
 
   public static Board getInstance() {
@@ -58,28 +59,21 @@ public class Board implements Subject {
   }
 
   @Override
-  public void register(Observer observer) {
-    Figure figure = (Figure) observer;
+  public void register(Observer observerFigure) {
+    Figure figure = (Figure) observerFigure;
     figures.add(figure);
     if ((figure).getColor() == Color.WHITE) {
       whiteFigures.add((figure));
     } else {
       blackFigures.add(figure);
     }
-    Field field = (figure).getField();
-    fieldToFigure.put((figure).getField(), (figure));
+    Field field = figure.getField();
+    fieldToFigure.put(field, figure);
     takenFields.add(field);
   }
 
   private static void setTakenFields() {
     figures.forEach(f -> takenFields.add(f.getField()));
-  }
-
-  private static void updateTakenFields(Observer figure) {
-    takenFields.remove(((Figure) figure).getField());
-    takenFields.add(newFigureOccupation);
-    fieldToFigure.put(newFigureOccupation, (Figure) figure);
-    fieldToFigure.replace(((Figure) figure).getField(), null);
   }
 
   private static void updateFieldsUnderWhiteInfluence() {
@@ -93,7 +87,7 @@ public class Board implements Subject {
   }
 
   public void setNewCoordinates(Turn turn, Figure updatedFigure, Field updatedField, boolean isUndoing) {
-    if (!figures.contains(updatedFigure)){
+    if (!figures.contains(updatedFigure)) {
       throw new RuntimeException("There is no such figure on the Board: " + updatedFigure + ", field = " + updatedField);
     }
 
@@ -102,26 +96,28 @@ public class Board implements Subject {
       removeFigure(eatenFigure);
     }
 
-    if (isUndoing){
-      if (turn.isTransformation()){
+    transformation = turn.isTransformation();
+
+    if (isUndoing) {
+      if (turn.isTransformation()) {
         undoTransformation(turn, updatedField);
-      }else if (turn.isEnPassant()){
+      } else if (turn.isEnPassant()) {
         undoEnPassant();
-      }else {
+      } else {
         undoCasualTurn();
       }
-    }else {
-      if (turn.isTransformation()){
+    } else {
+      if (turn.isTransformation()) {
         makeTransformation(turn, updatedField);
-      }else if (turn.isEnPassant()){
+      } else if (turn.isEnPassant()) {
         makeEnPassant(turn, updatedFigure, updatedField);
-      }else {
+      } else {
         makeCasualTurn(updatedFigure, updatedField);
       }
     }
   }
 
-  private void undoTransformation(Turn turn, Field updatedField){
+  private void undoTransformation(Turn turn, Field updatedField) {
     Figure pawnToReborn = turn.getFigureToDestinationField().get(0).getFigure();
     Figure transformedFigureToRemove = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
     newFigureOccupation = updatedField;
@@ -132,37 +128,32 @@ public class Board implements Subject {
       f.possibleTurns();
       f.attackedFields();
     });
-
-//    if (turn.isTransformation()) {
-//      register(turn.getFigureToDestinationField().get(0).getFigure());
-//      Figure figureToDelete = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
-//      removeFigure(figureToDelete);
-//    }
-
-
     fulfillResurrection();
   }
 
-  private void undoEnPassant(){
+  private void undoEnPassant() {
     fulfillResurrection();
   }
 
-  private void undoCasualTurn(){
+  private void undoCasualTurn() {
     fulfillResurrection();
   }
 
-  private void fulfillResurrection(){
+  private void fulfillResurrection() {
     Figure figureToResurrect = UpdatePositionOnTheBoard.eatenFigureToResurrection;
     if (figureToResurrect != null) {
       register(figureToResurrect);
     }
   }
 
-  private void makeTransformation(Turn turn, Field updatedField){
+  private void makeTransformation(Turn turn, Field updatedField) {
+    newFigureOccupation = updatedField;
     Figure newFigureForUpdate = ParseWrittenTurn.getFigureBornFromTransformation();
     register(newFigureForUpdate);
     removeFigure(turn.getFigureToDestinationField().get(0).getFigure());
-    newFigureOccupation = updatedField;
+//    System.out.println("Before update = ");
+//    System.out.println(takenFields);
+//    System.out.println(fieldToFigure);
     notify(newFigureForUpdate);
     figures.forEach(f -> {
       f.possibleTurns();
@@ -170,12 +161,12 @@ public class Board implements Subject {
     });
   }
 
-  private void makeEnPassant(Turn turn, Figure updatedFigure, Field updatedField){
+  private void makeEnPassant(Turn turn, Figure updatedFigure, Field updatedField) {
     enPassantPrey = turn.getTargetedFigure();
     makeCasualTurn(updatedFigure, updatedField);
   }
 
-  private void makeCasualTurn(Figure updatedFigure, Field updatedField){
+  private void makeCasualTurn(Figure updatedFigure, Field updatedField) {
     newFigureOccupation = updatedField;
     notify(updatedFigure);
     figures.forEach(f -> {
@@ -185,28 +176,39 @@ public class Board implements Subject {
   }
 
   @Override
-  public void notify(Observer figure) {
+  public void notify(Observer observerFigure) {
+    Figure figure = (Figure) observerFigure;
     updateTakenFields(figure);
     figure.update(newFigureOccupation);
-    figures.forEach(cf -> {
-      if (!cf.equals(figure)) {
-        cf.update();
+    figures.forEach(f -> {
+      if (!f.equals(figure)) {
+        f.update();
       }
     });
     updateFieldsUnderWhiteInfluence();
     updateFieldsUnderBlackInfluence();
   }
 
+  private static void updateTakenFields(Figure figure) {
+    if (!transformation) {
+      takenFields.remove(figure.getField());
+      takenFields.add(newFigureOccupation);
+      fieldToFigure.put(newFigureOccupation, figure);
+      fieldToFigure.replace(figure.getField(), null);
+    }
+  }
+
   @Override
-  public void removeFigure(Observer figure) {
+  public void removeFigure(Observer observerFigure) {
+    Figure figure = (Figure) observerFigure;
     figures.remove(figure);
-    if (((Figure) figure).getColor() == Color.BLACK) {
+    if (figure.getColor() == Color.BLACK) {
       blackFigures.remove(figure);
     } else {
       whiteFigures.remove(figure);
     }
-    fieldToFigure.remove(((Figure) figure).getField());
-    takenFields.remove(((Figure) figure).getField());
+    fieldToFigure.remove(figure.getField());
+    takenFields.remove(figure.getField());
   }
 
   public static List<Figure> getTypeOfFigures(Class clazz, Color color) {
