@@ -33,13 +33,14 @@ public class Process {
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/transformation.txt";
 //  private final static String PATH_TO_FILE = "src/main/resources/parties/transformation_eat.txt";
-//  private final static String PATH_TO_FILE = "src/main/resources/parties/21.txt";
-  private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
+  private final static String PATH_TO_FILE = "src/main/resources/parties/4.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
   //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
   //Transformation : 6, 7, 18
   //The party is wrong written 13
-  //Wrong processed 4, 7, 8, 13, 20, hou
+  //Wrong processed 4, 7, 8, 13, 20
+  //Wrong written: hou
   private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
   private static CurrentPosition game = new CurrentPosition();
@@ -73,7 +74,7 @@ public class Process {
       String sCurrentLine = scnr.nextLine();
       Matcher matcher = pattern.matcher(sCurrentLine);
       if (matcher.matches()) {
-
+        System.out.println("Started processing turns = " + matcher.group(1) + " " + matcher.group(2) + " " + matcher.group(3));
         currentTurnNumber = Integer.valueOf(matcher.group(1));
         String writtenWhiteTurn = matcher.group(2);
         String writtenBlackTurn = matcher.group(3);
@@ -129,6 +130,7 @@ public class Process {
     System.out.println("Figures = " + Board.getFigures());
     System.out.println("White figures = " + Board.getFiguresByColor(Color.WHITE));
     System.out.println("Black figures = " + Board.getFiguresByColor(Color.BLACK));
+    System.out.println("Field to figures = " + Board.getFieldToFigure());
     System.out.println("White estimation = " + whiteEstimationWholeParty);
     System.out.println("Black estimation = " + blackEstimationWholeParty);
     System.out.println("Turn number " + currentTurnNumber + " = " + currentWrittenStyleTurn + " has just been successfully processed");

@@ -30,9 +30,9 @@ public class Turn {
     if (o == null || getClass() != o.getClass()) return false;
     Turn turn = (Turn) o;
     boolean equals = false;
-    System.out.println("Here");
-    System.out.println("Here = " + this);
-    System.out.println("Here = " + turn);
+//    System.out.println("Here");
+//    System.out.println("Here = " + this);
+//    System.out.println("Here = " + turn);
     for (FigureToField originalFigureToField : this.figureToDestinationField) {
       for (FigureToField comparableFigureToField : turn.figureToDestinationField) {
         equals = originalFigureToField.getFigure().equals(comparableFigureToField.getFigure())
@@ -42,7 +42,7 @@ public class Turn {
         }
       }
     }
-    System.out.println("Passed");
+//    System.out.println("Passed");
     return equals && eating == turn.eating
 //            && transformation == turn.transformation
 //            && enPassant == turn.enPassant

@@ -22,6 +22,7 @@ import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 public class EstimatePosition {
 
   public Parameter estimate(Turn turn, Set<Turn> possibleTurns) {
+    System.out.println("Black Turn = " + turn + ", turns = " + possibleTurns);
     int firstParam = estimateFirstParameter();
     int secondParam = estimateSecondParameter();
     int thirdParam = estimateThirdParameter();
@@ -160,7 +161,7 @@ public class EstimatePosition {
       }
     }
     if (turnOfTheMaxParam == null) {
-      throw new RuntimeException("Estimating fifth parameter. Could not define turn with highest weight");
+      throw new RuntimeException("Estimating fifth parameter. Could not define turn with highest weight. Size of allTurnsWithAntiParameters = " + allTurnsWithAntiParameters.size());
     }
     return TurnWeight.builder().turn(turnOfTheMaxParam).weight(max).build();
   }
@@ -176,7 +177,7 @@ public class EstimatePosition {
       }
     }
     if (turnOfTheMaxParam == null) {
-      throw new RuntimeException("Estimating sixth parameter. Could not define turn with highest weight");
+      throw new RuntimeException("Estimating sixth parameter. Could not define turn with highest weight. Size of allTurnsWithAntiParameters = " + allTurnsWithAntiParameters.size());
     }
     return TurnWeight.builder().turn(turnOfTheMaxParam).weight(max).build();
   }
@@ -192,7 +193,7 @@ public class EstimatePosition {
       }
     }
     if (turnOfTheMaxParam == null) {
-      throw new RuntimeException("Estimating seventh parameter. Could not define turn with highest weight");
+      throw new RuntimeException("Estimating seventh parameter. Could not define turn with highest weight. Size of allTurnsWithAntiParameters = " + allTurnsWithAntiParameters.size());
     }
     return TurnWeight.builder().turn(turnOfTheMaxParam).weight(max).build();
   }
@@ -208,7 +209,7 @@ public class EstimatePosition {
       }
     }
     if (turnOfTheMaxParam == null) {
-      throw new RuntimeException("Estimating eight parameter. Could not define turn with highest weight");
+      throw new RuntimeException("Estimating eight parameter. Could not define turn with highest weight. Size of allTurnsWithAntiParameters = " + allTurnsWithAntiParameters.size());
     }
     return TurnWeight.builder().turn(turnOfTheMaxParam).weight(max).build();
   }
