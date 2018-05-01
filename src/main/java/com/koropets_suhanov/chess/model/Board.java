@@ -144,6 +144,7 @@ public class Board implements Subject {
 
   private void fulfillResurrection() {
     Figure figureToResurrect = UpdatePositionOnTheBoard.eatenFigureToResurrection;
+    System.out.println("Last figureResurection = " + figureToResurrect);
     if (figureToResurrect != null) {
       register(figureToResurrect);
     }
@@ -197,7 +198,7 @@ public class Board implements Subject {
       takenFields.add(newFieldOccupation);
       System.out.println("NewFieldOccupation = " + newFieldOccupation);
       fieldToFigure.put(newFieldOccupation, figure);
-      fieldToFigure.replace(figure.getField(), null);
+      fieldToFigure.put(figure.getField(), null);
     }
   }
 
@@ -210,7 +211,7 @@ public class Board implements Subject {
     } else {
       whiteFigures.remove(figure);
     }
-    fieldToFigure.replace(figure.getField(), null);
+    fieldToFigure.put(figure.getField(), null);
     takenFields.remove(figure.getField());
   }
 

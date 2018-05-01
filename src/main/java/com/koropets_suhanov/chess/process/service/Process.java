@@ -43,7 +43,7 @@ public class Process {
   //Wrong written: hou
   private final static String PATH_TO_DIRECTORY = "src/main/resources/parties/";
 
-  private static CurrentPosition game = new CurrentPosition();
+  private static CurrentPosition currentPosition = new CurrentPosition();
   public static UpdatePositionOnTheBoard updatePositionOnTheBoard = new UpdatePositionOnTheBoard();
   private static EstimatePosition estimatePosition = new EstimatePosition();
   public static Color currentColor;
@@ -105,7 +105,7 @@ public class Process {
     previousWhiteTurn = currentWhiteTurn;
     Turn whiteTurn = ParseWrittenTurn.getActualTurn();
     currentWhiteTurn = whiteTurn;
-    whitePossibleTurns = game.getAllPossibleTurns();
+    whitePossibleTurns = currentPosition.getAllPossibleTurns();
 //    printAllPossibleTurns(whitePossibleTurns);
     updatePositionOnTheBoard.makeTurn(whiteTurn);
     printAllBoard();
@@ -119,7 +119,7 @@ public class Process {
     previousBlackTurn = currentBlackTurn;
     Turn blackTurn = ParseWrittenTurn.getActualTurn();
     currentBlackTurn = blackTurn;
-    blackPossibleTurns = game.getAllPossibleTurns();
+    blackPossibleTurns = currentPosition.getAllPossibleTurns();
     updatePositionOnTheBoard.makeTurn(blackTurn);
     printAllBoard();
     blackEstimationWholeParty = estimatePosition.estimate(blackTurn, blackPossibleTurns);

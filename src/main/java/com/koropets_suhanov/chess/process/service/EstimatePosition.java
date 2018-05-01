@@ -39,7 +39,9 @@ public class EstimatePosition {
     WeightAndDestinations seventhParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSeventhParameter.getWeight() - thirdParam).figureToFields(estimatedSeventhParameter.getTurn().getFigureToDestinationField()).build();
     WeightAndDestinations eighthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedEighthParameter.getWeight() - fourthParam).figureToFields(estimatedEighthParameter.getTurn().getFigureToDestinationField()).build();
 
+    System.out.println("Before making after estimation = " + Board.getFieldToFigure());
     updatePositionOnTheBoard.makeTurn(turn);
+    System.out.println("After making after estimation = " + Board.getFieldToFigure());
 
     return Parameter.builder()
             .firstAttackEnemy(firstParam)
@@ -130,12 +132,15 @@ public class EstimatePosition {
   }
 
   private List<TurnAntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns) {
+    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
     updatePositionOnTheBoard.undoTurn(turn);
+    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
     List<TurnAntiParameter> turnAntiParameterMap = new ArrayList<>();
     for (Turn posTurn : possibleTurns) {
       if (!turn.equals(posTurn)) {
-        System.out.println("Turn = " + turn);
+        System.out.println("Estimating AntiParameter. Turn = " + turn);
         System.out.println("PossibleTurn = " + posTurn);
+        System.out.println(posTurn.getFigureToDestinationField().get(0).getFigure().getWhoCouldBeEaten());
         updatePositionOnTheBoard.makeTurn(posTurn);
         AntiParameter antiParameter = AntiParameter.builder()
                 .fifthParam(estimateFirstParameter())
