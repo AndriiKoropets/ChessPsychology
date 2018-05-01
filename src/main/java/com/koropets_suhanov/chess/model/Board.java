@@ -144,7 +144,7 @@ public class Board implements Subject {
 
   private void fulfillResurrection() {
     Figure figureToResurrect = UpdatePositionOnTheBoard.eatenFigureToResurrection;
-    System.out.println("Last figureResurection = " + figureToResurrect);
+//    System.out.println("Last figureResurection = " + figureToResurrect);
     if (figureToResurrect != null) {
       register(figureToResurrect);
     }
@@ -166,7 +166,7 @@ public class Board implements Subject {
 
   private void makeCasualTurn(Figure updatedFigure, Field updatedField) {
     newFieldOccupation = updatedField;
-    System.out.println("Updated figure = " + updatedFigure + " updatedField = " + updatedField);
+//    System.out.println("Updated figure = " + updatedFigure + " updatedField = " + updatedField);
     notify(updatedFigure);
     updateStateOfAllFigures(updatedFigure);
   }
@@ -181,6 +181,9 @@ public class Board implements Subject {
   @Override
   public void notify(Observer observerFigure) {
     Figure figure = (Figure) observerFigure;
+    if (figure.getClass() == Pawn.class) {
+      ((Pawn) figure).setPreviousPosition(figure.getField());
+    }
     updateTakenFields(figure);
     figure.update(newFieldOccupation);
     figures.forEach(f -> {
@@ -196,7 +199,7 @@ public class Board implements Subject {
     if (!transformation) {
       takenFields.remove(figure.getField());
       takenFields.add(newFieldOccupation);
-      System.out.println("NewFieldOccupation = " + newFieldOccupation);
+//      System.out.println("NewFieldOccupation = " + newFieldOccupation);
       fieldToFigure.put(newFieldOccupation, figure);
       fieldToFigure.put(figure.getField(), null);
     }

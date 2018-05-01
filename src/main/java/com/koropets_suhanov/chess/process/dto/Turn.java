@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.AccessLevel;
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Getter
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Turn {
+public class Turn implements Serializable {
   private List<FigureToField> figureToDestinationField;
   private Figure figureFromTransformation;
   private boolean eating;

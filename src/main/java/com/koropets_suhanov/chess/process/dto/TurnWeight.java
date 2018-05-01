@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.AccessLevel;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TurnWeight {
+public class TurnWeight implements Serializable {
   private int weight;
   private Turn turn;
 }

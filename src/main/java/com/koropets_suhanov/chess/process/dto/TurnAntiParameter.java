@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.AccessLevel;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TurnAntiParameter {
+public class TurnAntiParameter implements Serializable {
   private AntiParameter antiParameter;
   private Turn turn;
 }

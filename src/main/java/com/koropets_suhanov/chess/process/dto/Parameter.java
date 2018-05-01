@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.Builder;
 
+import java.io.Serializable;
+
 @Getter
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Parameter {
+public class Parameter implements Serializable {
   private int firstAttackEnemy;
   private int secondBeUnderAttack;
   private int thirdWithdrawAttackOnEnemy;

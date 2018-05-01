@@ -7,12 +7,14 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.Builder;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Builder
-public class FinalResult {
+public class FinalResult implements Serializable {
   private int first;
   private int second;
   private int third;

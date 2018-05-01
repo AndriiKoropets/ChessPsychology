@@ -31,13 +31,13 @@ public class UpdatePositionOnTheBoard {
 
   public void makeTurn(Turn turn) {
     getAffectedFields(turn);
-    System.out.println("Affected fields on the current turn = " + affectedFields);
-        System.out.println("Making turn = " + turn);
+//    System.out.println("Affected fields on the current turn = " + affectedFields);
+//        System.out.println("Making turn = " + turn);
     prepareTurnForUndoing(turn);
     for (FigureToField figuresToFields : turn.getFigureToDestinationField()) {
       board.setNewCoordinates(turn, figuresToFields.getFigure(), figuresToFields.getField(), false);
     }
-    System.out.println(Board.getFieldToFigure());
+//    System.out.println(Board.getFieldToFigure());
     makePullAdditionalAlliesAndEnemies();
   }
 
@@ -50,9 +50,6 @@ public class UpdatePositionOnTheBoard {
   }
 
   private void prepareTurnForUndoing(Turn turn) {
-    System.out.println("PrepareTurnForUndoing = " + turn);
-    System.out.println("AllPossibleTurns = ");
-//    Process.printAllPossibleTurns();
     figureToFieldList = new ArrayList<>();
     eatenFigureToResurrection = null;
     for (FigureToField figureToField : turn.getFigureToDestinationField()) {
@@ -63,12 +60,8 @@ public class UpdatePositionOnTheBoard {
           && turn.getFigureToDestinationField().get(0).getFigure().getClass() == Pawn.class
           && ((Pawn) turn.getFigureToDestinationField().get(0).getFigure()).isEnPassant()) {
         eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
-        System.out.println("Resurection enPassant = " + eatenFigureToResurrection);
       } else {
         Figure targetEnemyWillBeEaten = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
-        System.out.println("figure to fields");
-        System.out.println(Board.getFieldToFigure());
-        System.out.println("tempfigure = " + targetEnemyWillBeEaten);
         if (!turn.isEnPassant()) {
           eatenFigureToResurrection = targetEnemyWillBeEaten.createNewFigure();
         }

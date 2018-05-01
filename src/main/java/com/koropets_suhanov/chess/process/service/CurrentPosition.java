@@ -171,6 +171,10 @@ public class CurrentPosition {
   }
 
   private boolean isEnPassantCase(Figure ally) {
+//    if (ally.getClass() == Pawn.class) {
+//      System.out.println("Figure enPassant = " + ally);
+//      System.out.println("IsEnPassant = " + ((Pawn) ally).isEnPassant());
+//    }
     return ally.getClass() == Pawn.class && ((Pawn) ally).isEnPassant();
   }
 

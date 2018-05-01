@@ -1,6 +1,8 @@
 package com.koropets_suhanov.chess.model;
 
 import com.koropets_suhanov.chess.process.service.Process;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -12,10 +14,14 @@ public class Pawn extends Figure {
   private final static int POINT = 1;
   private boolean enPassant;
   private Field enPassantField;
+  @Getter
+  @Setter
+  private Field previousPosition;
   private Figure enPassantEnemy;
 
   public Pawn(Field field, Color color) {
     super(field, color);
+    previousPosition = field;
     attackedFields();
   }
 
@@ -164,7 +170,9 @@ public class Pawn extends Figure {
         if (this.getField().getX() == 3
             && Process.currentBlackTurn.getFigureToDestinationField().size() == 1
             && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
-            && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
+            && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()
+            && !this.getFieldsUnderMyInfluence().contains(((Pawn) Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure()).getPreviousPosition())
+            && enemyStaysLeftOrRight((Pawn) Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure())) {
 //          this.printAllInformation();
           Field leftField = null;
           Figure leftEnemy = null;
@@ -191,7 +199,10 @@ public class Pawn extends Figure {
         if (this.getField().getX() == 4
             && Process.currentWhiteTurn.getFigureToDestinationField().size() == 1
             && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getClass() == this.getClass()
-            && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()) {
+            && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()
+            && !this.getFieldsUnderMyInfluence().contains(((Pawn) Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure()).getPreviousPosition())
+            && enemyStaysLeftOrRight((Pawn) Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure())) {
+          System.out.println("EnPassant turn previous = " + Process.currentWhiteTurn + " Field = " + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField() + " x= " + + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField().getX());
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {
@@ -215,6 +226,10 @@ public class Pawn extends Figure {
         }
       }
     }
+  }
+
+  private boolean enemyStaysLeftOrRight(Pawn enemy) {
+    return this.getField().getY() + 1 == enemy.getField().getY() || this.getField().getY() - 1 == enemy.getField().getY();
   }
 
   private void initializeEnPassant(Field enemyField, Figure enemy, Color color) {
