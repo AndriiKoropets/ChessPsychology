@@ -50,27 +50,29 @@ public class UpdatePositionOnTheBoard {
   }
 
   private void prepareTurnForUndoing(Turn turn) {
+//    System.out.println("Prepare for undoing turn = " + turn);
+//    if (turn.getFigureToDestinationField().get(0).getFigure().getClass() == Pawn.class) {
+//      Pawn pawn = (Pawn) turn.getFigureToDestinationField().get(0).getFigure();
+//      System.out.println("Pawn = " + pawn + " isEnPassant = " + pawn.isEnPassant() + " targetedFigure = " + pawn.getWhoCouldBeEaten());
+//    }
+
     figureToFieldList = new ArrayList<>();
     eatenFigureToResurrection = null;
     for (FigureToField figureToField : turn.getFigureToDestinationField()) {
       figureToFieldList.add(FigureToField.builder().figure(figureToField.getFigure()).field(figureToField.getFigure().getField()).build());
     }
     if (turn.isEating()) {
-      if (turn.getFigureToDestinationField().size() == 1
-          && turn.getFigureToDestinationField().get(0).getFigure().getClass() == Pawn.class
-          && ((Pawn) turn.getFigureToDestinationField().get(0).getFigure()).isEnPassant()) {
+      if (turn.isEnPassant()) {
         eatenFigureToResurrection = turn.getTargetedFigure().createNewFigure();
       } else {
-        Figure targetEnemyWillBeEaten = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField());
-        if (!turn.isEnPassant()) {
-          eatenFigureToResurrection = targetEnemyWillBeEaten.createNewFigure();
-        }
+        eatenFigureToResurrection = Board.getFieldToFigure().get(turn.getFigureToDestinationField().get(0).getField()).createNewFigure();
       }
     }
     if (turn.isTransformation()) {
       pawnFromTransformation = turn.getFigureToDestinationField().get(0).getFigure();
     }
     figureBornFromTransformation = turn.getFigureFromTransformation();
+//    System.out.println("After all eatenFigureToResurrection = " + eatenFigureToResurrection);
   }
 
   private void makePullAdditionalAlliesAndEnemies() {

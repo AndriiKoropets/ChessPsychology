@@ -37,6 +37,7 @@ public class EnPassantAndTransformation {
       }
     }
     if (enPassantEnemy != null) {
+      System.out.println("Enemy en passant = " + enPassantEnemy);
       List<FigureToField> figureToFieldList = new ArrayList<>();
       figureToFieldList.add(FigureToField.builder().figure(ally).field(ally.getEnPassantField()).build());
       possibleTurns.add(Turn.builder()

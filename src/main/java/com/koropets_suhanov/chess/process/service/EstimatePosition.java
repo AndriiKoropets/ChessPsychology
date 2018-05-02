@@ -130,15 +130,15 @@ public class EstimatePosition {
   }
 
   private List<TurnAntiParameter> estimateAntiParameter(final Turn turn, final Set<Turn> possibleTurns) {
-//    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
+    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
     updatePositionOnTheBoard.undoTurn(turn);
-//    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
+    System.out.println("Estimate. Undo = " + Board.getFieldToFigure());
     List<TurnAntiParameter> turnAntiParameterMap = new ArrayList<>();
     for (Turn posTurn : possibleTurns) {
       if (!turn.equals(posTurn)) {
-//        System.out.println("Estimating AntiParameter. Turn = " + turn);
-//        System.out.println("PossibleTurn = " + posTurn);
-//        System.out.println("Some fields = " + posTurn.getFigureToDestinationField().get(0).getFigure().getWhoCouldBeEaten());
+        System.out.println("Estimating AntiParameter. Turn = " + turn);
+        System.out.println("PossibleTurn = " + posTurn);
+        System.out.println("Some fields = " + posTurn.getFigureToDestinationField().get(0).getFigure().getWhoCouldBeEaten());
         updatePositionOnTheBoard.makeTurn(posTurn);
         AntiParameter antiParameter = AntiParameter.builder()
                 .fifthParam(estimateFirstParameter())

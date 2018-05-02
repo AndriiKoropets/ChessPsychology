@@ -152,6 +152,7 @@ public class CurrentPosition {
   private void noOneAttacksKing() {
     for (Figure ally : kingsAllies) {
       if (isEnPassantCase(ally)) {
+        ally.printAllInformation();
         allPossibleTurns.addAll(enPassantAndTransformation.turnsInCaseEnPassant((Pawn) ally));
 
       } else if (isTransformationCase(ally)) {
