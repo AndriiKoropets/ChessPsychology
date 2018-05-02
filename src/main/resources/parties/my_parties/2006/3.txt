@@ -1,0 +1,17 @@
+Plodovskii-Koropets = 1-0
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 Bc5
+4. b4 Bxb4
+5. c3 Bc5
+6. d4 exd4
+7. cxd4 Bb4+
+8. Bd2 Bxd2
+9. Nxd2 d6
+10. Qb3 Qf6
+11. 0-0 Nxd4
+12. Nxd4 Qxd4
+13. Bxf7+ Kf8
+14. Nf3 Qxe4
+15. Rfe1 Qf5
+16. Re8
