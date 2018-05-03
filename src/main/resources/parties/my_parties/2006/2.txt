@@ -13,4 +13,5 @@ Koropets-Isupov
 12. Bf4+ Kd7
 13. Nxc7 Bxc4
 14. Nxa8 Nc6
-15. Qf5+ Not finished
+15. Qf5+
+Not finished

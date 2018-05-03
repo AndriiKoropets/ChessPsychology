@@ -4,10 +4,11 @@ Savisko-Koropets
 3. Bb5 a6
 4. Bxc6 dxc6
 5. Nc3 f6
-6. d4 Ng4
+6. d4 Bg4
 7. dxe5 Qxd1
 8. Kxd1 Bxf3
 9. gxf3 fxe5
 10. f4 0-0-0+
-11. ... fxe5
-12. Not finished
+Could not define other turns
+x11. x... xfxe5
+x12. Not finished

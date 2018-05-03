@@ -67,28 +67,28 @@ public class ParseWrittenTurn {
   public static String figureInWrittenStyleToBorn;
 
   public Turn getActualTurn() {
-    field = parseDestinationField(currentWrittenStyleTurn);
+    field = parseDestinationField();
     return defineTurn();
   }
 
-  private Field parseDestinationField(String turn) {
+  private Field parseDestinationField() {
     int x, y;
-    if (!turn.equalsIgnoreCase(SHORT_CASTLING_ZEROS) && !turn.equalsIgnoreCase(LONG_CASTLING_ZEROS)) {
+    if (!isCastling()) {
       if (!whetherWrittenTurnIsTransformation()) {
-        if (turn.contains(PLUS)) {
-          x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 2)));
-          y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 3));
+        if (currentWrittenStyleTurn.contains(PLUS)) {
+          x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2)));
+          y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 3));
         } else {
-          x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 1)));
-          y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 2));
+          x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 1)));
+          y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2));
         }
       } else {
-        if (turn.contains(PLUS)) {
-          x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 3)));
-          y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 4));
+        if (currentWrittenStyleTurn.contains(PLUS)) {
+          x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 3)));
+          y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 4));
         } else {
-          x = Field.getInvertedVertical().get(Character.getNumericValue(turn.charAt(turn.length() - 2)));
-          y = Field.getInvertedHorizontal().get(turn.charAt(turn.length() - 3));
+          x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2)));
+          y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 3));
         }
       }
       return new Field(x, y);
@@ -96,6 +96,11 @@ public class ParseWrittenTurn {
       log.info("Target field is null. Castling");
       return null;
     }
+  }
+
+  private boolean isCastling() {
+    return currentWrittenStyleTurn.contains(SHORT_CASTLING_ZEROS) || currentWrittenStyleTurn.contains(LONG_CASTLING_ZEROS)
+        || currentWrittenStyleTurn.contains(SHORT_CASTLING) || currentWrittenStyleTurn.contains(LONG_CASTLING);
   }
 
   private Turn defineTurn() {
@@ -109,17 +114,17 @@ public class ParseWrittenTurn {
     figureToField.clear();
     figure = null;
     targetedFigureToBeEaten = null;
-    eating = isEating();
+    eating = currentWrittenStyleTurn.contains(EATING_SYMBOL);
     figureBornFromTransformation = null;
-    figureInWrittenStyleToBorn = writtenFigureToBorn(currentWrittenStyleTurn);
+    figureInWrittenStyleToBorn = writtenFigureToBorn();
     transformation = whetherWrittenTurnIsTransformation();
   }
 
-  private String writtenFigureToBorn(String turn) {
-    if (turn.contains(PLUS)) {
-      return "" + turn.charAt(turn.length() - 2);
+  private String writtenFigureToBorn() {
+    if (currentWrittenStyleTurn.contains(PLUS)) {
+      return "" + currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2);
     } else {
-      return "" + turn.charAt(turn.length() - 1);
+      return "" + currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 1);
     }
   }
 
@@ -134,19 +139,8 @@ public class ParseWrittenTurn {
     }
   }
 
-  private boolean isEating() {
-    return currentWrittenStyleTurn.contains(EATING_SYMBOL);
-  }
-
-  private boolean isCastling() {
-    return SHORT_CASTLING_ZEROS.equals(currentWrittenStyleTurn)
-            || LONG_CASTLING_ZEROS.equals(currentWrittenStyleTurn)
-            || SHORT_CASTLING.equals(currentWrittenStyleTurn)
-            || LONG_CASTLING.equals(currentWrittenStyleTurn);
-  }
-
   private Turn setCastlingTurn() {
-    return SHORT_CASTLING_ZEROS.equals(currentWrittenStyleTurn) ? shortCastlingTurn() : longCastlingTurn();
+    return currentWrittenStyleTurn.contains(LONG_CASTLING) || currentWrittenStyleTurn.contains(LONG_CASTLING_ZEROS) ? longCastlingTurn() :shortCastlingTurn();
   }
 
   private Turn shortCastlingTurn() {
@@ -243,7 +237,7 @@ public class ParseWrittenTurn {
       electOneFromCandidates();
     }
     if (figure == null) {
-      throw new RuntimeException("Could not define figure. Turn must be wrong written. Turn = " + currentWrittenStyleTurn);
+      throw new RuntimeException("Could not define figure. Turn must be wrong written. Turn = " + currentTurnNumber + "." + currentWrittenStyleTurn);
     }
     figureToField.add(FigureToField.builder().figure(figure).field(field).build());
   }
