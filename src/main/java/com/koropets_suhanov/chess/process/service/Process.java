@@ -33,8 +33,8 @@ public class Process {
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/transformation.txt";
 //  private final static String PATH_TO_FILE = "src/main/resources/parties/transformation_eat.txt";
-//  private final static String PATH_TO_FILE = "src/main/resources/parties/my_parties/2006/4.txt";
-  private final static String PATH_TO_FILE = "src/main/resources/parties/7.txt";
+  private final static String PATH_TO_FILE = "src/main/resources/parties/my_parties/2006/7.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/7.txt";
 //  private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
 //    private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
   //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
