@@ -1,0 +1,35 @@
+Koropets-Garnagenko 1-0
+1. e4 c5
+2. Nf3 d6
+3. d4 cxd4
+4. Nxd4 Nf6
+5. Nc3 g6
+6. Bb5+ Nbd7
+7. 0-0 Bg7
+8. f4 0-0
+9. f5 Nc5
+10. fxg6 fxg6
+11. Bc4+ Kh8
+12. Qe2 Qb6
+13. e5 Bg4
+14. Nd5 Nxd5
+15. Rxf8+ Rxf8
+16. Qxg4 Bxe5
+17. Bxd5 e6
+18. Bf3 Bxd4+
+19. Qxd4+ e5
+20. Qf2 e4
+21. Qd4+ Kg8
+22. Bh6 Rf7
+23. Re1 Qa5
+24. Re3 Qxa2
+25. Qxd6 Ne6
+26. Rxe4 Qa1+
+27. Kf2 Qxb2
+28. Rxe6 Qxc2+
+29. Re2 Qc8
+30. Re7 Qc2+
+31. Kg3 Qf5
+32. Qd8+ Rf8
+33. Bd5+ Kh8
+34. Bg7+

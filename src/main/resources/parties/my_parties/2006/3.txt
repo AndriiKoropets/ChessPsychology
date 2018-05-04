@@ -14,4 +14,4 @@ Plodovskii-Koropets = 1-0
 13. Bxf7+ Kf8
 14. Nf3 Qxe4
 15. Rfe1 Qf5
-16. Re8
+16. Re8+

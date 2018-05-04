@@ -1,0 +1,20 @@
+Koropets-Rozaev 0-1
+1. e4 c6
+2. d4 d5
+3. exd5 cxd5
+4. Bb5+ Nc6
+5. Nf3 Bf5
+6. Ne5 Qb6
+7. Nc3 e6
+8. 0-0 Bd6
+9. Bxc6 bxc6
+10. Na4 Qc7
+11. f4 Nf6
+12. c4 0-0
+13. c5 Bxe5
+14. fxe5 Ne4
+15. Qh5 Bg6
+16. Qg4 Qa5
+17. b3 Nxc5
+18. Bd2 Bd3+
+19. Rf2

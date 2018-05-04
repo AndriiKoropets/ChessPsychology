@@ -1,0 +1,21 @@
+Koropets-Matvienko 0-1
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 Nf6
+4. Ng5 d5
+5. exd5 b5
+6. Bb3 Na5
+7. Qf3 Nxb3
+8. Qxb3 Qxd5
+9. Qxd5 Nxd5
+10. Nc3 Nxc3
+11. dxc3 Bf5
+12. Nf3 f6
+13. Kd1 Rd8+
+14. Bd2 Bc5
+15. Nh4 Be6
+16. Ke2 Bxf2
+17. Nf3 Bb6
+18. Rhd1 Kf7
+19. b3 e4
+20. Ne1 Bg4+

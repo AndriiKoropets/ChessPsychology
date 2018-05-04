@@ -144,7 +144,7 @@ public class Board implements Subject {
 
   private void fulfillResurrection() {
     Figure figureToResurrect = UpdatePositionOnTheBoard.eatenFigureToResurrection;
-    System.out.println("Last figureResurection = " + figureToResurrect);
+//    System.out.println("Last figureResurection = " + figureToResurrect);
     if (figureToResurrect != null) {
       register(figureToResurrect);
     }

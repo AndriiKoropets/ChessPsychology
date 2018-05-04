@@ -360,7 +360,7 @@ public class ParseWrittenTurn {
         }
       }
     }
-    throw new RuntimeException("Could not choose exact figure. Turn must be wrong written. Turn = " + currentWrittenStyleTurn);
+    throw new RuntimeException("Could not choose exact figure. Turn must be wrong written. Turn = " + currentTurnNumber + "." + currentWrittenStyleTurn);
   }
 
   private boolean isEnPassantScenario(List<FigureToField> figureToField) {

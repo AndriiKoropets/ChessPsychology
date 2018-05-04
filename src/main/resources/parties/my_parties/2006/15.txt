@@ -1,0 +1,25 @@
+Koropets-Kolshenskii
+1. e4 c5
+2. Nf3 d6
+3. d4 cxd4
+4. Nxd4 Nf6
+5. Nc3 g6
+6. Be2 Bg7
+7. Be3 Bd7
+8. Qd2 Nc6
+9. Nxc6 bxc6
+10. Bh6 0-0
+11. Bxg7 Kxg7
+12. 0-0-0 Rb8
+13. f3 Qb6
+14. b3 c5
+15. g4 Rfc8
+16. Nd5 Nxd5
+17. Qxd5 Be6
+18. Qd2 c4
+19. Qd4+ Qxd4
+20. Rxd4 cxb3
+21. axb3 Bxb3
+22. Bd3 e6
+23. Rxd6 Rb7
+Not finished
