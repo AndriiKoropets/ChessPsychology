@@ -1,6 +1,7 @@
 package com.koropets_suhanov.chess.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -10,18 +11,19 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 import static java.lang.Math.abs;
 
 @Getter
+@NoArgsConstructor
 public abstract class Figure implements Observer {
 
   private Field field;
   private Color color;
-  private Set<Figure> enemiesAttackMe = new LinkedHashSet<Figure>();
-  private Set<Figure> alliesProtectMe = new LinkedHashSet<Figure>();
-  private Set<Figure> whoCouldBeEaten = new LinkedHashSet<Figure>();
-  private Set<Figure> whoCouldBeEatenPreviousState = new LinkedHashSet<Figure>();
-  private Set<Figure> alliesIProtect = new LinkedHashSet<Figure>();
-  private Set<Field> attackedFields = new LinkedHashSet<Field>();
-  private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<Field>();
-  private Set<Field> possibleFieldsToMove = new LinkedHashSet<Field>();
+  private Set<Figure> enemiesAttackMe = new LinkedHashSet<>();
+  private Set<Figure> alliesProtectMe = new LinkedHashSet<>();
+  private Set<Figure> whoCouldBeEaten = new LinkedHashSet<>();
+  private Set<Figure> whoCouldBeEatenPreviousState = new LinkedHashSet<>();
+  private Set<Figure> alliesIProtect = new LinkedHashSet<>();
+  private Set<Field> attackedFields = new LinkedHashSet<>();
+  private Set<Field> fieldsUnderMyInfluence = new LinkedHashSet<>();
+  private Set<Field> possibleFieldsToMove = new LinkedHashSet<>();
   private Set<Field> preyField = new HashSet<>();
 
   protected abstract void attackedFields();
@@ -35,9 +37,6 @@ public abstract class Figure implements Observer {
   public abstract Set<Figure> pullAdditionalAlliesAndEnemies();
 
   public abstract Figure createNewFigure();
-
-  public Figure() {
-  }
 
   public Figure(Field field, Color color) {
     this.field = field;
@@ -164,7 +163,7 @@ public abstract class Figure implements Observer {
     for (int i = this.getField().getX() + 1; i < SIZE; i++) {
       boolean flag = false;
       for (int j = this.getField().getY() + 1; j < SIZE; j++) {
-        if (i < SIZE && j < SIZE && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+        if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
           Field field = new Field(i, j);
           if (checkingFieldForTaken(field)) {
             flag = true;
@@ -184,7 +183,7 @@ public abstract class Figure implements Observer {
     for (int i = this.getField().getX() + 1; i < SIZE; i++) {
       boolean flag = false;
       for (int j = this.getField().getY() - 1; j >= 0; j--) {
-        if (i < SIZE && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+        if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
           Field field = new Field(i, j);
           if (checkingFieldForTaken(field)) {
             flag = true;
@@ -204,7 +203,7 @@ public abstract class Figure implements Observer {
     for (int i = this.getField().getX() - 1; i >= 0; i--) {
       boolean flag = false;
       for (int j = this.getField().getY() + 1; j < SIZE; j++) {
-        if (i >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+        if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
           Field field = new Field(i, j);
           if (checkingFieldForTaken(field)) {
             flag = true;
@@ -224,7 +223,7 @@ public abstract class Figure implements Observer {
     for (int i = this.getField().getX() - 1; i >= 0; i--) {
       boolean flag = false;
       for (int j = this.getField().getY() - 1; j >= 0; j--) {
-        if (i >= 0 && j >= 0 && abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+        if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
           Field field = new Field(i, j);
           if (checkingFieldForTaken(field)) {
             flag = true;
@@ -239,6 +238,18 @@ public abstract class Figure implements Observer {
       }
     }
   }
+
+//  private void aaa(int i, int j) {
+//    if (abs(this.getField().getX() - i) == abs(this.getField().getY() - j)) {
+//      Field field = new Field(i, j);
+//      if (checkingFieldForTaken(field)) {
+//        flag = true;
+//        return;
+//      } else {
+//        this.getFieldsUnderMyInfluence().add(field);
+//      }
+//    }
+//  }
 
   @Override
   public boolean equals(Object o) {

@@ -28,15 +28,15 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 @Slf4j
 public class Process {
 
-//    private static final String PATH_TO_FILE = "src/main/resources/parties/tetsPartyPawn.txt";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantWhite.txt";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/enPassantBlack.txt";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/transformation.txt";
-//  private final static String PATH_TO_FILE = "src/main/resources/parties/transformation_eat.txt";
-  private final static String PATH_TO_FILE = "src/main/resources/parties/my_parties/2006/17.txt";
-//  private final static String PATH_TO_FILE = "src/main/resources/parties/7.txt";
-//  private final static String PATH_TO_FILE = "src/main/resources/parties/childsMat";
-//    private final static String PATH_TO_FILE = "src/main/resources/parties/hou.txt";
+//    private static final String PATH_TO_FILE = "src/main/resources/parties/test_parties/testPartyPawn.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/enPassantWhite.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/enPassantBlack.txt";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/transformation.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/transformation_eat.txt";
+  private final static String PATH_TO_FILE = "src/main/resources/parties/my_parties/2006/19.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/7.txt";
+//  private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/childsMat";
+//    private final static String PATH_TO_FILE = "src/main/resources/parties/test_parties/hou.txt";
   //Two figures could eat at the same time the same enemy:1, 10, 12, 17 - are processed properly
   //Transformation : 6, 7, 18
   //The party is wrong written 13

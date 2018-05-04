@@ -1,0 +1,26 @@
+Koropets-Pererva 1-0
+1. e4 d6
+2. d4 Nf6
+3. Nc3 g6
+4. Be2 Bg7
+5. Be3 Ng4
+6. Bxg4 Bxg4
+7. Qxg4 0-0
+8. 0-0-0 a5
+9. h4 a4
+10. a3 b5
+11. Nxb5 c6
+12. Nc3 h5
+13. Qe2 Qa5
+14. g4 c5
+15. gxh5 cxd4
+16. Rxd4 Nc6
+17. Rd5 Qb6
+18. hxg6 Rab8
+19. gxf7+ Rxf7
+20. Rb5 Qd4
+21. Nf3 Rxf3
+22. Qxf3
+23. Rxb8+ Nxb8
+24. Rg1
+Not finished
