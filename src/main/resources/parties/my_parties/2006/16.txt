@@ -1,1 +1,25 @@
 Sirotkin-Koropets 1-0
+1. e4 e5
+2. Nf3 Nc6
+3. Bb5 a6
+4. Bxc6 dxc6
+5. d3 f6
+6. d4 Bg4
+7. Be3 Ne7
+8. Nbd2 Ng6
+9. c3 Nh4
+10. 0-0 Qd7
+11. h3 Nxf3+
+12. Nxf3 h5
+13. Qe2 0-0-0
+14. Rfd1 Be6
+15. Rde1 Rdg8
+16. Rad1 g5
+17. g4 Bf7
+18. dxe5 fxe5
+19. Nxe5 Qe6
+20. Nxf7 Qxf7
+21. Bd4 Qf4
+22. Qe3 Qh2+
+23. Kf1 Be5
+Not finished
