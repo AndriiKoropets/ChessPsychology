@@ -1,0 +1,20 @@
+Isupov-Koropets
+1. e4 e5
+2. Bc4 Bc5
+3. Nc3 Nc6
+4. d3 d6
+5. Nge2 Bg4
+6. f3 Be6
+7. Bb3 Qh4+
+8. g3 Qh3
+9. Kd2 Qg2
+10. Qf1 Qxf1
+11. Rxf1 Bh3
+12. Rd1 Bf2
+13. Nd5 0-0-0
+14. c3 Bg2
+15. f4 f6
+16. f5 g6
+17. Ne3 Nge7
+18. Nxg2 gxf5
+19. exf5 Nxf5

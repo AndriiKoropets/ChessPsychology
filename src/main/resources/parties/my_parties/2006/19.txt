@@ -19,8 +19,4 @@ Koropets-Pererva 1-0
 18. hxg6 Rab8
 19. gxf7+ Rxf7
 20. Rb5 Qd4
-21. Nf3 Rxf3
-22. Qxf3
-23. Rxb8+ Nxb8
-24. Rg1
-Not finished
+21. Nf3

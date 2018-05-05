@@ -21,5 +21,5 @@ Sirotkin-Koropets 1-0
 20. Nxf7 Qxf7
 21. Bd4 Qf4
 22. Qe3 Qh2+
-23. Kf1 Be5
+23. Kf1 Bc5
 Not finished
