@@ -1,0 +1,19 @@
+Kaplun-Koropets 1-0
+1. e4 e5
+2. Nf3 Nc6
+3. Bb5 a6
+4. Bxc6 dxc6
+5. c3 f6
+6. d4 Bg4
+7. h3 Bxf3
+8. gxf3 exd4
+9. cxd4 Bb4+
+10. Nc3 Qd7
+11. Qd3 0-0-0
+12. Be3 c5
+13. d5 Ne7
+14. 0-0-0 Bxc3
+15. Qxc3 Rhf8
+16. Qxc5 Kb8
+17. Qa7+ Kc8
+18. Qa8+

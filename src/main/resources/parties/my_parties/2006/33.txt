@@ -1,0 +1,33 @@
+Koropets-Voblikov 1-0
+1. e4 d6
+2. d4 Nf6
+3. f3 g6
+4. Be3 Bg7
+5. Qd2 c6
+6. Bh6 0-0
+7. Bxg7 Kxg7
+8. Nc3 h5
+9. Be2 Nbd7
+10. g4 hxg4
+11. fxg4 Nb6
+12. g5 Ng4
+13. h3 Nf2
+14. Kxf2 f6
+15. Ke1 Be6
+16. h4 Rh8
+17. h5 gxh5
+18. Rxh5 Rxh5
+19. Bxh5 Nc4
+20. gxf6+ exf6
+21. Qg2+ Kf8
+22. d5 cxd5
+23. exd5 Bf5
+24. b3 Ne3
+25. Qf2 Nxc2+
+26. Kd1 Bh7
+27. Rc1 Nb4
+28. Qf4 Nd3
+29. Qh6+ Kg8
+30. Bf7+ Kh8
+31. Bg6 Nxc1
+32. Qxh7+
