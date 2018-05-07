@@ -11,7 +11,7 @@ Kulinich-Koropets 1-0
 10. Nc3 0-0-0
 11. Bd2 Ne7
 12. 0-0-0 Ng6
-13. Rg1 Bc5
+13. Rhg1 Bc5
 14. Be3 Bb4
 15. Ne2 Rhf8
 16. Rxd8+ Kxd8
@@ -41,11 +41,11 @@ Kulinich-Koropets 1-0
 40. Rc5 c3
 41. h5 c2
 42. h6 Kf7
-43. h7 kg7
+43. h7 Kg7
 44. Rc7+ Kh8
 45. e5 Rd1
-46 Rxc2 Rd4+
-47 Kf5 Rd7
+46. Rxc2 Rd4+
+47. Kf5 Rd7
 48. Rh2 Rf7+
 49. Ke4 Re7
 50. f4 Rf7

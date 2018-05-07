@@ -283,7 +283,7 @@ public class ParseWrittenTurn {
       electOneFromCandidates();
     }
     if (figure == null) {
-      throw new RuntimeException("Could not define actual pawn. Turn must be wrong written. Turn = " + currentWrittenStyleTurn);
+      throw new RuntimeException("Could not define actual pawn. Turn must be wrong written. Turn = " + currentTurnNumber + "." + currentWrittenStyleTurn);
     }
     figureToField.add(FigureToField.builder().figure(figure).field(field).build());
   }

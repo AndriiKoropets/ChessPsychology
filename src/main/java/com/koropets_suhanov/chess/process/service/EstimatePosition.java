@@ -15,10 +15,12 @@ import com.koropets_suhanov.chess.process.dto.TurnWeight;
 import com.koropets_suhanov.chess.process.dto.WeightAndDestinations;
 import com.koropets_suhanov.chess.process.dto.Parameter;
 import com.koropets_suhanov.chess.process.dto.Turn;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.koropets_suhanov.chess.process.service.Process.updatePositionOnTheBoard;
 import static com.koropets_suhanov.chess.process.service.Process.currentColor;
 
+@Slf4j
 public class EstimatePosition {
 
   public Parameter estimate(Turn turn, Set<Turn> possibleTurns) {
@@ -27,17 +29,29 @@ public class EstimatePosition {
     int secondParam = estimateSecondParameter();
     int thirdParam = estimateThirdParameter();
     int fourthParam = estimateFourthParameter();
+    WeightAndDestinations fifthParamToInvolvedFigures;
+    WeightAndDestinations sixthParamToInvolvedFigures;
+    WeightAndDestinations seventhParamToInvolvedFigures;
+    WeightAndDestinations eighthParamToInvolvedFigures;
 
     List<TurnAntiParameter> turnToAntiParameter = estimateAntiParameter(turn, possibleTurns);
-    TurnWeight estimatedFifthParameter = estimateFifthParameter(turnToAntiParameter);
-    TurnWeight estimatedSixthParameter = estimateSixthParameter(turnToAntiParameter);
-    TurnWeight estimatedSeventhParameter = estimateSeventhParameter(turnToAntiParameter);
-    TurnWeight estimatedEighthParameter = estimateEightParameter(turnToAntiParameter);
+    if (turnToAntiParameter != null) {
+      TurnWeight estimatedFifthParameter = estimateFifthParameter(turnToAntiParameter);
+      TurnWeight estimatedSixthParameter = estimateSixthParameter(turnToAntiParameter);
+      TurnWeight estimatedSeventhParameter = estimateSeventhParameter(turnToAntiParameter);
+      TurnWeight estimatedEighthParameter = estimateEightParameter(turnToAntiParameter);
 
-    WeightAndDestinations fifthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedFifthParameter.getWeight() - firstParam).figureToFields(estimatedFifthParameter.getTurn().getFigureToDestinationField()).build();
-    WeightAndDestinations sixthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSixthParameter.getWeight() - secondParam).figureToFields(estimatedSixthParameter.getTurn().getFigureToDestinationField()).build();
-    WeightAndDestinations seventhParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSeventhParameter.getWeight() - thirdParam).figureToFields(estimatedSeventhParameter.getTurn().getFigureToDestinationField()).build();
-    WeightAndDestinations eighthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedEighthParameter.getWeight() - fourthParam).figureToFields(estimatedEighthParameter.getTurn().getFigureToDestinationField()).build();
+      fifthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedFifthParameter.getWeight() - firstParam).figureToFields(estimatedFifthParameter.getTurn().getFigureToDestinationField()).build();
+      sixthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSixthParameter.getWeight() - secondParam).figureToFields(estimatedSixthParameter.getTurn().getFigureToDestinationField()).build();
+      seventhParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedSeventhParameter.getWeight() - thirdParam).figureToFields(estimatedSeventhParameter.getTurn().getFigureToDestinationField()).build();
+      eighthParamToInvolvedFigures = WeightAndDestinations.builder().weight(estimatedEighthParameter.getWeight() - fourthParam).figureToFields(estimatedEighthParameter.getTurn().getFigureToDestinationField()).build();
+    } else {
+
+      fifthParamToInvolvedFigures = WeightAndDestinations.builder().weight(-firstParam).build();
+      sixthParamToInvolvedFigures = WeightAndDestinations.builder().weight(-secondParam).build();
+      seventhParamToInvolvedFigures = WeightAndDestinations.builder().weight(-thirdParam).build();
+      eighthParamToInvolvedFigures = WeightAndDestinations.builder().weight(-fourthParam).build();
+    }
 
     updatePositionOnTheBoard.makeTurn(turn);
 
@@ -150,6 +164,12 @@ public class EstimatePosition {
         updatePositionOnTheBoard.undoTurn(posTurn);
       }
     }
+
+    if (turnAntiParameterMap.size() == 0) {
+      log.warn("There is no antiParameter turns, because possibleTurns size = {}", possibleTurns.size());
+      return null;
+    }
+
     return turnAntiParameterMap;
   }
 

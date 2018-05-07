@@ -24,7 +24,7 @@ public class CurrentPosition {
   private Set<Turn> allPossibleTurns = new LinkedHashSet<>();
 
   private King king;
-  private List<Figure> kingsAllies;
+  private List<Figure> kingsAllies = new ArrayList<>();
   private Castling castlingService = new Castling();
   private EnPassantAndTransformation enPassantAndTransformation = new EnPassantAndTransformation();
   private Covering covering = new Covering();
@@ -36,12 +36,12 @@ public class CurrentPosition {
 
   private void defineAllPossibleTurns() {
     allPossibleTurns.clear();
+    kingsAllies.clear();
     king = Board.getKingByColor(currentColor);
 
     List<Figure> allies = Board.getFiguresByColor(currentColor).stream()
         .filter(a -> a.getClass() != King.class)
         .collect(Collectors.toList());
-    kingsAllies = new ArrayList<>();
     kingsAllies.addAll(allies);
 
     define();
@@ -150,6 +150,7 @@ public class CurrentPosition {
   }
 
   private void noOneAttacksKing() {
+    definePeacefulTurns(king);
     for (Figure ally : kingsAllies) {
       if (isEnPassantCase(ally)) {
         ally.printAllInformation();
