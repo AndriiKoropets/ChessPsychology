@@ -41,4 +41,4 @@ Kovanov-Koropets 0-1
 39. b4 Qc3+
 40. Ka4 Rb1
 41. Qg4 Qc6+
-42. Ka3 Qa6+
+42. Ka3 Qa6#

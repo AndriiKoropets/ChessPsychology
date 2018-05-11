@@ -32,4 +32,4 @@ Koropets-Garnagenko 1-0
 31. Kg3 Qf5
 32. Qd8+ Rf8
 33. Bd5+ Kh8
-34. Bg7+
+34. Bg7#

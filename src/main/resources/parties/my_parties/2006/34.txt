@@ -16,4 +16,4 @@ Kaplun-Koropets 1-0
 15. Qxc3 Rhf8
 16. Qxc5 Kb8
 17. Qa7+ Kc8
-18. Qa8+
+18. Qa8#

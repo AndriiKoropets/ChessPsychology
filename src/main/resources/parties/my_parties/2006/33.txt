@@ -30,4 +30,4 @@ Koropets-Voblikov 1-0
 29. Qh6+ Kg8
 30. Bf7+ Kh8
 31. Bg6 Nxc1
-32. Qxh7+
+32. Qxh7#

@@ -50,4 +50,4 @@ Kovanov-Koropets 0-1
 49. Ka1 Nc6
 50. e5 c3
 51. e6 c2
-52. e7 c1Q+
+52. e7 c1Q#

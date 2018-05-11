@@ -28,7 +28,8 @@ import static com.koropets_suhanov.chess.process.constants.Constants.SHORT_CASTL
 import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING;
 import static com.koropets_suhanov.chess.process.constants.Constants.LONG_CASTLING_ZEROS;
 import static com.koropets_suhanov.chess.process.constants.Constants.EATING_SYMBOL;
-import static com.koropets_suhanov.chess.process.constants.Constants.PLUS;
+import static com.koropets_suhanov.chess.process.constants.Constants.CHECK_SYMBOL;
+import static com.koropets_suhanov.chess.process.constants.Constants.CHECKMAT_SYMBOL;
 import static com.koropets_suhanov.chess.process.constants.Constants.SIZE;
 import static com.koropets_suhanov.chess.process.service.Castling.e1;
 import static com.koropets_suhanov.chess.process.service.Castling.e8;
@@ -75,7 +76,7 @@ public class ParseWrittenTurn {
     int x, y;
     if (!isCastling()) {
       if (!whetherWrittenTurnIsTransformation()) {
-        if (currentWrittenStyleTurn.contains(PLUS)) {
+        if (currentWrittenStyleTurn.contains(CHECK_SYMBOL) || currentWrittenStyleTurn.contains(CHECKMAT_SYMBOL)) {
           x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2)));
           y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 3));
         } else {
@@ -83,7 +84,7 @@ public class ParseWrittenTurn {
           y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2));
         }
       } else {
-        if (currentWrittenStyleTurn.contains(PLUS)) {
+        if (currentWrittenStyleTurn.contains(CHECK_SYMBOL) || currentWrittenStyleTurn.contains(CHECKMAT_SYMBOL)) {
           x = Field.getInvertedVertical().get(Character.getNumericValue(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 3)));
           y = Field.getInvertedHorizontal().get(currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 4));
         } else {
@@ -121,7 +122,7 @@ public class ParseWrittenTurn {
   }
 
   private String writtenFigureToBorn() {
-    if (currentWrittenStyleTurn.contains(PLUS)) {
+    if (currentWrittenStyleTurn.contains(CHECK_SYMBOL) || currentWrittenStyleTurn.contains(CHECKMAT_SYMBOL)) {
       return "" + currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 2);
     } else {
       return "" + currentWrittenStyleTurn.charAt(currentWrittenStyleTurn.length() - 1);
@@ -130,7 +131,7 @@ public class ParseWrittenTurn {
 
   private boolean whetherWrittenTurnIsTransformation() {
     int lengthOfTheWrittenTurn = currentWrittenStyleTurn.length();
-    if (currentWrittenStyleTurn.contains(PLUS)) {
+    if (currentWrittenStyleTurn.contains(CHECK_SYMBOL) || currentWrittenStyleTurn.contains(CHECKMAT_SYMBOL)) {
       char previousBeforeTheLast = currentWrittenStyleTurn.charAt(lengthOfTheWrittenTurn - 2);
       return ALL_FIGURES.contains(Character.toString(previousBeforeTheLast));
     } else {

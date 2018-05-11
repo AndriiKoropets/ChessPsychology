@@ -27,4 +27,4 @@ Pererva-Koropets 0-1
 26. Kg2 Qe3
 27. Qf2 Rxh2+
 28. Kxh2 Qxf2
-29. Kh1 Rh8+
+29. Kh1 Rh8#

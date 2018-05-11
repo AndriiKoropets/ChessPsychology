@@ -44,4 +44,4 @@ Koropets-Piliposyan 1-0
 33. Bf4 h5
 34. Ke3 b4
 35. Ke2 g5
-36. Bg3+
+36. Bg3#

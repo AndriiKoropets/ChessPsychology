@@ -12,5 +12,6 @@ public class Constants {
   public static final String LONG_CASTLING = "O-O-O";
   public static final String EATING_SYMBOL = "x";
   public static final byte SIZE = 8;
-  public static final String PLUS = "+";
+  public static final String CHECK_SYMBOL = "+";
+  public static final String CHECKMAT_SYMBOL = "#";
 }
