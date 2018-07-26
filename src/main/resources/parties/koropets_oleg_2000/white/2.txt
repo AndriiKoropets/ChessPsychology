@@ -1,0 +1,30 @@
+Orehov. 2000
+Koropets-Mitlenko 1-0
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 Bc5
+4. d3 Nf6
+5. Bg5 0-0
+6. 0-0 Re8
+7. Nc3 Nd4
+8. Nd5 c6
+9. Nxf6 gxf6
+10. Bh6 d5
+11. Nxd4 Bxd4
+12. Qf3 Kh8
+13. Bb3 Be6
+14. c4 dc
+15. dc Bxb2
+16. Rad1 Qe7
+17. c5 Rad8
+18. Rxd8 Rxd8
+19. Rd1 Bd4
+20. Rd3 Bxc5
+21. Qg3 Rg8
+22. Qf3 Bg4
+23. Qg3 Be2
+24. Qh3 Bxd3
+25. Qxd3 Rd8
+26. Qf3 Rd6
+27. Qg4

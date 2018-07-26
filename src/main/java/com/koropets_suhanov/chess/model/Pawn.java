@@ -173,7 +173,7 @@ public class Pawn extends Figure {
             && Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()
             && !this.getFieldsUnderMyInfluence().contains(((Pawn) Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure()).getPreviousPosition())
             && enemyStaysLeftOrRight((Pawn) Process.currentBlackTurn.getFigureToDestinationField().get(0).getFigure())) {
-          this.printAllInformation();
+//          this.printAllInformation();
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {
@@ -202,8 +202,8 @@ public class Pawn extends Figure {
             && Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure().getColor() != this.getColor()
             && !this.getFieldsUnderMyInfluence().contains(((Pawn) Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure()).getPreviousPosition())
             && enemyStaysLeftOrRight((Pawn) Process.currentWhiteTurn.getFigureToDestinationField().get(0).getFigure())) {
-          System.out.println("EnPassant turn previous = " + Process.currentWhiteTurn + " Field = " + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField() + " x= " + + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField().getX());
-          this.printAllInformation();
+//          System.out.println("EnPassant turn previous = " + Process.currentWhiteTurn + " Field = " + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField() + " x= " + + Process.currentWhiteTurn.getFigureToDestinationField().get(0).getField().getX());
+//          this.printAllInformation();
           Field leftField = null;
           Figure leftEnemy = null;
           if (this.getField().getY() != 0) {
