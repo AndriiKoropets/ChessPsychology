@@ -15,15 +15,15 @@ Koropets-Dibrova 1-0
 12. 0-0 Nd4
 13. Bd1 Bd6
 14. Qg5 Qg7
-15. Nc3 dc
-16. dc Bd7
+15. Nc3 dxc4
+16. dxc4 Bd7
 17. Ne2 Nxe2
 18. Bxe2 e5
 19. Rad1 Bxh3
 20. Rxd6 Be6
-21. Rd1 Ne4
+21. Rfd1 Ne4
 22. Rd8+ Rxd8
 23. Rxd8+ Kh7
 24. Qh4+ Qh6
 25. Qxe4 Kg7
-26. Qxe5
+26. Qxe5+

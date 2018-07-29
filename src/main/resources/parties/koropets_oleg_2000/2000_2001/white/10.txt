@@ -1,0 +1,27 @@
+Energodar 2000-2001
+Koropets Oleg-Rudkovskii 0-1
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bb5 Bb4
+4. Bxc6 dxc6
+5. Nxe5 Qe7
+6. c3 Qxe5
+7. cxb4 Qxe4+
+8. Kf1 Bg4
+9. f3 Qd3+
+10. Kf2 Be6
+11. Re1 0-0-0
+12. Re3 Qd5
+13. Nc3 Qh5
+14. h3 Qh4+
+15. Ke2 Rxd2
+16. Qxd2 Bc4+
+17. Kd1 Nf6
+18. Ne4 Rd8
+19. Qxd8 Kxd8
+20. Nxf6 gxf6
+21. a4 Qf2
+22. b3 Qf1+
+23. Re1 Qd3+
+24. Bg2 Bxb3+

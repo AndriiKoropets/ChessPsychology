@@ -30,5 +30,5 @@ Teterin-Koropets 1-0
 27. b4+ Bxb4
 28. Bc6 Qd4
 29. Qf5+ Bc5
-30. Bd2 Ka6
+30. Bd2+ Ka6
 31. Qc8#

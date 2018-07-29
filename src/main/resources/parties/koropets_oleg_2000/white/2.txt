@@ -14,8 +14,8 @@ Koropets-Mitlenko 1-0
 11. Nxd4 Bxd4
 12. Qf3 Kh8
 13. Bb3 Be6
-14. c4 dc
-15. dc Bxb2
+14. c4 dxc4
+15. dxc4 Bxb2
 16. Rad1 Qe7
 17. c5 Rad8
 18. Rxd8 Rxd8

@@ -1,0 +1,12 @@
+Energodar 2000-2001
+Koropets-Iliyasov 1-0
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bb5 Nf6
+4. 0-0 Bc5
+5. d3 a6
+6. Ba4 b5
+7. Bb3 Nd4
+8. Be3 Nxb3
+9. ab Bxe3

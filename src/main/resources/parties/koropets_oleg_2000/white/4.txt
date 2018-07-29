@@ -22,7 +22,7 @@ Koropets-Lisohor 1-0
 19. e5 g6
 20. Qf4 Nh7
 21. Qxh6 Bg5
-22. Rxg5 Qxg5
+22. Bxg5 Qxg5
 23. Qh3 d6
 24. Qg2 Qh5
 25. Qxa8 Kg7
@@ -36,7 +36,7 @@ Koropets-Lisohor 1-0
 33. h3 Qh5
 34. g4 Qg5
 35. h4 Qxg4+
-36. Rh2 Qxh4
+36. Kh2 Qxh4+
 37. Kg2 Qg4+
 38. Kh1 Ng5
 39. Qxg6#

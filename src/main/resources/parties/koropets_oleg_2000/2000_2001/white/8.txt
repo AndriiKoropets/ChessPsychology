@@ -13,7 +13,7 @@ Koropets-Buksha 1-0
 10. Qd1 Qc7
 11. Re1 Nd7
 12. Nb5 Qc6
-13. Nbd4 Bxd4
+13. Nfd4 Bxd4
 14. Nxd4 Qc8
 15. Nxe6 Nxe5
 16. Nxg7+ Kf7

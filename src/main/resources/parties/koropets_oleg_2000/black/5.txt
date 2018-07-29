@@ -20,7 +20,7 @@ Kudulay-Koropets 0-1
 17. Bxe8 Bg4
 18. Qa3 Kh8
 19. Bd7 Bxd7
-20. Qa8 Ng6
+20. Qa8+ Ng8
 21. Qxb7 Bh3
 22. e5 h6
 23. Kh1 Ne7
