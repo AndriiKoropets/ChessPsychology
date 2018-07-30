@@ -1,0 +1,30 @@
+Koropets Oleg - Vasilchenko 1-0
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 h6
+4. Nc3 Nf6
+5. d4 exd4
+6. Nxd4 Bc5
+7. Nxc6 bxc6
+8. Bd2 0-0
+9. Qf3 d6
+10. 0-0-0 Bg4
+11. Qg3 Bxd1
+12. Rxd1 Re8
+13. f3 d5
+14. ed cd
+15. Bf4 c6
+16. Bxh6 g6
+17. Bd3 Kh7
+18. Qh3 Qd7
+19. Qh4 Qe6
+20. Bf8+ Kg8
+21. Bxc5 Nf5
+22. Bd4 Rab8
+23. g4 Nf6
+24. Bxf6 Qe3+
+25. Kb1 Rxb2
+26. Kxb2 Qb6+
+27. Nb5 Qxb5
+28. Bxb5

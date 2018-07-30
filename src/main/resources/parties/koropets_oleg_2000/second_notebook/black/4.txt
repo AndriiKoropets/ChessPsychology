@@ -1,0 +1,36 @@
+Mikitenko-Koropets Olge 1-0
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 Be7
+4. d4 exd4
+5. Nxd4 Ne5
+6. Qg5 Nxc4
+7. 0-0 Nf6
+8. Qf3 d6
+9. b3 Ne5
+10. Qe2 0-0
+11. Nc3 d5
+12. Rd1 Bb4
+13. Nb1 Bg4
+14. f3 Be6
+15. c3 Bc5
+16. b4 Bb6
+17. c4 de
+18. c5 ef
+19. Qxe5 Bxc5
+20. bc f2+
+21. Kh1 Bc4
+22. Nd2 Ng4
+23. Qf4 f1R
+24. Nxf1 Bxf1
+25. Qxg4 Re8
+26. Rxf1 Qe7
+27. Bb2 f6
+28. Rxf6 Qxc5
+29. Nf3 Re7
+30. a4 Rd8
+31. Ba3 Qc3
+32. Bxe7 Qxa1+
+33. Ng1 Rd1
+34. Rf8#

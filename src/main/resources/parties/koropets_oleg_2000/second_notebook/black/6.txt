@@ -1,0 +1,43 @@
+Izgui Julia - Koropets Olge
+
+1. e4 e5
+2. Nf3 Nc6
+3. Nc3 d6
+4. Bb5 Bd7
+5. d3 a6
+6. Bxc6 Bxc6
+7. 0-0 Qe7
+8. Bg5 f6
+9. Be3 0-0-0
+10. Nh4 Bd7
+11. Nd5 Qf7
+12. Qf3 g5
+13. Nf5 Bxf5
+14. ef g4
+15. Qe4 Bh6
+16. Ba7 b6
+17. Bb4 d5
+18. Qe1 Kb7
+19. Qc3 Kxa7
+20. Nc6+ Ka8
+21. Nxa8 Qd7
+22. Ne6 c5
+23. Qg3 Ka7
+24. b4 db
+25. Qxb4 Ne7
+26. f3 g3
+27. hg Nxf5
+28. g4 Qxe6
+29. gf Qxf5
+30. Qe7+ Kb8
+31. Rab1 Be3+
+32. Rf2 Qc8
+33. Qxf6 Qxc2
+34. Qxh8 Ka7
+35. Ka8+ Kb1
+36. Qg8+ Kc7
+37. Qf7+ Kd6
+38. Rxb6 Bxb6
+39. Qf6+ Kc7
+40. Qxe5+ Kc6
+41.
