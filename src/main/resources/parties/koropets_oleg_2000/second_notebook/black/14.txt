@@ -1,0 +1,9 @@
+Kravchenko Yana-Koropets Oleg 1/2-1/2 10.03.2001
+
+1. e4 e5
+2. Nf3 Nc6
+3. Bc4 Nf6
+4. Nc3 h6
+5. 0-0 Bc5
+6. Be2 d6
+7. d6
