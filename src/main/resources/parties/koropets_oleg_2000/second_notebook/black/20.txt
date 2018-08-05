@@ -1,0 +1,25 @@
+Tovkus Gena-Koropets Oleg 1/2-1/2 17.03.2001
+
+1. d4 d5
+2. c4 dxc4
+3. e4 e6
+4. Bxc4 c5
+5. Nf3 cxd4
+6. Qxd4 Qxd4
+7. Nxd4 Nf6
+8. Nc3 Bc5
+9. Be3 e5
+10. Ndb5 Bxe3
+11. Nc7+ Ke7
+12. fe Nc6
+13. Nxa8 Nb4
+14. 0-0-0 Bg4
+15. Rde1 Rxa8
+16. h3 Bh5
+17. g4 Bg6
+18. Rhf1 Rc8
+19. b3 h6
+20. Nd5+ Kfxd5
+21. ed Nd3+
+22. Kd3 Nxe1
+23. Kxe1

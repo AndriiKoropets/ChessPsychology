@@ -1,3 +1,30 @@
 Koropets Oleg-Kravchenko Yana 0-1 17.03.2001
 
 1. e4 e5
+2. Nf3 Nc6
+3. Nc3 Bc5
+4. Bb5 f6
+5. d3 Ne7
+6. 0-0 0-0
+7. Ne1 d6
+8. Bc4+ Kh8
+9. Qe2 f5
+10. exf5 Bxf5
+11. Be3 Bxe3
+12. fxe3 d5
+13. Bb3 Qd7
+14. e4 Bg4
+15. Nf3 dxe4
+16. Nxe4 Nd4
+17. c3 Nxe2
+18. Kh1 Qxd3
+19. Nf2 Qd6
+20. Nxg4 Ng6
+21. Rfe1 Nf4
+22. Ngxe5 Nxe5
+23. Rxe5 Nxg2
+24. Kxg2 Rf3
+25. Rfe1 Raf8
+26. Re6 Qd2+
+27. Kh1 h6
+28. Rg1 Rf2
